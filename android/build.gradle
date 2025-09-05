@@ -1,0 +1,37 @@
+plugins {
+    id 'com.google.gms.google-services' version '4.4.2' apply false
+}
+
+group "com.example.busdeskpro"
+version "1.0.0"
+
+allprojects {
+    repositories {
+        google()
+        mavenCentral()
+    }
+}
+
+rootProject.buildDir = "../build"
+subprojects {
+    project.buildDir = "${rootProject.buildDir}/${project.name}"
+
+    afterEvaluate { project ->
+        if (project.hasProperty('android')) {
+            project.android {
+                if ((!hasProperty('namespace') || namespace == null || namespace.isEmpty()) && project.name != "app") {
+                    // Assign a default namespace based on the project name or group
+                    namespace = project.group.toString() ?: "com.example.${project.name}"
+                    println("com.example.${project.name}")
+                }
+            }
+        }
+    }
+}
+subprojects {
+    project.evaluationDependsOn(":app")
+}
+
+tasks.register("clean", Delete) {
+    delete rootProject.buildDir
+}

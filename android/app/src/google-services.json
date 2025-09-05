@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "431948026110",
+    "project_id": "busdeskpro",
+    "storage_bucket": "busdeskpro.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:431948026110:android:e8a9e3be763d6db63015af",
+        "android_client_info": {
+          "package_name": "com.example.busdeskpro"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBpg9EswGgDQ4wMtPb8bQ5LjMB-NtVFTV8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

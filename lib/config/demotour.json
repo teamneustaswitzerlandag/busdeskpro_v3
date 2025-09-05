@@ -1,0 +1,123 @@
+[
+  {
+    "start": "08:00",
+    "destination": "12:00",
+    "end": "14:00",
+    "lat": 53.0485048,
+    "long": 8.6254748,
+    "stops": [
+      {
+        "firstname": "Max",
+        "lastname": "Muster",
+        "address": "Hauptstr. 1",
+        "phone": "017657532659",
+        "mobile": "017657532659",
+        "info": "Rollstuhl",
+        "lat": 53.136719,
+        "long": 8.216536
+      },
+      {
+        "firstname": "Max",
+        "lastname": "Muster",
+        "address": "Hauptstr. 1",
+        "phone": "017657532659",
+        "mobile": "017657532659",
+        "info": "Rollstuhl",
+        "lat": 53.0485048,
+        "long": 8.6254748
+      }
+    ],
+    "date": "2025-01-08T06:00:00Z",
+    "hintour": true
+  },
+  {
+    "start": "10:00",
+    "destination": "14:00",
+    "end": "16:00",
+    "stops":[
+      {
+        "firstname": "Max",
+        "lastname": "Muster",
+        "address": "Königstraße 1, 70173 Stuttgart",
+        "phone": "017657532659",
+        "mobile": "017657532659",
+        "info": "Rollstuhl",
+        "lat": 48.78232,
+        "long": 9.17702
+      },
+      {
+        "firstname": "Anna",
+        "lastname": "Schneider",
+        "address": "Schlossplatz 4, 70173 Stuttgart",
+        "phone": "015738459652",
+        "mobile": "015738459652",
+        "info": "Gehhilfe",
+        "lat": 48.78192,
+        "long": 9.18021
+      },
+      {
+        "firstname": "Michael",
+        "lastname": "Fischer",
+        "address": "Rotebühlstraße 121, 70178 Stuttgart",
+        "phone": "01701234567",
+        "mobile": "01701234567",
+        "info": "Blindenhund",
+        "lat": 48.77245,
+        "long": 9.16649
+      },
+      {
+        "firstname": "Lisa",
+        "lastname": "Müller",
+        "address": "Böblinger Straße 50, 70199 Stuttgart",
+        "phone": "01601234567",
+        "mobile": "01601234567",
+        "info": "Kein Handicap",
+        "lat": 48.75638,
+        "long": 9.16882
+      },
+      {
+        "firstname": "Johannes",
+        "lastname": "Becker",
+        "address": "Heilbronner Straße 70, 70191 Stuttgart",
+        "phone": "01711234567",
+        "mobile": "01711234567",
+        "info": "Hörgerät",
+        "lat": 48.79362,
+        "long": 9.18288
+      },
+      {
+        "firstname": "Sandra",
+        "lastname": "Weber",
+        "address": "Hauptstätter Straße 123, 70178 Stuttgart",
+        "phone": "01751234567",
+        "mobile": "01751234567",
+        "info": "Kein Handicap",
+        "lat": 48.76923,
+        "long": 9.16824
+      }
+    ],
+    "date": "2025-01-08T06:00:00Z",
+    "hintour": false
+  },
+  {
+    "start": "12:00",
+    "destination": "16:00",
+    "end": "18:00",
+    "lat": 53.0485048,
+    "long": 8.6254748,
+    "stops": [
+      {
+        "firstname": "Max",
+        "lastname": "Muster",
+        "address": "Hauptstr. 1",
+        "phone": "017657532659",
+        "mobile": "017657532659",
+        "info": "Rollstuhl",
+        "lat": 53.0485048,
+        "long": 8.6254748
+      }
+    ],
+    "date": "2025-01-08T06:00:00Z",
+    "hintour": true
+  }
+]

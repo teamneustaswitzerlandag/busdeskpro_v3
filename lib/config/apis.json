@@ -1,0 +1,19 @@
+{
+  "schlienz": {
+    "get-tours": {
+      "url": "https://prod-10.germanywestcentral.logic.azure.com/workflows/5c3d553c707c40dab2793723a40e6ec8/triggers/manual/paths/invoke/{phonenumber}/{deviceId}?api-version=2016-06-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=2zvIO8I_vVnaI_7DukXaKlKRqsTYbp1QbpzHVX8F5YI",
+      "method": "GET",
+      "params": {}
+    },
+    "get-news": {
+      "url": "https://prod-16.germanywestcentral.logic.azure.com:443/workflows/8b256a94c2a440adae510566e6296a9b/triggers/manual/paths/invoke?api-version=2016-06-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=va3UC69PKIhF5971IklzeW7RJJaIe7giwwJvAiqIafk"
+    },
+    "get-docs": {
+      "url": "https://prod-19.germanywestcentral.logic.azure.com/workflows/5b3984c255d04ea8927754af915d5446/triggers/manual/paths/invoke?api-version=2016-06-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=HC8bSHEYRLgwAki3vuycoJmqUPe3cRY514SXGFRNA70"
+    },
+    "get-beforedrivecheck": {
+      "url": "https://prod-24.germanywestcentral.logic.azure.com/workflows/dd607eb6770a42d9a075f5159862255f/triggers/manual/paths/invoke?api-version=2016-06-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=VVie5bsi0YUMAyjG2hoPTtHXwrVuRabb5lS_j3NvU-o"
+    }
+  },
+  "demo":{}
+}

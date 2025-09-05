@@ -1,0 +1,2155 @@
+{
+  "addToRouteButton": "Hinzufügen",
+"@addToRouteButton": {
+"description": "Titel der Schaltfläche Zur Route hinzufügen"
+},
+"allowHighwayTitle": "Autobahn zulassen",
+"@allowHighwayTitle": {
+"description": "Titel des Schalters für Routeneinstellungen"
+},
+
+"appTitle": "HERE SDK für Flutter – Referenzanwendung",
+"@appTitle": {
+"description": "Titel der Anwendung"
+},
+"appTitleHeader": "HERE SDK-Referenzanwendung für Flutter '{{0}}'\nBasierend auf HERE SDK '{{1}}'.'{{2}}'.'{{3}}'",
+"@appTitleHeader": {
+
+"description": "Titel der Anwendung in der Kopfzeile der Schublade"
+},
+"arrivalTimeTitle": "Ankunftszeit",
+"@arrivalTimeTitle": {
+"description": "Bezeichnung für die lokale Benachrichtigung zur Ankunftszeit"
+},
+"arrivalTitle": "Ankunft",
+"@arrivalTitle": {
+"description": "Bezeichnung für die Ankunftszeit"
+
+},
+"arriveActionText": "Am Ziel angekommen",
+"@arriveActionText": {
+"description": "Text für die Ankunftsaktion"
+},
+"atmTitle": "Geldautomat",
+"@atmTitle": {
+"description": "Text für die Kategorie Geldautomat"
+},
+"availableStorageText": "Verfügbar",
+
+"@availableStorageText": {
+"description": "Text für die Beschriftung des verfügbaren Speichers"
+},
+"avoidanceOptionsTitle": "Ausweichoptionen",
+"@avoidanceOptionsTitle": {
+"description": "Titel des Abschnitts Ausweichoptionen in den Routeneinstellungen"
+},
+"avoidCountriesTitle": "Länder vermeiden",
+"@avoidCountriesTitle": {
+
+"description": "Titel der Zeile Zu vermeidende Länder in den Routeneinstellungen"
+},
+"avoidRoadFeaturesTitle": "Straßenmerkmale vermeiden",
+"@avoidRoadFeaturesTitle": {
+"description": "Titel der Zeile Zu vermeidende Straßenmerkmale in den Routeneinstellungen"
+},
+"backgroundPositioningWarning": "Die Positionierung ist für die Hintergrundverarbeitung nicht aktiviert.",
+"@backgroundPositioningWarning": {
+
+"description": "Keine Warnung zu Hintergrundstandortdiensten"
+},
+"batterySaverWarningText": "Der Batteriesparmodus ist aktiviert und kann die Hintergrundnavigation bei gesperrtem Bildschirm beeinträchtigen.",
+"@batterySaverWarningText": {
+"description": "Inhalt der Meldung im Batteriesparmodus-Dialogfeld"
+},
+"byteAbbreviationText": "Bytes",
+
+"@byteAbbreviationText": {
+"description": "Text für die Abkürzung der Bytes"
+},
+"cancelTitle": "Abbrechen",
+"@cancelTitle": {
+"description": "Titel der Schaltfläche Abbrechen"
+},
+"carShuttleTrain": "Autobus-Shuttle",
+"@carShuttleTrain": {
+
+"description": "Vermeiden Sie Straßennamen für Routeneinstellungen"
+},
+"clearPersistentMapStorage": "Persistenten Kartenspeicher löschen",
+"@clearPersistentMapStorage": {
+"description": "Text für die Aktion zum Löschen des persistenten Kartenspeichers"
+},
+"clearPrefetchedCache": "Zwischengespeicherten Cache löschen",
+"@clearPrefetchedCache": {
+
+"description": "Text für die Aktion zum Löschen des vorab geladenen Caches"
+},
+"consentDenied": "Widerrufen",
+"@consentDenied": {
+"description": "Text für verweigerte Zustimmung"
+},
+"consentGranted": "Akzeptiert",
+"@consentGranted": {
+"description": "Text für erteilte Zustimmung"
+
+},
+"continueOnActionRoadText": "Weiter auf '{{0}}'",
+"@continueOnActionRoadText": {
+"description": "Text für die Aktion Weiterfahren"
+},
+"continueOnActionText": "Weiterfahren",
+"@continueOnActionText": {
+"description": "Text für die Aktion Weiterfahren"
+
+},
+"controlledAccessHighway": "Autobahn mit kontrollierter Zufahrt",
+"@controlledAccessHighway": {
+"description": "Name der zu vermeidenden Straßen für Routenpräferenzen"
+},
+"@countryCode": {
+"description": "Ländername"
+},
+"countryCodeAbw": "Aruba",
+"@countryCodeAbw": {
+
+"description": "Ländername"
+},
+"countryCodeAfg": "Afghanistan",
+"@countryCodeAfg": {
+"description": "Ländername"
+},
+"countryCodeAgo": "Angola",
+"@countryCodeAgo": {
+"description": "Ländername"
+},
+
+"countryCodeAia": "Anguilla",
+"@countryCodeAia": {
+"description": "Ländername Titel"
+},
+"countryCodeAla": "Alandinseln",
+"@countryCodeAla": {
+"description": "Ländername Titel"
+},
+"countryCodeAlb": "Albanien",
+"@countryCodeAlb": {
+
+"description": "Ländername Titel"
+},
+"countryCodeAnd": "Andorra",
+"@countryCodeAnd": {
+"description": "Ländername Titel"
+},
+"countryCodeAre": "Vereinigte Arabische Emirate",
+"@countryCodeAre": {
+"description": "Ländername Titel"
+},
+"countryCodeArg": "Argentinien",
+
+"@countryCodeArg": {
+"description": "Ländername Titel"
+},
+"countryCodeArm": "Armenien",
+"@countryCodeArm": {
+"description": "Ländername Titel"
+},
+"countryCodeAsm": "Amerikanisch-Samoa",
+"@countryCodeAsm": {
+"description": "Ländername Titel"
+
+},
+"countryCodeAta": "Antarktis",
+"@countryCodeAta": {
+"description": "Ländername Titel"
+},
+"countryCodeAtf": "Französische Südgebiete",
+"@countryCodeAtf": {
+"description": "Ländername Titel"
+},
+"countryCodeAtg": "Antigua und Barbuda",
+
+"@countryCodeAtg": {
+"description": "Ländername Titel"
+},
+"countryCodeAus": "Australien",
+"@countryCodeAus": {
+"description": "Ländername Titel"
+},
+"countryCodeAut": "Österreich",
+"@countryCodeAut": {
+"description": "Ländername Titel"
+},
+
+"countryCodeAze": "Aserbaidschan",
+"@countryCodeAze": {
+"description": "Ländername Titel"
+},
+"countryCodeBdi": "Burundi",
+"@countryCodeBdi": {
+"description": "Ländername Titel"
+},
+"countryCodeBel": "Belgien",
+"@countryCodeBel": {
+
+"description": "Ländername Titel"
+},
+"countryCodeBen": "Benin",
+"@countryCodeBen": {
+"description": "Ländername Titel"
+},
+"countryCodeBes": "Bonaire, Sint Eustatius und Saba",
+"@countryCodeBes": {
+"description": "Ländername Titel"
+},
+
+"countryCodeBfa": "Burkina Faso",
+"@countryCodeBfa": {
+"description": "Ländername Titel"
+},
+"countryCodeBgd": "Bangladesch",
+"@countryCodeBgd": {
+"description": "Ländername Titel"
+},
+"countryCodeBgr": "Bulgarien",
+
+"@countryCodeBgr": {
+"description": "Ländername Titel"
+},
+"countryCodeBhr": "Bahrain",
+"@countryCodeBhr": {
+"description": "Ländername Titel"
+},
+"countryCodeBhs": "Bahamas",
+"@countryCodeBhs": {
+"description": "Ländername Titel"
+
+},
+"countryCodeBih": "Bosnien und Herzegowina",
+"@countryCodeBih": {
+"description": "Ländername Titel"
+},
+"countryCodeBlm": "Saint-Barthélemy",
+"@countryCodeBlm": {
+"description": "Ländername Titel"
+},
+"countryCodeBlr": "Weißrussland",
+
+"@countryCodeBlr": {
+"description": "Ländername Titel"
+},
+"countryCodeBlz": "Belize",
+"@countryCodeBlz": {
+"description": "Ländername Titel"
+},
+"countryCodeBmu": "Bermuda",
+"@countryCodeBmu": {
+"description": "Ländername Titel"
+
+},
+"countryCodeBol": "Bolivien (Plurinationaler Staat)",
+"@countryCodeBol": {
+"description": "Ländername Titel"
+},
+"countryCodeBra": "Brasilien",
+"@countryCodeBra": {
+"description": "Ländername Titel"
+},
+"countryCodeBrb": "Barbados",
+
+"@countryCodeBrb": {
+"description": "Ländername Titel"
+},
+"countryCodeBrn": "Brunei Darussalam",
+"@countryCodeBrn": {
+"description": "Ländername Titel"
+},
+"countryCodeBtn": "Bhutan",
+"@countryCodeBtn": {
+
+"description": "Ländername Titel"
+},
+"countryCodeBvt": "Bouvetinsel",
+"@countryCodeBvt": {
+"description": "Ländername Titel"
+},
+"countryCodeBwa": "Botswana",
+"@countryCodeBwa": {
+"description": "Ländername Titel"
+},
+
+"countryCodeCaf": "Zentralafrikanische Republik",
+"@countryCodeCaf": {
+"description": "Ländername Titel"
+},
+"countryCodeCan": "Kanada",
+"@countryCodeCan": {
+"description": "Ländername Titel"
+},
+"countryCodeCck": "Kokosinseln (Keelinginseln)",
+
+"@countryCodeCck": {
+"description": "Ländername Titel"
+},
+"countryCodeChe": "Schweiz",
+"countryCodeChl": "Chile",
+"@countryCodeChl": {
+"description": "Ländername Titel"
+},
+"countryCodeChn": "China",
+"@countryCodeChn": {
+
+"description": "Ländername Titel"
+},
+"countryCodeCiv": "Cote D''ivoire",
+"@countryCodeCiv": {
+"description": "Ländername Titel"
+},
+"countryCodeCmr": "Kamerun",
+"@countryCodeCmr": {
+"description": "Ländername Titel"
+},
+
+"countryCodeCod": "Demokratische Republik Kongo",
+"@countryCodeCod": {
+"description": "Ländername Titel"
+},
+"countryCodeCog": "Kongo",
+"@countryCodeCog": {
+"description": "Ländername Titel"
+},
+"countryCodeCok": "Cookinseln",
+
+"@countryCodeCok": {
+"description": "Ländername Titel"
+},
+"countryCodeCol": "Kolumbien",
+"@countryCodeCol": {
+"description": "Ländername Titel"
+},
+"countryCodeCom": "Komoren",
+"@countryCodeCom": {
+"description": "Ländername Titel"
+
+},
+"countryCodeCpv": "Cabo Verde",
+"@countryCodeCpv": {
+"description": "Ländername Titel"
+},
+"countryCodeCri": "Costa Rica",
+"@countryCodeCri": {
+"description": "Ländername Titel"
+},
+"countryCodeCub": "Cuba",
+
+"@countryCodeCub": {
+"description": "Ländername Titel"
+},
+"countryCodeCuw": "Curacao",
+"@countryCodeCuw": {
+"description": "Ländername Titel"
+},
+"countryCodeCxr": "Christmas Island",
+"@countryCodeCxr": {
+"description": "Ländername Titel"
+
+},
+"countryCodeCym": "Cayman Islands",
+"@countryCodeCym": {
+"description": "Country name title"
+},
+"countryCodeCyp": "Cyprus",
+"@countryCodeCyp": {
+"description": "Country name title"
+},
+"countryCodeCze": "Czechia",
+
+"@countryCodeCze": {
+"description": "Ländername Titel"
+},
+"countryCodeDeu": "Deutschland",
+"@countryCodeDeu": {
+"description": "Ländername Titel"
+},
+"countryCodeDji": "Dschibuti",
+"@countryCodeDji": {
+"description": "Ländername Titel"
+
+},
+"countryCodeDma": "Dominica",
+"@countryCodeDma": {
+"description": "Ländername Titel"
+},
+"countryCodeDnk": "Denmark",
+"@countryCodeDnk": {
+"description": "Ländername Titel"
+},
+"countryCodeDom": "Dominican Republic",
+
+"@countryCodeDom": {
+"description": "Ländername Titel"
+},
+"countryCodeDza": "Algerien",
+"@countryCodeDza": {
+"description": "Ländername Titel"
+},
+"countryCodeEcu": "Ecuador",
+"@countryCodeEcu": {
+"description": "Ländername Titel"
+
+},
+"countryCodeEgy": "Ägypten",
+"@countryCodeEgy": {
+"description": "Ländername Titel"
+},
+"countryCodeEri": "Eritrea",
+"@countryCodeEri": {
+"description": "Ländername Titel"
+},
+"countryCodeEsh": "Westsahara",
+
+"@countryCodeEsh": {
+"description": "Ländername Titel"
+},
+"countryCodeEsp": "Spanien",
+"@countryCodeEsp": {
+"description": "Ländername Titel"
+},
+"countryCodeEst": "Estland",
+"@countryCodeEst": {
+"description": "Ländername Titel"
+},
+
+"countryCodeEth": "Äthiopien",
+"@countryCodeEth": {
+"description": "Ländername Titel"
+},
+"countryCodeFin": "Finnland",
+"@countryCodeFin": {
+"description": "Ländername Titel"
+},
+"countryCodeFji": "Fidschi",
+"@countryCodeFji": {
+
+"description": "Ländername Titel"
+},
+"countryCodeFlk": "Falklandinseln (Malvinas)",
+"@countryCodeFlk": {
+"description": "Ländername Titel"
+},
+"countryCodeFra": "Frankreich",
+"@countryCodeFra": {
+"description": "Ländername Titel"
+},
+
+"countryCodeFro": "Färöer-Inseln",
+"@countryCodeFro": {
+"description": "Ländername Titel"
+},
+"countryCodeFsm": "Mikronesien (Föderierte Staaten von)",
+"@countryCodeFsm": {
+"description": "Ländername Titel"
+},
+"countryCodeGab": "Gabun",
+
+"@countryCodeGab": {
+"description": "Ländername"
+},
+"countryCodeGbr": "Vereinigtes Königreich Großbritannien und Nordirland",
+"@countryCodeGbr": {
+"description": "Ländername"
+},
+"countryCodeGeo": "Georgien",
+"@countryCodeGeo": {
+
+"description": "Ländername Titel"
+},
+"countryCodeGgy": "Guernsey",
+"@countryCodeGgy": {
+"description": "Ländername Titel"
+},
+"countryCodeGha": "Ghana",
+"@countryCodeGha": {
+"description": "Ländername Titel"
+},
+
+"countryCodeGib": "Gibraltar",
+"@countryCodeGib": {
+"description": "Ländername Titel"
+},
+"countryCodeGin": "Guinea",
+"@countryCodeGin": {
+"description": "Ländername Titel"
+},
+"countryCodeGlp": "Guadeloupe",
+"@countryCodeGlp": {
+
+"description": "Ländername Titel"
+},
+"countryCodeGmb": "Gambia",
+"@countryCodeGmb": {
+"description": "Ländername Titel"
+},
+"countryCodeGnb": "Guinea-Bissau",
+"@countryCodeGnb": {
+"description": "Ländername Titel"
+
+},
+"countryCodeGnq": "Äquatorialguinea",
+"@countryCodeGnq": {
+"description": "Ländername Titel"
+},
+"countryCodeGrc": "Griechenland",
+"@countryCodeGrc": {
+"description": "Ländername Titel"
+},
+"countryCodeGrd": "Grenada",
+
+"@countryCodeGrd": {
+"description": "Ländername Titel"
+},
+"countryCodeGrl": "Grönland",
+"@countryCodeGrl": {
+"description": "Ländername Titel"
+},
+"countryCodeGtm": "Guatemala",
+"@countryCodeGtm": {
+"description": "Ländername Titel"
+
+},
+"countryCodeGuf": "Französisch-Guayana",
+"@countryCodeGuf": {
+"description": "Ländername Titel"
+},
+"countryCodeGum": "Guam",
+"@countryCodeGum": {
+"description": "Ländername Titel"
+},
+"countryCodeGuy": "Guyana",
+
+"@countryCodeGuy": {
+"description": "Ländername Titel"
+},
+"countryCodeHkg": "Hongkong",
+"@countryCodeHkg": {
+"description": "Ländername Titel"
+},
+"countryCodeHmd": "Heard-Inseln und McDonald-Inseln",
+"@countryCodeHmd": {
+"description": "Ländername Titel"
+},
+"countryCodeHnd": "Honduras",
+"@countryCodeHnd": {
+"description": "Ländername Titel"
+},
+"countryCodeHrv": "Kroatien",
+"@countryCodeHrv": {
+"description": "Ländername Titel"
+},
+"countryCodeHti": "Haiti",
+
+"@countryCodeHti": {
+"description": "Ländername Titel"
+},
+"countryCodeHun": "Ungarn",
+"@countryCodeHun": {
+"description": "Ländername Titel"
+},
+"countryCodeIdn": "Indonesien",
+"@countryCodeIdn": {
+"description": "Ländername Titel"
+},
+
+"countryCodeImn": "Isle Of Man",
+"@countryCodeImn": {
+"description": "Ländername Titel"
+},
+"countryCodeInd": "Indien",
+"@countryCodeInd": {
+"description": "Ländername Titel"
+},
+"countryCodeIot": "Britisches Territorium im Indischen Ozean",
+"@countryCodeIot": {
+
+"description": "Ländername Titel"
+},
+"countryCodeIrl": "Irland",
+"@countryCodeIrl": {
+"description": "Ländername Titel"
+},
+"countryCodeIrn": "Iran (Islamische Republik)",
+"@countryCodeIrn": {
+"description": "Ländername Titel"
+},
+
+"countryCodeIrq": "Irak",
+"@countryCodeIrq": {
+"description": "Ländername Titel"
+},
+"countryCodeIsl": "Island",
+"@countryCodeIsl": {
+"description": "Ländername Titel"
+},
+"countryCodeIsr": "Israel",
+
+"@countryCodeIsr": {
+"description": "Ländername Titel"
+},
+"countryCodeIta": "Italien",
+"@countryCodeIta": {
+"description": "Ländername Titel"
+},
+"countryCodeJam": "Jamaika",
+"@countryCodeJam": {
+"description": "Ländername Titel"
+},
+
+"countryCodeJey": "Jersey",
+"@countryCodeJey": {
+"description": "Ländername Titel"
+},
+"countryCodeJor": "Jordanien",
+"@countryCodeJor": {
+"description": "Ländername Titel"
+},
+"countryCodeJpn": "Japan",
+"@countryCodeJpn": {
+
+"description": "Ländername Titel"
+},
+"countryCodeKaz": "Kasachstan",
+"@countryCodeKaz": {
+"description": "Ländername Titel"
+},
+"countryCodeKen": "Kenia",
+"@countryCodeKen": {
+"description": "Ländername Titel"
+},
+
+"countryCodeKgz": "Kirgisistan",
+"@countryCodeKgz": {
+"description": "Ländername Titel"
+},
+"countryCodeKhm": "Kambodscha",
+"@countryCodeKhm": {
+"description": "Ländername Titel"
+},
+"countryCodeKir": "Kiribati",
+
+"@countryCodeKir": {
+"description": "Ländername Titel"
+},
+"countryCodeKna": "St. Kitts und Nevis",
+"@countryCodeKna": {
+"description": "Ländername Titel"
+},
+"countryCodeKor": "Korea, Republik",
+"@countryCodeKor": {
+"description": "Ländername Titel"
+
+},
+"countryCodeKwt": "Kuwait",
+"@countryCodeKwt": {
+"description": "Ländername Titel"
+},
+"countryCodeLao": "Lao People''s Democratic Republic",
+"@countryCodeLao": {
+"description": "Ländername Titel"
+},
+"countryCodeLbn": "Lebanon",
+
+"@countryCodeLbn": {
+"description": "Ländername Titel"
+},
+"countryCodeLbr": "Liberia",
+"@countryCodeLbr": {
+"description": "Ländername Titel"
+},
+"countryCodeLby": "Libyen",
+"@countryCodeLby": {
+"description": "Ländername Titel"
+
+},
+"countryCodeLca": "Saint Lucia",
+"@countryCodeLca": {
+"description": "Ländername Titel"
+},
+"countryCodeLie": "Liechtenstein",
+"@countryCodeLie": {
+"description": "Ländername Titel"
+},
+"countryCodeLka": "Sri Lanka",
+
+"@countryCodeLka": {
+"description": "Ländername Titel"
+},
+"countryCodeLso": "Lesotho",
+"@countryCodeLso": {
+"description": "Ländername Titel"
+},
+"countryCodeLtu": "Litauen",
+"@countryCodeLtu": {
+"description": "Ländername Titel"
+
+},
+"countryCodeLux": "Luxemburg",
+"@countryCodeLux": {
+"description": "Ländername Titel"
+},
+"countryCodeLva": "Lettland",
+"@countryCodeLva": {
+"description": "Ländername Titel"
+},
+"countryCodeMac": "Macao",
+"@countryCodeMac": {
+
+"description": "Ländername Titel"
+},
+"countryCodeMaf": "Saint Martin (französischer Teil)",
+"@countryCodeMaf": {
+"description": "Ländername Titel"
+},
+"countryCodeMar": "Marokko",
+"@countryCodeMar": {
+"description": "Ländername Titel"
+},
+
+"countryCodeMco": "Monaco",
+"@countryCodeMco": {
+"description": "Ländername Titel"
+},
+"countryCodeMda": "Moldawien, Republik",
+"@countryCodeMda": {
+"description": "Ländername Titel"
+},
+"countryCodeMdg": "Madagaskar",
+
+"@countryCodeMdg": {
+"description": "Ländername Titel"
+},
+"countryCodeMdv": "Malediven",
+"@countryCodeMdv": {
+"description": "Ländername Titel"
+},
+"countryCodeMex": "Mexiko",
+"@countryCodeMex": {
+"description": "Ländername Titel"
+
+},
+"countryCodeMhl": "Marshallinseln",
+"@countryCodeMhl": {
+"description": "Ländername Titel"
+},
+"countryCodeMkd": "Nordmazedonien",
+"@countryCodeMkd": {
+"description": "Ländername Titel"
+},
+"countryCodeMli": "Mali",
+
+"@countryCodeMli": {
+"description": "Ländername Titel"
+},
+"countryCodeMlt": "Malta",
+"@countryCodeMlt": {
+"description": "Ländername Titel"
+},
+"countryCodeMmr": "Myanmar",
+"@countryCodeMmr": {
+"description": "Ländername Titel"
+
+},
+"countryCodeMne": "Montenegro",
+"@countryCodeMne": {
+"description": "Ländername Titel"
+},
+"countryCodeMng": "Mongolei",
+"@countryCodeMng": {
+"description": "Ländername Titel"
+},
+"countryCodeMnp": "Nördliche Marianen",
+
+"@countryCodeMnp": {
+"description": "Ländername Titel"
+},
+"countryCodeMoz": "Mosambik",
+"@countryCodeMoz": {
+"description": "Ländername Titel"
+},
+"countryCodeMrt": "Mauretanien",
+"@countryCodeMrt": {
+"description": "Ländername Titel"
+
+},
+"countryCodeMsr": "Montserrat",
+"@countryCodeMsr": {
+"description": "Ländername Titel"
+},
+"countryCodeMtq": "Martinique",
+"@countryCodeMtq": {
+"description": "Ländername Titel"
+},
+"countryCodeMus": "Mauritius",
+
+"@countryCodeMus": {
+"description": "Ländername Titel"
+},
+"countryCodeMwi": "Malawi",
+"@countryCodeMwi": {
+"description": "Ländername Titel"
+},
+"countryCodeMys": "Malaysia",
+"@countryCodeMys": {
+"description": "Ländername Titel"
+
+},
+"countryCodeMyt": "Mayotte",
+"@countryCodeMyt": {
+"description": "Ländername Titel"
+},
+"countryCodeNam": "Namibia",
+"@countryCodeNam": {
+"description": "Ländername Titel"
+},
+"countryCodeNcl": "Neukaledonien",
+
+"@countryCodeNcl": {
+"description": "Ländername Titel"
+},
+"countryCodeNer": "Niger",
+"@countryCodeNer": {
+"description": "Ländername Titel"
+},
+"countryCodeNfk": "Norfolkinsel",
+"@countryCodeNfk": {
+"description": "Ländername Titel"
+
+},
+"countryCodeNga": "Nigeria",
+"@countryCodeNga": {
+"description": "Ländername Titel"
+},
+"countryCodeNic": "Nicaragua",
+"@countryCodeNic": {
+"description": "Ländername Titel"
+},
+"countryCodeNiu": "Niue",
+
+"@countryCodeNiu": {
+"description": "Ländername Titel"
+},
+"countryCodeNld": "Niederlande",
+"@countryCodeNld": {
+"description": "Ländername Titel"
+},
+"countryCodeNor": "Norwegen",
+"@countryCodeNor": {
+"description": "Ländername Titel"
+},
+
+"countryCodeNpl": "Nepal",
+"@countryCodeNpl": {
+"description": "Ländername Titel"
+},
+"countryCodeNru": "Nauru",
+"@countryCodeNru": {
+"description": "Ländername Titel"
+},
+"countryCodeNzl": "Neuseeland",
+
+"@countryCodeNzl": {
+"description": "Ländername Titel"
+},
+"countryCodeOmn": "Oman",
+"@countryCodeOmn": {
+"description": "Ländername Titel"
+},
+"countryCodePak": "Pakistan",
+"@countryCodePak": {
+"description": "Ländername Titel"
+},
+
+"countryCodePan": "Panama",
+"@countryCodePan": {
+"description": "Ländername Titel"
+},
+"countryCodePcn": "Pitcairn",
+"@countryCodePcn": {
+"description": "Ländername Titel"
+},
+"countryCodePer": "Peru",
+"@countryCodePer": {
+
+"description": "Ländername Titel"
+},
+"countryCodePhl": "Philippinen",
+"@countryCodePhl": {
+"description": "Ländername Titel"
+},
+"countryCodePlw": "Palau",
+"@countryCodePlw": {
+"description": "Ländername Titel"
+},
+
+"countryCodePng": "Papua-Neuguinea",
+"@countryCodePng": {
+"description": "Ländername Titel"
+},
+"countryCodePol": "Polen",
+"@countryCodePol": {
+"description": "Ländername Titel"
+},
+"countryCodePri": "Puerto Rico",
+"@countryCodePri": {
+
+"description": "Ländername Titel"
+},
+"countryCodePrk": "Korea (Demokratische Volksrepublik)",
+"@countryCodePrk": {
+"description": "Ländername Titel"
+},
+"countryCodePrt": "Portugal",
+"@countryCodePrt": {
+"description": "Ländername Titel"
+
+},
+"countryCodePry": "Paraguay",
+"@countryCodePry": {
+"description": "Ländernamen-Titel"
+},
+"countryCodePse": "Palästina, Staat",
+"@countryCodePse": {
+"description": "Ländernamen-Titel"
+},
+"countryCodePyf": "Französisch-Polynesien",
+
+"@countryCodePyf": {
+"description": "Ländername Titel"
+},
+"countryCodeQat": "Katar",
+"@countryCodeQat": {
+"description": "Ländername Titel"
+},
+"countryCodeReu": "Réunion",
+"@countryCodeReu": {
+"description": "Ländername Titel"
+
+},
+"countryCodeRou": "Rumänien",
+"@countryCodeRou": {
+"description": "Ländername Titel"
+},
+"countryCodeRus": "Russische Föderation",
+"@countryCodeRus": {
+"description": "Ländername Titel"
+},
+"countryCodeRwa": "Ruanda",
+"@countryCodeRwa": {
+
+"description": "Ländername Titel"
+},
+"countryCodeSau": "Saudi-Arabien",
+"@countryCodeSau": {
+"description": "Ländername Titel"
+},
+"countryCodeSdn": "Sudan",
+"@countryCodeSdn": {
+"description": "Ländername Titel"
+},
+
+"countryCodeSen": "Senegal",
+"@countryCodeSen": {
+"description": "Ländername Titel"
+},
+"countryCodeSgp": "Singapur",
+"@countryCodeSgp": {
+"description": "Ländername Titel"
+},
+"countryCodeSgs": "Südgeorgien und die Südlichen Sandwichinseln",
+
+"@countryCodeSgs": {
+"description": "Ländername Titel"
+},
+"countryCodeShn": "St. Helena, Ascension und Tristan da Cunha",
+"@countryCodeShn": {
+"description": "Ländername Titel"
+},
+"countryCodeSjm": "Svalbard und Jan Mayen",
+
+"@countryCodeSjm": {
+"description": "Ländername Titel"
+},
+"countryCodeSlb": "Salomonen",
+"@countryCodeSlb": {
+"description": "Ländername Titel"
+},
+"countryCodeSle": "Sierra Leone",
+"@countryCodeSle": {
+"description": "Ländername Titel"
+
+},
+"countryCodeSlv": "El Salvador",
+"@countryCodeSlv": {
+"description": "Ländername Titel"
+},
+"countryCodeSmr": "San Marino",
+"@countryCodeSmr": {
+"description": "Ländername Titel"
+},
+"countryCodeSom": "Somalia",
+"@countryCodeSom": {
+
+"description": "Ländername Titel"
+},
+"countryCodeSpm": "Saint Pierre und Miquelon",
+"@countryCodeSpm": {
+"description": "Ländername Titel"
+},
+"countryCodeSrb": "Serbien",
+"@countryCodeSrb": {
+"description": "Ländername Titel"
+},
+
+"countryCodeSsd": "Südsudan",
+"@countryCodeSsd": {
+"description": "Ländername Titel"
+},
+"countryCodeStp": "São Tomé und Príncipe",
+"@countryCodeStp": {
+"description": "Ländername Titel"
+
+},
+"countryCodeSur": "Suriname",
+"@countryCodeSur": {
+"description": "Ländername Titel"
+},
+"countryCodeSvk": "Slowakei",
+"@countryCodeSvk": {
+"description": "Ländername Titel"
+},
+"countryCodeSvn": "Slowenien",
+
+"@countryCodeSvn": {
+"description": "Ländername Titel"
+},
+"countryCodeSwe": "Schweden",
+"@countryCodeSwe": {
+"description": "Ländername Titel"
+},
+"countryCodeSwz": "Eswatini",
+"@countryCodeSwz": {
+"description": "Ländername Titel"
+
+},
+"countryCodeSxm": "Sint Maarten (niederländischer Teil)",
+"@countryCodeSxm": {
+"description": "Ländername Titel"
+},
+"countryCodeSyc": "Seychellen",
+"@countryCodeSyc": {
+"description": "Ländername Titel"
+},
+
+"countryCodeSyr": "Syrian Arab Republic",
+"@countryCodeSyr": {
+"description": "Ländername"
+},
+"countryCodeTca": "Turks And Caicos Islands",
+"@countryCodeTca": {
+"description": "Ländername"
+},
+"countryCodeTcd": "Chad",
+
+"@countryCodeTcd": {
+"description": "Ländername Titel"
+},
+"countryCodeTgo": "Togo",
+"@countryCodeTgo": {
+"description": "Ländername Titel"
+},
+"countryCodeTha": "Thailand",
+"@countryCodeTha": {
+"description": "Ländername Titel"
+
+},
+"countryCodeTjk": "Tadschikistan",
+"@countryCodeTjk": {
+"description": "Ländername Titel"
+},
+"countryCodeTkl": "Tokelau",
+"@countryCodeTkl": {
+"description": "Ländername Titel"
+},
+"countryCodeTkm": "Turkmenistan",
+
+"@countryCodeTkm": {
+"description": "Ländername Titel"
+},
+"countryCodeTls": "Timor-leste",
+"@countryCodeTls": {
+"description": "Ländername Titel"
+},
+"countryCodeTon": "Tonga",
+"@countryCodeTon": {
+"description": "Ländername Titel"
+
+},
+"countryCodeTto": "Trinidad und Tobago",
+"@countryCodeTto": {
+"description": "Ländername Titel"
+},
+"countryCodeTun": "Tunesien",
+"@countryCodeTun": {
+"description": "Ländername Titel"
+},
+"countryCodeTur": "Türkei",
+
+"@countryCodeTur": {
+"description": "Ländername Titel"
+},
+"countryCodeTuv": "Tuvalu",
+"@countryCodeTuv": {
+"description": "Ländername Titel"
+},
+"countryCodeTwn": "Taiwan, Provinz Chinas",
+"@countryCodeTwn": {
+"description": "Ländername Titel"
+
+},
+"countryCodeTza": "Tansania, Vereinigte Republik",
+"@countryCodeTza": {
+"description": "Ländername Titel"
+},
+"countryCodeUga": "Uganda",
+"@countryCodeUga": {
+"description": "Ländername Titel"
+},
+
+"countryCodeUkr": "Ukraine",
+"@countryCodeUkr": {
+"description": "Ländername Titel"
+},
+"countryCodeUmi": "United States Minor Outlying Islands",
+"@countryCodeUmi": {
+"description": "Ländername Titel"
+},
+"countryCodeUry": "Uruguay",
+
+"@countryCodeUry": {
+"description": "Ländername Titel"
+},
+"countryCodeUsa": "Vereinigte Staaten von Amerika",
+"@countryCodeUsa": {
+"description": "Ländername Titel"
+},
+"countryCodeUzb": "Usbekistan",
+"@countryCodeUzb": {
+"description": "Ländername Titel"
+
+},
+"countryCodeVat": "Heiliger Stuhl",
+"@countryCodeVat": {
+"description": "Ländername Titel"
+},
+"countryCodeVct": "St. Vincent und die Grenadinen",
+"@countryCodeVct": {
+"description": "Ländername Titel"
+},
+
+"countryCodeVen": "Venezuela (bolivarische Republik)",
+"@countryCodeVen": {
+"description": "Ländername Titel"
+},
+"countryCodeVgb": "Jungferninseln (britisch)",
+"@countryCodeVgb": {
+"description": "Ländername Titel"
+},
+
+"countryCodeVir": "Virgin Islands (u.s.)",
+"@countryCodeVir": {
+"description": "Ländername Titel"
+},
+"countryCodeVnm": "Viet Nam",
+"@countryCodeVnm": {
+"description": "Ländername Titel"
+},
+"countryCodeVut": "Vanuatu",
+
+"@countryCodeVut": {
+"description": "Ländername Titel"
+},
+"countryCodeWlf": "Wallis und Futuna",
+"@countryCodeWlf": {
+"description": "Ländername Titel"
+},
+"countryCodeWsm": "Samoa",
+"@countryCodeWsm": {
+
+"description": "Ländername Titel"
+},
+"countryCodeYem": "Jemen",
+"@countryCodeYem": {
+"description": "Ländername Titel"
+},
+"countryCodeZaf": "Südafrika",
+"@countryCodeZaf": {
+"description": "Ländername Titel"
+},
+
+"countryCodeZmb": "Sambia",
+"@countryCodeZmb": {
+"description": "Ländername Titel"
+},
+"countryCodeZwe": "Simbabwe",
+"@countryCodeZwe": {
+"description": "Ländername Titel"
+},
+"dateTimeFormat": "dd/MM/yyyy, hh:mm a",
+
+"@dateTimeFormat": {
+"description": "Datums- und Zeitformat"
+},
+"defaultLocationTitle": "Standardort",
+"@defaultLocationTitle": {
+"description": "Standardorttitel"
+},
+"deleteMapOptionTitle": "Karte löschen",
+"@deleteMapOptionTitle": {
+"description": "Titel der Option zum Löschen der Karte"
+
+},
+"departActionRoadText": "Start bei '{{0}}'",
+"@departActionRoadText": {
+"description": "Text für die Abfahrtsaktion"
+},
+"departActionText": "Start",
+"@departActionText": {
+"description": "Text für die Abfahrtsaktion"
+},
+
+"departureTimeTitle": "Abfahrtszeit",
+"@departureTimeTitle": {
+"description": "Titel der Abfahrtszeiteinstellung in den Routenoptionen"
+},
+"dirtRoad": "Unbefestigte Straße",
+"@dirtRoad": {
+"description": "Name des zu vermeidenden Straßenmerkmals für Routeneinstellungen"
+},
+"doneTitle": "Fertig",
+
+"@doneTitle": {
+"description": "Titel der Schaltfläche Fertig"
+},
+"downloadedMapOptionsTitle": "Optionen",
+"@downloadedMapOptionsTitle": {
+"description": "Titel der Optionen für heruntergeladene Karten"
+},
+"downloadedMapsTitle": "HERUNTERGELADEN",
+"@downloadedMapsTitle": {
+
+"description": "Titel der Liste der heruntergeladenen Karten"
+},
+"downloadMapsButtonTitle": "Karten herunterladen",
+"@downloadMapsButtonTitle": {
+"description": "Text für die Schaltfläche zum Herunterladen von Karten"
+},
+"downloadMapsErrorText": "Karten-Download fehlgeschlagen mit Fehler: '{{error}}'",
+"@downloadMapsErrorText": {
+
+"description": "Fehlermeldung beim Herunterladen der Karte"
+},
+"downloadMapsTitle": "Karten herunterladen",
+"@downloadMapsTitle": {
+"description": "Text für das Menü zum Herunterladen von Karten"
+},
+"eatAndDrinkTitle": "Essen und Trinken",
+"@eatAndDrinkTitle": {
+
+"description": "Text für die Kategorie Essen und Trinken"
+},
+"enterHighwayFromLeftActionText": "Von links auf die Autobahn auffahren",
+"enterHighwayFromRightActionText": "Von rechts auf die Autobahn auffahren",
+"errorAuthenticationFailed": "Authentifizierung fehlgeschlagen. Bitte überprüfen Sie Ihre Anmeldedaten",
+"@errorAuthenticationFailed": {
+
+"description": "Text für die fehlgeschlagene Authentifizierung"
+},
+"errorMapLoaderErrorOccurred": "Ein Fehler beim Laden der Karte ist aufgetreten",
+"@errorMapLoaderErrorOccurred": {
+"description": "Text für den Fehler beim Laden der Karte"
+},
+"errorMapLoaderErrorOccurredPleaseTryAgain": "Ein Fehler beim Laden der Karte ist aufgetreten, bitte versuchen Sie es erneut",
+
+"@errorMapLoaderErrorOccurredPleaseTryAgain": {
+"description": "Text für den Map-Loader, bitte versuchen Sie es erneut"
+},
+"errorMapLoaderErrorPerformMigration": "Rufen Sie MapDownloader.repairPersistentMap auf, um die Migration durchzuführen",
+"@errorMapLoaderErrorPerformMigration": {
+"description": "Text für den Map-Loader-Fehler im Zusammenhang mit der Migration"
+
+},
+"errorNetworkIssueOccurred": "Ein Netzwerkproblem ist aufgetreten",
+"@errorNetworkIssueOccurred": {
+"description": "Text für das Netzwerkproblem"
+},
+"errorNoResultFound": "Für die angegebene Eingabe wurde kein Ergebnis gefunden",
+"@errorNoResultFound": {
+"description": "Text für Für die angegebene Eingabe wurde kein Ergebnis gefunden"
+
+},
+"errorRoutingFailed": "Routing fehlgeschlagen",
+"@errorRoutingFailed": {
+"description": "Text für den Routing-Fehler"
+},
+"errorRoutingFailedPleaseTryAgain": "Routing fehlgeschlagen, bitte versuchen Sie es erneut",
+"@errorRoutingFailedPleaseTryAgain": {
+"description": "Text für den Routing-Fehler mit der Aufforderung, es erneut zu versuchen"
+
+},
+"errorSearchFailed": "Suche fehlgeschlagen",
+"@errorSearchFailed": {
+"description": "Text für den Suchfehler"
+},
+"errorSearchFailedPleaseTryAgain": "Suche fehlgeschlagen, bitte versuchen Sie es erneut",
+"@errorSearchFailedPleaseTryAgain": {
+"description": "Text für den Suchfehler mit Bitte versuchen Sie es erneut"
+
+},
+"fastestRouteTitle": "Schnellste Route",
+"@fastestRouteTitle": {
+"description": "Titel des Modus für die schnellste Route"
+},
+"ferry": "Fähre",
+"@ferry": {
+"description": "Name des zu vermeidenden Straßenelements für Routeneinstellungen"
+},
+
+"ferryActionNextRoadText": "Nehmen Sie die Fähre nach '{{0}}'",
+"@ferryActionNextRoadText": {
+"description": "Text für die Fährmanöveraktion"
+},
+"ferryActionText": "Nehmen Sie die Fähre",
+"@ferryActionText": {
+"description": "Text für die Fährmanöveraktion"
+},
+
+"fuelingStationsTitle": "Tankstellen",
+"@fuelingStationsTitle": {
+"description": "Text für die Ortskategorie Tankstellen"
+},
+"gigabyteAbbreviationText": "GB",
+"@gigabyteAbbreviationText": {
+"description": "Text für die Abkürzung für Gigabyte"
+
+},
+"hazardousGoodsCombustible": "Brennbar",
+"@hazardousGoodsCombustible": {
+"description": "Brennbare Gefahrengüter"
+},
+"hazardousGoodsCorrosive": "Ätzend",
+"@hazardousGoodsCorrosive": {
+"description": "Ätzende Gefahrengüter"
+
+},
+"hazardousGoodsExplosive": "Explosiv",
+"@hazardousGoodsExplosive": {
+"description": "Explosive Gefahrengüter"
+},
+"hazardousGoodsFlammable": "Entzündlich",
+"@hazardousGoodsFlammable": {
+
+"description": "Gefahrengut entzündlich"
+},
+"hazardousGoodsGas": "Gas",
+"@hazardousGoodsGas": {
+"description": "Gefahrengut gasförmig"
+},
+"hazardousGoodsHarmfulToWater": "Wassergefährdend",
+
+"@hazardousGoodsHarmfulToWater": {
+"description": "Gefährliche Güter, wassergefährdend"
+},
+"hazardousGoodsOrganic": "Organisch",
+"@hazardousGoodsOrganic": {
+"description": "Gefährliche Güter organisch"
+},
+"hazardousGoodsOther": "Sonstige",
+
+"@hazardousGoodsOther": {
+"description": "Sonstige gefährliche Güter"
+},
+"hazardousGoodsPoison": "Gift",
+"@hazardousGoodsPoison": {
+"description": "Gefährliche Güter – giftig"
+},
+"hazardousGoodsPoisonousInhalation": "Einatmen giftig",
+
+"@hazardousGoodsPoisonousInhalation": {
+"description": "Gefahrengut giftig beim Einatmen"
+},
+"hazardousGoodsRadioactive": "Radioaktiv",
+"@hazardousGoodsRadioactive": {
+"description": "Gefahrengut radioaktiv"
+},
+
+"hazardousGoodsTitle": "Gefahrengut",
+"@hazardousGoodsTitle": {
+"description": "Zeile mit den Einstellungen für Gefahrengut für Lkw"
+},
+"highwayTitle": "Autobahn",
+"@highwayTitle": {
+"description": "Abschnitt mit den Routeneinstellungen"
+},
+"hourAbbreviationText": "h",
+
+"@hourAbbreviationText": {
+"description": "Text für die Abkürzung der Stunde"
+},
+"incompleteDownloadMessage": "Download nicht abgeschlossen",
+"@incompleteDownloadMessage": {
+"description": "Text bedeutet, dass der Download nicht abgeschlossen ist"
+},
+"internalStorageText": "Interner Speicher",
+"@internalStorageText": {
+
+"description": "Text für die Beschriftung des internen Speichers"
+},
+"kilobyteAbbreviationText": "KB",
+"@kilobyteAbbreviationText": {
+"description": "Text für die Abkürzung der Kilobyte"
+},
+"kilometerAbbreviationText": "km",
+"@kilometerAbbreviationText": {
+
+"description": "Text für die Abkürzung von Kilometern"
+},
+"kmhAbbreviationText": "km/h",
+"@kmhAbbreviationText": {
+"description": "Text für die Abkürzung von Kilometern pro Stunde"
+},
+"languageCodeArSa": "Arabisch (Saudi-Arabien)",
+"@languageCodeArSa": {
+
+"description": "Sprachcode für Arabisch (Saudi-Arabien)"
+},
+"languageCodeDeDe": "Deutsch",
+"@languageCodeDeDe": {
+"description": "Sprachcode für Deutsch"
+},
+"languageCodeEnUs": "Englisch (Vereinigte Staaten)",
+"@languageCodeEnUs": {
+"description": "Sprachcode für Englisch (Vereinigte Staaten)"
+
+},
+"languageCodeEsEs": "Spanisch (Spanien)",
+"@languageCodeEsEs": {
+"description": "Sprachcode für Spanisch (Spanien)"
+},
+"languageCodeFrFr": "Französisch",
+"@languageCodeFrFr": {
+"description": "Sprachcode für Französisch"
+},
+
+"languageCodeHiIn": "Hindi",
+"@languageCodeHiIn": {
+"description": "Sprachcode für Hindi"
+},
+"languageCodePtPt": "Portugiesisch (Portugal)",
+"@languageCodePtPt": {
+"description": "Sprachcode für Portugiesisch (Portugal)"
+},
+
+"languageCodeTitle": "Sprachcode",
+"@languageCodeTitle": {
+"description": "Bezeichnung der Sprachcodeeinstellung in den Routentextoptionen"
+},
+"languageCodeZhCn": "Chinesisch (vereinfachtes China)",
+"@languageCodeZhCn": {
+"description": "Sprachcode für Chinesisch (vereinfachtes China)"
+
+},
+"leftExitActionNextRoadText": "Nehmen Sie die linke Ausfahrt nach '{{0}}'",
+"@leftExitActionNextRoadText": {
+"description": "Text für die Manöveraktion leftExit"
+},
+"leftExitActionText": "Nehmen Sie die linke Ausfahrt",
+"@leftExitActionText": {
+
+"description": "Text für die Manöveraktion links abbiegen"
+},
+"leftForkActionNextRoadText": "Nehmen Sie die linke Abzweigung auf '{{0}}'",
+"@leftForkActionNextRoadText": {
+"description": "Text für die Manöveraktion links abbiegen"
+},
+"leftForkActionText": "Nehmen Sie die linke Abzweigung",
+
+"@leftForkActionText": {
+"description": "Text für die Manöveraktion links abbiegen"
+},
+"leftRampActionNextRoadText": "Nimm die linke Auffahrt auf '{{0}}'",
+"@leftRampActionNextRoadText": {
+"description": "Text für die Manöveraktion links auf die Auffahrt fahren"
+},
+
+"leftRampActionText": "Nimm die linke Auffahrt",
+"@leftRampActionText": {
+"description": "Text für die Manöveraktion links abbiegen"
+},
+"leftRoundaboutEnterActionText": "Fahre in den Kreisverkehr",
+"@leftRoundaboutEnterActionText": {
+"description": "Text für die Manöveraktion links in den Kreisverkehr fahren"
+},
+
+"leftRoundaboutExit10ActionText": "Nimm die 10. Ausfahrt des Kreisverkehrs",
+"@leftRoundaboutExit10ActionText": {
+"description": "Text für die Manöveraktion leftRoundaboutExit10"
+},
+"leftRoundaboutExit11ActionText": "Nimm die 11. Ausfahrt des Kreisverkehrs",
+
+"@leftRoundaboutExit11ActionText": {
+"description": "Text für die Manöveraktion leftRoundaboutExit11"
+},
+"leftRoundaboutExit12ActionText": "Nimm die 12. Ausfahrt des Kreisverkehrs",
+"@leftRoundaboutExit12ActionText": {
+"description": "Text für die Manöveraktion leftRoundaboutExit12"
+
+},
+"leftRoundaboutExit1ActionText": "Nimm die erste Ausfahrt des Kreisverkehrs",
+"@leftRoundaboutExit1ActionText": {
+"description": "Text für die Manöveraktion leftRoundaboutExit1"
+},
+"leftRoundaboutExit2ActionText": "Nimm die zweite Ausfahrt des Kreisverkehrs",
+
+"@leftRoundaboutExit2ActionText": {
+"description": "Text für die Manöveraktion leftRoundaboutExit2"
+},
+"leftRoundaboutExit3ActionText": "Nimm die dritte Ausfahrt des Kreisverkehrs",
+"@leftRoundaboutExit3ActionText": {
+"description": "Text für die Manöveraktion leftRoundaboutExit3"
+},
+
+"leftRoundaboutExit4ActionText": "Nimm die vierte Ausfahrt des Kreisverkehrs",
+"@leftRoundaboutExit4ActionText": {
+"description": "Text für die Manöveraktion leftRoundaboutExit4"
+},
+"leftRoundaboutExit5ActionText": "Nimm die fünfte Ausfahrt des Kreisverkehrs",
+"@leftRoundaboutExit5ActionText": {
+
+"description": "Text für die Manöveraktion leftRoundaboutExit5"
+},
+"leftRoundaboutExit6ActionText": "Nimm die sechste Ausfahrt des Kreisverkehrs",
+"@leftRoundaboutExit6ActionText": {
+"description": "Text für die Manöveraktion leftRoundaboutExit6"
+},
+
+"leftRoundaboutExit7ActionText": "Nimm die 7. Ausfahrt des Kreisverkehrs",
+"@leftRoundaboutExit7ActionText": {
+"description": "Text für die Manöveraktion leftRoundaboutExit7"
+},
+"leftRoundaboutExit8ActionText": "Nimm die 8. Ausfahrt des Kreisverkehrs",
+"@leftRoundaboutExit8ActionText": {
+
+"description": "Text für die Manöveraktion leftRoundaboutExit8"
+},
+"leftRoundaboutExit9ActionText": "Nimm die 9. Ausfahrt des Kreisverkehrs",
+"@leftRoundaboutExit9ActionText": {
+"description": "Text für die Manöveraktion leftRoundaboutExit9"
+},
+
+"leftRoundaboutPassActionText": "Umfahren Sie den Kreisverkehr",
+"@leftRoundaboutPassActionText": {
+"description": "Text für die Manöveraktion leftRoundaboutPass"
+},
+"leftTurnActionNextRoadText": "Biegen Sie links ab auf '{{0}}'",
+"@leftTurnActionNextRoadText": {
+"description": "Text für die Manöveraktion leftTurn"
+
+},
+"leftTurnActionText": "Nach links abbiegen",
+"@leftTurnActionText": {
+"description": "Text für die Manöveraktion links abbiegen"
+},
+"leftUTurnActionNextRoadText": "An der nächsten Kreuzung links abbiegen",
+"@leftUTurnActionNextRoadText": {
+"description": "Text für die Manöveraktion links abbiegen"
+
+},
+"leftUTurnActionText": "Links abbiegen",
+"@leftUTurnActionText": {
+"description": "Text für die Manöveraktion links abbiegen"
+},
+"loadCustomScene": "Benutzerdefinierte Szene laden",
+"@loadCustomScene": {
+"description": "Text für die Schaltfläche Benutzerdefinierte Szene laden im Menü des Startbildschirms"
+
+},
+"loadCustomSceneFailure": "Laden der Szene fehlgeschlagen",
+"@loadCustomSceneFailure": {
+"description": "Kurztext, der angezeigt wird, wenn das Laden der benutzerdefinierten Szene fehlgeschlagen ist"
+},
+"loadCustomSceneSuccess": "Laden der Szene erfolgreich",
+"@loadCustomSceneSuccess": {
+
+"description": "Kurztext, der angezeigt wird, wenn das Laden der benutzerdefinierten Szene erfolgreich war"
+},
+"mapRegionChildrenNumberText": "'{{0}}' Elemente",
+"@mapRegionChildrenNumberText": {
+"description": "Text für die Anzahl der untergeordneten Elemente einer Kartenregion"
+},
+"mapUpdateAvailableDialogMessage": "Möchten Sie die Karten auf die neueste Version aktualisieren?",
+
+"@mapUpdateAvailableDialogMessage": {
+"description": "Meldung des Dialogfelds Kartenaktualisierung verfügbar"
+},
+"mapUpdateAvailableDialogTitle": "Kartenaktualisierung verfügbar",
+"@mapUpdateAvailableDialogTitle": {
+"description": "Titel des Dialogfelds Kartenaktualisierung verfügbar"
+},
+"matchingResultsTitle": "Übereinstimmende Ergebnisse",
+
+"@matchingResultsTitle": {
+"description": "Titel der Überschrift der Übereinstimmungsergebnisse"
+},
+"megabyteAbbreviationText": "MB",
+"@megabyteAbbreviationText": {
+"description": "Text für die Abkürzung der Megabyte"
+},
+"meterAbbreviationText": "m",
+"@meterAbbreviationText": {
+
+"description": "Text für die Abkürzung für Meter"
+},
+"middleForkActionNextRoadText": "Nimm die mittlere Abzweigung auf '{{0}}'",
+"@middleForkActionNextRoadText": {
+
+"description": "Text für die Aktion mittlere Abzweigung"
+},
+"middleForkActionText": "Nehmen Sie die mittlere Abzweigung",
+"@middleForkActionText": {
+"description": "Text für die Aktion mittlere Abzweigung"
+},
+"minuteAbbreviationText": "min",
+"@minuteAbbreviationText": {
+
+"description": "Text für die Abkürzung der Minute"
+},
+"noLocationWarning": "Standortdienste sind nicht verfügbar. Wir können Ihre Position nicht ermitteln.",
+"@noLocationWarning": {
+"description": "Keine Standortdienste verfügbar"
+},
+"noneTitle": "Keine",
+"@noneTitle": {
+"description": "Routeneinstellung fehlt"
+
+},
+"noResultsFoundText": "Leider wurde nichts gefunden",
+"@noResultsFoundText": {
+"description": "Meldung, wenn keine Suchergebnisse gefunden wurden"
+},
+"noTrafficDelaysText": "Keine Verzögerungen",
+"@noTrafficDelaysText": {
+"description": "Text für keine Verkehrsverzögerungen"
+},
+
+"offlineAppMapsDialogMessage": "Bevor Sie die App offline verwenden können, müssen Sie die Karte Ihrer Region herunterladen.",
+"@offlineAppMapsDialogMessage": {
+"description": "Text des Dialogfelds, in dem zum Herunterladen von Karten aufgefordert wird."
+},
+"offlineAppMapsDialogTitle": "Sie benötigen lediglich Karten",
+"@offlineAppMapsDialogTitle": {
+
+"description": "Titel des Dialogfelds, in dem zum Herunterladen von Karten aufgefordert wird."
+},
+"optimizationModeTitle": "Optimierungsmodus",
+"@optimizationModeTitle": {
+"description": "Titel der Optimierungsmodus-Einstellung in den Routenoptionen"
+},
+"poiSettingsTitle": "Sonderziele",
+"@poiSettingsTitle": {
+
+"description": "Titel der Einstellungen für POI"
+},
+"preferencesTitle": "Einstellungen",
+"@preferencesTitle": {
+"description": "Titel der Schaltfläche Einstellungen"
+},
+"quadAxleGroup": "Quad-Achsgruppe",
+"@quadAxleGroup": {
+
+"description": "Titel für die Einstellung Gewicht pro Achsgruppe für Lkw-Spezifikationen"
+},
+"quintAxleGroup": "Quint-Achsgruppe",
+"@quintAxleGroup": {
+"description": "Titel für die Einstellung Gewicht pro Achsgruppe für Lkw-Spezifikationen"
+},
+"realLocationSourceTitle": "Echte Standortereignisse",
+"@realLocationSourceTitle": {
+
+"description": "Titel der Quelle für Ereignisse zum tatsächlichen Standort"
+},
+"recentlySearchTitle": "Letzte Suchergebnisse",
+"@recentlySearchTitle": {
+"description": "Titel der Überschrift für die letzten Suchanfragen"
+},
+"reroutingInProgressText": "Aktualisierung...",
+"@reroutingInProgressText": {
+
+"description": "Text für die Umleitungsanzeige"
+},
+"retryDownloadMapOptionTitle": "Download wiederholen",
+"@retryDownloadMapOptionTitle": {
+"description": "Titel der Option zum erneuten Herunterladen der Karte"
+},
+"rightExitActionNextRoadText": "Nimm die rechte Ausfahrt nach '{{0}}'",
+
+"@rightExitActionNextRoadText": {
+"description": "Text für die Manöveraktion rechts abbiegen"
+},
+"rightExitActionText": "Nehmen Sie die rechte Ausfahrt",
+"@rightExitActionText": {
+"description": "Text für die Manöveraktion rechts abbiegen"
+},
+
+"rightForkActionNextRoadText": "Nimm die rechte Abzweigung auf '{{0}}'",
+"@rightForkActionNextRoadText": {
+"description": "Text für die Manöveraktion rightFork"
+},
+"rightForkActionText": "Nimm die rechte Abzweigung",
+"@rightForkActionText": {
+"description": "Text für die Manöveraktion rightFork"
+
+},
+"rightRampActionNextRoadText": "Nehmen Sie die rechte Auffahrt auf '{{0}}'",
+"@rightRampActionNextRoadText": {
+"description": "Text für die Manöveraktion rightRamp"
+},
+"rightRampActionText": "Nehmen Sie die rechte Auffahrt",
+"@rightRampActionText": {
+
+"description": "Text für die Manöveraktion rightRamp"
+},
+"rightRoundaboutEnterActionText": "Fahren Sie in den Kreisverkehr",
+"@rightRoundaboutEnterActionText": {
+"description": "Text für die Manöveraktion rightRoundaboutEnter"
+},
+"rightRoundaboutExit10ActionText": "Nehmen Sie die 10. Ausfahrt des Kreisverkehrs",
+
+"@rightRoundaboutExit10ActionText": {
+"description": "Text für die Manöveraktion rightRoundaboutExit10"
+},
+"rightRoundaboutExit11ActionText": "Nimm die 11. Ausfahrt des Kreisverkehrs",
+"@rightRoundaboutExit11ActionText": {
+"description": "Text für die Manöveraktion rightRoundaboutExit11"
+
+},
+"rightRoundaboutExit12ActionText": "Nimm die 12. Ausfahrt des Kreisverkehrs",
+"@rightRoundaboutExit12ActionText": {
+"description": "Text für die Manöveraktion rightRoundaboutExit12"
+},
+"rightRoundaboutExit1ActionText": "Nimm die erste Ausfahrt des Kreisverkehrs",
+
+"@rightRoundaboutExit1ActionText": {
+"description": "Text für die Manöveraktion rightRoundaboutExit1"
+},
+"rightRoundaboutExit2ActionText": "Nimm die zweite Ausfahrt des Kreisverkehrs",
+"@rightRoundaboutExit2ActionText": {
+"description": "Text für die Manöveraktion rightRoundaboutExit2"
+},
+
+"rightRoundaboutExit3ActionText": "Nimm die dritte Ausfahrt des Kreisverkehrs",
+"@rightRoundaboutExit3ActionText": {
+"description": "Text für die Manöveraktion rightRoundaboutExit3"
+},
+"rightRoundaboutExit4ActionText": "Nimm die vierte Ausfahrt des Kreisverkehrs",
+"@rightRoundaboutExit4ActionText": {
+
+"description": "Text für die Manöveraktion rightRoundaboutExit4"
+},
+"rightRoundaboutExit5ActionText": "Nimm die fünfte Ausfahrt des Kreisverkehrs",
+"@rightRoundaboutExit5ActionText": {
+"description": "Text für die Manöveraktion rightRoundaboutExit5"
+},
+
+"rightRoundaboutExit6ActionText": "Nimm die sechste Ausfahrt des Kreisverkehrs",
+"@rightRoundaboutExit6ActionText": {
+"description": "Text für die Manöveraktion rightRoundaboutExit6"
+},
+"rightRoundaboutExit7ActionText": "Nimm die siebte Ausfahrt des Kreisverkehrs",
+"@rightRoundaboutExit7ActionText": {
+
+"description": "Text für die Manöveraktion rightRoundaboutExit7"
+},
+"rightRoundaboutExit8ActionText": "Nimm die 8. Ausfahrt des Kreisverkehrs",
+"@rightRoundaboutExit8ActionText": {
+"description": "Text für die Manöveraktion rightRoundaboutExit8"
+},
+
+"rightRoundaboutExit9ActionText": "Nimm die 9. Ausfahrt des Kreisverkehrs",
+"@rightRoundaboutExit9ActionText": {
+"description": "Text für die Manöveraktion rightRoundaboutExit9"
+},
+"rightRoundaboutPassActionText": "Nimm die 10. Ausfahrt des Kreisverkehrs",
+"@rightRoundaboutPassActionText": {
+
+"description": "Text für die Manöveraktion rightRoundaboutPass"
+},
+"rightTurnActionNextRoadText": "Biegen Sie rechts ab auf '{{0}}'",
+"@rightTurnActionNextRoadText": {
+"description": "Text für die Manöveraktion rightTurn"
+},
+"rightTurnActionText": "Biegen Sie rechts ab",
+"@rightTurnActionText": {
+
+"description": "Text für die Manöveraktion rightTurn"
+},
+"rightUTurnActionNextRoadText": "An der nächsten Straße rechts abbiegen",
+"@rightUTurnActionNextRoadText": {
+"description": "Text für die Manöveraktion rightUTurn"
+},
+"rightUTurnActionText": "Rechts abbiegen",
+
+"@rightUTurnActionText": {
+"description": "Text für die Manöveraktion rightUTurn"
+},
+"routeAlternativesTitle": "Routenalternativen",
+"@routeAlternativesTitle": {
+"description": "Titel der Routenalternativen in den Routenoptionen"
+},
+"routeOptionsTitle": "Routenoptionen",
+"@routeOptionsTitle": {
+
+"description": "Titel des Abschnitts Routenoptionen in den Einstellungen"
+},
+"routePreferencesScreenTitle": "Routenoptionen",
+"@routePreferencesScreenTitle": {
+"description": "Titel des Bildschirms Routenoptionen"
+},
+"routeTextOptionsTitle": "Routentextoptionen",
+"@routeTextOptionsTitle": {
+
+"description": "Titel des Abschnitts Routenoptionen in den Einstellungen"
+},
+"routeToButtonTitle": "Route",
+"@routeToButtonTitle": {
+"description": "Titel der Route zur Schaltfläche"
+},
+"routingErrorText": "Routenauswahl fehlgeschlagen mit Fehler: '{{error}}'",
+"@routingErrorText": {
+
+"description": "Routing-Fehlermeldung"
+},
+"sdkInitFailError": "Die Initialisierung des HERE SDK ist fehlgeschlagen. Bitte überprüfen Sie Ihren Code und/oder starten Sie die native Engine mit den Standardoptionen.",
+"@sdkInitFailError": {
+"description": "Meldung zum Fehler bei der Initialisierung des HERE SDK"
+},
+
+"searchErrorText": "Suche fehlgeschlagen mit Fehler: '{{error}}'",
+"@searchErrorText": {
+"description": "Suchfehlermeldung"
+},
+"searchHint": "Wohin?",
+"@searchHint": {
+"description": "Hinweis für das Suchtextfeld"
+},
+"seasonalClosure": "Saisonale Schließung",
+
+"@seasonalClosure": {
+"description": "Straßennamen für Routenpräferenzen vermeiden"
+},
+"selectDateTimeTitle": "Datum und Uhrzeit auswählen",
+"@selectDateTimeTitle": {
+"description": "Titel für Datums- und Uhrzeitauswahl"
+},
+"selectPositioningDialogTitle": "Positionierungsmethode auswählen",
+
+"@selectPositioningDialogTitle": {
+"description": "Titel des Dialogs zur Auswahl der Navigationspositionierungsquelle"
+},
+"sharpLeftTurnActionNextRoadText": "Biegen Sie scharf links ab auf '{{0}}'",
+"@sharpLeftTurnActionNextRoadText": {
+"description": "Text für die Manöveraktion sharpLeftTurn"
+
+},
+"sharpLeftTurnActionText": "Biegen Sie scharf links ab",
+"@sharpLeftTurnActionText": {
+"description": "Text für die Manöveraktion sharpLeftTurn"
+},
+"sharpRightTurnActionNextRoadText": "Biegen Sie scharf rechts ab auf '{{0}}'",
+"@sharpRightTurnActionNextRoadText": {
+
+"description": "Text für die Manöveraktion sharpRightTurn"
+},
+"sharpRightTurnActionText": "Biegen Sie scharf rechts ab",
+"@sharpRightTurnActionText": {
+"description": "Text für die Manöveraktion sharpRightTurn"
+},
+"shortestRouteTitle": "Kürzeste Route",
+"@shortestRouteTitle": {
+
+"description": "Titel des Modus für die kürzeste Route"
+},
+"simulatedLocationSourceTitle": "Simulierte Standortereignisse (entlang der Route)",
+"@simulatedLocationSourceTitle": {
+"description": "Titel der Quelle für die simulierten Standortereignisse"
+},
+"singleAxleGroup": "Einzelachsgruppe",
+"@singleAxleGroup": {
+
+"description": "Titel für die Einstellung Gewicht pro Achsgruppe für Lkw-Spezifikationen"
+},
+"sizeOfWholeAreaOfRegion": "Gesamter Bereich '{{0}}'",
+"@sizeOfWholeAreaOfRegion": {
+"description": "Text für die Größe des gesamten Bereichs einer Kartenregion"
+},
+
+"slightLeftTurnActionNextRoadText": "Halten Sie links auf '{{0}}'",
+"@slightLeftTurnActionNextRoadText": {
+"description": "Text für die Manöveraktion slightLeftTurn"
+},
+"slightLeftTurnActionText": "Halten Sie links",
+"@slightLeftTurnActionText": {
+"description": "Text für die Manöveraktion slightLeftTurn"
+
+},
+"slightRightTurnActionNextRoadText": "Rechts auf '{{0}}' abbiegen",
+"@slightRightTurnActionNextRoadText": {
+"description": "Text für die Manöveraktion Rechts leicht abbiegen"
+},
+"slightRightTurnActionText": "Rechts abbiegen",
+"@slightRightTurnActionText": {
+
+"description": "Text für die Manöveraktion enterHighwayFromRight"
+},
+"specificationsTitle": "Spezifikationen",
+"@specificationsTitle": {
+"description": "Zeile mit den Einstellungen für die Lkw-Spezifikationen"
+},
+"stopMapDownloadButtonTitle": "Download stoppen",
+"@stopMapDownloadButtonTitle": {
+
+"description": "Titeltext für die Schaltfläche zum Stoppen des Karten-Downloads"
+},
+"stopMapDownloadDialogTitle": "Download von \"'{{0}}'\" stoppen?",
+"@stopMapDownloadDialogTitle": {
+"description": "Titeltext für den Bestätigungsdialog zum Stoppen des Karten-Downloads"
+},
+"stopNavigationAcceptButtonCaption": "Navigationsmodus beenden",
+
+"@stopNavigationAcceptButtonCaption": {
+"description": "Beschriftung des Dialogs zum Beenden der Navigation"
+},
+"stopNavigationDialogSubtitle": "Sie verlieren dauerhaft Ihren Fortschritt und Ihren Zielverlauf",
+"@stopNavigationDialogSubtitle": {
+"description": "Titel des Dialogs zum Beenden der Navigation"
+},
+
+"stopNavigationDialogTitle": "Möchten Sie den Navigationsmodus beenden?",
+"@stopNavigationDialogTitle": {
+"description": "Titel des Dialogs zum Beenden der Navigation"
+},
+"tandemAxleGroup": "Tandemachsgruppe",
+"@tandemAxleGroup": {
+"description": "Titel für die Einstellung Gewicht pro Achsgruppe für Lkw-Spezifikationen"
+
+},
+"textFormatHtml": "Html",
+"@textFormatHtml": {
+"description": "Titel der Einstellung für Textanweisungen im HTML-Format in den Routentextoptionen"
+},
+"textFormatPlain": "Plain",
+"@textFormatPlain": {
+"description": "Titel der Einstellung für Textanweisungen im einfachen Format in den Routentextoptionen"
+},
+
+"tollRoad": "Mautstraße",
+"@tollRoad": {
+"description": "Name der zu vermeidenden Straße für Routeneinstellungen"
+},
+"trafficDelayText": "Inkl. '{{0}}' Verzögerung",
+"@trafficDelayText": {
+"description": "Vorlage für den Text zur Verkehrsverzögerung"
+},
+
+"tripleAxleGroup": "Dreifachachsgruppe",
+"@tripleAxleGroup": {
+"description": "Titel für die Einstellung Gewicht pro Achsgruppe für Lkw-Spezifikationen"
+},
+"truckAxleCountRowTitle": "Achszahl",
+"@truckAxleCountRowTitle": {
+"description": "Titel für Lkw-Spezifikationen"
+},
+
+"truckAxlesCountHint": "Gesamtzahl der Fahrzeugachsen",
+"@truckAxlesCountHint": {
+"description": "Hinweis für Lkw-Spezifikationspräferenzen"
+},
+"truckAxleWeightHint": "Achslast in kg",
+"@truckAxleWeightHint": {
+"description": "Hinweis für Lkw-Spezifikationspräferenzen"
+
+},
+"truckGrossWeightRowTitle": "Bruttogewicht",
+"@truckGrossWeightRowTitle": {
+"description": "Titel für Lkw-Spezifikationspräferenzen"
+},
+"truckHeightHint": "Höhe in cm",
+"@truckHeightHint": {
+"description": "Hinweis für Lkw-Spezifikationspräferenzen"
+},
+
+"truckHeightRowTitle": "Höhe",
+"@truckHeightRowTitle": {
+"description": "Titel für Lkw-Spezifikationspräferenzen"
+},
+"truckLengthRowTitle": "Länge",
+"@truckLengthRowTitle": {
+"description": "Titel für Lkw-Spezifikationspräferenzen"
+},
+
+"truckLengthtHint": "Länge in cm",
+"@truckLengthtHint": {
+"description": "Hinweis zu den Präferenzen für die Lkw-Spezifikationen"
+},
+"truckSpecificationsTitle": "Lkw-Spezifikationen",
+"@truckSpecificationsTitle": {
+"description": "Titel des Abschnitts Präferenzen für die Lkw-Route"
+},
+
+"truckTotalWeightHint": "Gesamtgewicht in kg",
+"@truckTotalWeightHint": {
+"description": "Hinweis zu den Einstellungen für die Lkw-Spezifikationen"
+},
+"truckWeightPerAxleRowTitle": "Gewicht pro Achse",
+"@truckWeightPerAxleRowTitle": {
+"description": "Titel für die Einstellungen für die Lkw-Spezifikationen"
+},
+
+"truckWidthHint": "Breite in cm",
+"@truckWidthHint": {
+"description": "Hinweis zu den Präferenzen für die Lkw-Spezifikationen"
+},
+"truckWidthRowTitle": "Breite",
+"@truckWidthRowTitle": {
+"description": "Titel für die Präferenzen für die Lkw-Spezifikationen"
+},
+
+"tunnel": "Tunnel",
+"@tunnel": {
+"description": "Straßenbezeichnung für Routeneinstellungen vermeiden"
+},
+"tunnelCategoryB": "Kategorie B",
+"@tunnelCategoryB": {
+"description": "Tunnelkategorie B"
+},
+
+"tunnelCategoryC": "Kategorie C",
+"@tunnelCategoryC": {
+"description": "Tunnelkategorie C"
+},
+"tunnelCategoryD": "Kategorie D",
+"@tunnelCategoryD": {
+"description": "Tunnelkategorie D"
+},
+
+"tunnelCategoryE": "Kategorie E",
+"@tunnelCategoryE": {
+"description": "Tunnelkategorie E"
+},
+"tunnelCategoryTitle": "Tunnelkategorie",
+"@tunnelCategoryTitle": {
+"description": "Einstellung für Routenpräferenzen für Lkw"
+},
+
+"turnOff": "Ausschalten",
+"@turnOff": {
+"description": "Text für Ausschaltaktion"
+},
+"unitSystemImperialUk": "Imperial UK",
+"@unitSystemImperialUk": {
+"description": "Bezeichnung der Einstellung für das imperiale britische Einheitensystem in den Routentextoptionen"
+
+},
+"unitSystemImperialUs": "Imperial US",
+"@unitSystemImperialUs": {
+"description": "Titel der Einstellung für das imperiale US-Maßeinheitensystem in den Routentextoptionen"
+},
+"unitSystemMetric": "Metrisch",
+"@unitSystemMetric": {
+"description": "Titel der Einstellung für das metrische Maßeinheitensystem in den Routentextoptionen"
+
+},
+"unitSystemTitle": "Einheitensystem",
+"@unitSystemTitle": {
+"description": "Titel der Einheiteneinstellung in den Routenoptionen"
+},
+"updateButtonTitle": "Aktualisieren",
+"@updateButtonTitle": {
+"description": "Titel der Schaltfläche Aktualisieren"
+},
+"locationWaitingForPositioning": "Warten auf Positionierung",
+
+"@locationWaitingForPositioning": {
+"description": "Navigationsstatus, Warten auf Positionierung, während der Motor auf die Positionierung wartet."
+},
+"navigationStatusRerouting": "Umleitung",
+"@navigationStatusRerouting": {
+"description": "Navigationsstatus, Umleitung, während der Motor versucht, eine neue Route abzurufen."
+},
+
+"navigationStatusWaitingForManeuvers": "Warten auf Manöver",
+"@navigationStatusWaitingForManeuvers": {
+"description": "Navigationsstatus, Warten auf Manöver, während der Motor versucht, neue Manöver abzurufen."
+},
+"updateMapsErrorText": "Kartenaktualisierung fehlgeschlagen mit Fehler: '{{error}}'",
+
+"@updateMapsErrorText": {
+"description": "Fehlermeldung bei der Kartenaktualisierung"
+},
+"updatingMapTitle": "Karte wird aktualisiert...",
+"@updatingMapTitle": {
+"description": "Titel des Fortschritts der Kartenaktualisierung"
+},
+"useMapOfflineSwitch": "App offline verwenden",
+"@useMapOfflineSwitch": {
+
+"description": "Titel der App zum Umschalten auf Offline"
+},
+"userConsentDescription": "Bitte helfen Sie HIER mit, die angebotenen Dienste zu verbessern",
+"@userConsentDescription": {
+"description": "Beschreibungstext zur Datenerfassung"
+},
+"userConsentTitle": "Zustimmung",
+"@userConsentTitle": {
+
+"description": "Text für das Menü zur Einwilligung des Benutzers"
+},
+"uTurns": "Wenden",
+"@uTurns": {
+"description": "Vermeiden Sie Straßennamen für Routenpräferenzen"
+},
+"walkSpeedTitle": "Gehgeschwindigkeit",
+"@walkSpeedTitle": {
+"description": "Titel der Einstellungen für Fußgängerrouten"
+
+},
+"walkSpeedUnitTitle": "Gehgeschwindigkeit (m/s)",
+"@walkSpeedUnitTitle": {
+"description": "Einstellungen für Fußgängerroute"
+},
+"wayPointsListTitle": "Wegpunkte",
+"@wayPointsListTitle": {
+"description": "Titel der Wegpunktliste"
+},
+
+"weightInKg": "Gewicht in kg",
+"@weightInKg": {
+"description": "Titel für die Einstellung Gewicht pro Achsgruppe für Lkw-Spezifikationen"
+
+},
+"weightPerAxleGroup": "Gewicht pro Achsgruppe",
+"@weightPerAxleGroup": {
+"description": "Titel für Abschnitt der Einstellungen WeightPerAxleGroup für Lkw-Spezifikationen"
+},
+"yourLocationTitle": "Ihr Standort",
+"@yourLocationTitle": {
+"description": "Titel Ihres Standorts"
+}
+}
