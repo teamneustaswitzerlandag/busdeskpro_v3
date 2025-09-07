@@ -73,10 +73,12 @@ class _QuickLinksViewState extends State<QuickLinksView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white, // Weißer Hintergrund
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: SingleChildScrollView(
           child: Card(
+            color: Colors.white, // Weiße Card-Farbe
             elevation: 5,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(15),

@@ -19,6 +19,8 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:here_sdk/core.dart';
 import 'package:here_sdk/core.engine.dart';
 import 'package:here_sdk/core.errors.dart';
+import 'package:bus_desk_pro/widgets/curved_bottom_nav.dart';
+import 'package:bus_desk_pro/widgets/mandant_config_dialog.dart';
 
 class LandingPage extends StatefulWidget {
 
@@ -37,9 +39,12 @@ class _LandingPageState extends State<LandingPage> {
   int _currentIndex = 0;
 
   void _onTabTapped(int index) {
-    setState(() {
-      _currentIndex = index;
-    });
+    // Performance-Optimierung: Nur bei tatsächlicher Änderung
+    if (_currentIndex != index) {
+      setState(() {
+        _currentIndex = index;
+      });
+    }
   }
 
   final _storage = FlutterSecureStorage();
@@ -67,30 +72,8 @@ class _LandingPageState extends State<LandingPage> {
 
   @override
   void dispose() {
+    _newsTimer?.cancel(); // Timer beenden
     super.dispose();
-  }
-
-  int _newsCount = 0;
-  String? _currentCount = '';
-  void startNewsCountTimer(int intervalInSeconds) {
-    _newsTimer = Timer.periodic(Duration(seconds: intervalInSeconds), (Timer timer) async {
-      try {
-        final storage = FlutterSecureStorage();
-        _currentCount = await storage.read(key: 'gbl_notifications_amount');
-        print('TimerNews');
-        newsCount = await fetchNewsCount();
-
-        if (!mounted) return;
-
-        setState(() {
-          _newsCount = newsCount;
-        });
-        print(newsCount);
-        print(_currentCount);
-      } catch (e) {
-        print('Fehler beim Abrufen der Nachrichtenanzahl: $e');
-      }
-    });
   }
 
   @override
@@ -103,14 +86,13 @@ class _LandingPageState extends State<LandingPage> {
         elevation: 0,
         title: Row(
           children: [
-            ConstrainedBox(
-              constraints: BoxConstraints(
-                maxWidth: 200, // Setze hier die gewünschte maximale Breite
-              ),
+            Flexible( // Flexible statt ConstrainedBox
               child: Image.memory(
                 base64Decode(getLogo('logo')),
                 fit: BoxFit.contain,
-                height: 50,
+                height: 40,
+                cacheWidth: 200, // Speicher-Optimierung
+                cacheHeight: 40,
               ),
             ),
           ],
@@ -118,22 +100,12 @@ class _LandingPageState extends State<LandingPage> {
         actions: [
           IconButton(
             icon: Icon(Icons.sync_alt),
-            tooltip: 'Mandanteneinstellungen neu syncronisieren',
-            onPressed: () async {
-              showCustomDialog(context, "Bitte warten...", "Die Einstellungen zu Ihrem Mandanten werden auf Ihr Gerät neu syncronisiert.\n\nDies kann ein par Minuten dauern...", []);
-              final response = await http.get(Uri.parse('http://bus-dashboard.dxp.azure.neusta.cloud:7698/getTenants'));
-              if (response.statusCode == 200) {
-                final decoded = json.decode(response.body); // Typ: Map<String, dynamic>
-                List<dynamic> tenants = decoded['body'];
-                for (var tenant in tenants) {
-                  if (tenant['name'] == MandantAuth) {
-                    await _storage.write(key: 'deviceCachedTenant', value: jsonEncode(tenant));
-                  }
-                }
-              } else {
-                throw Exception('Failed to load tenants');
-              }
-              Navigator.pop(context);
+            tooltip: 'Mandanteneinstellungen anzeigen',
+            onPressed: () {
+              showDialog(
+                context: context,
+                builder: (context) => MandantConfigDialog(),
+              );
             }
           ),
           IconButton(
@@ -165,64 +137,57 @@ class _LandingPageState extends State<LandingPage> {
           ),
         ],
       ),
-      body: _pages[_currentIndex],
-      bottomNavigationBar: BottomNavigationBar(
-        type: BottomNavigationBarType.fixed,
+      body: IndexedStack(
+        index: _currentIndex,
+        children: _pages, // Alle Seiten werden im Speicher gehalten
+      ),
+      bottomNavigationBar: CurvedBottomNavigationBar(
         currentIndex: _currentIndex,
         onTap: _onTabTapped,
-        backgroundColor: Colors.white,
-        selectedItemColor: Colors.red,
-        unselectedItemColor: Colors.grey,
-        items: [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: 'Home',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.info),/*Stack(
-              children: <Widget>[
-                Icon(Icons.info),
-                if (_currentCount != _newsCount.toString())
-                  Positioned(
-                    right: 0,
-                    top: 0,
-                    child: Container(
-                      padding: EdgeInsets.all(2),
-                      decoration: BoxDecoration(
-                        color: Colors.orange,
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      constraints: BoxConstraints(
-                        minWidth: 16,
-                        minHeight: 16,
-                      ),
-                    ),
-                  ),
-              ],
-            ),*/
-            label: 'Dienste',
-          ),
-          if (checkIfAnyModuleIsActive('Chat') == true)
-            BottomNavigationBarItem(
-              icon: Icon(Icons.chat),
-              label: 'Chat',
-            ),
-          if (checkIfAnyModuleIsActive('Documents') == true)
-            BottomNavigationBarItem(
-              icon: Icon(Icons.book),
-              label: 'Dok',
-            ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.person),
-            label: 'Profil',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.settings),
-            label: 'Mehr',
-          ),
-        ],
+        showChat: checkIfAnyModuleIsActive('Chat') == true,
+        showDocuments: checkIfAnyModuleIsActive('Documents') == true,
       ),
     );
+  }
+
+  List<BottomNavigationBarItem> _buildBottomNavItems() {
+    final items = <BottomNavigationBarItem>[
+      const BottomNavigationBarItem(
+        icon: Icon(Icons.home),
+        label: 'Home',
+      ),
+      const BottomNavigationBarItem(
+        icon: Icon(Icons.info),
+        label: 'Dienste',
+      ),
+    ];
+
+    if (checkIfAnyModuleIsActive('Chat') == true) {
+      items.add(const BottomNavigationBarItem(
+        icon: Icon(Icons.chat),
+        label: 'Chat',
+      ));
+    }
+
+    if (checkIfAnyModuleIsActive('Documents') == true) {
+      items.add(const BottomNavigationBarItem(
+        icon: Icon(Icons.book),
+        label: 'Dok',
+      ));
+    }
+
+    items.addAll([
+      const BottomNavigationBarItem(
+        icon: Icon(Icons.person),
+        label: 'Profil',
+      ),
+      const BottomNavigationBarItem(
+        icon: Icon(Icons.settings),
+        label: 'Mehr',
+      ),
+    ]);
+
+    return items;
   }
 
   void _showUpdateDialog(BuildContext context) {
@@ -230,25 +195,25 @@ class _LandingPageState extends State<LandingPage> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('Version herunterladen'),
-          content: Text('Um die aktuellste Version von BusDesk Pro zu laden, klicke nachfolgend auf "Jetzt herunterladen".'),
-          actions: <Widget>[
-            Container(
-                width: double.infinity, // Setzt die Breite auf die volle verfügbare Breite
-                child: ElevatedButton(style: ElevatedButton.styleFrom(backgroundColor: Colors.red,),
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                  child: Text('Abbrechen', style: TextStyle(color: Colors.white)),
-                )),
-            Container(
-                width: double.infinity, // Setzt die Breite auf die volle verfügbare Breite
-                child: ElevatedButton(style: ElevatedButton.styleFrom(backgroundColor: Colors.red,),
-                  onPressed: () async {
-                    launchUrlString(apkUrl);
-                  },
-                  child: Text('Jetzt herunterladen', style: TextStyle(color: Colors.white)),
-                )),
+          title: const Text('Version herunterladen'),
+          content: const Text('Um die aktuellste Version von BusDesk Pro zu laden, klicke nachfolgend auf "Jetzt herunterladen".'),
+          actions: [
+            SizedBox(
+              width: double.infinity,
+              child: ElevatedButton(
+                style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
+                onPressed: () => Navigator.of(context).pop(),
+                child: const Text('Abbrechen', style: TextStyle(color: Colors.white)),
+              ),
+            ),
+            SizedBox(
+              width: double.infinity,
+              child: ElevatedButton(
+                style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
+                onPressed: () => launchUrlString(apkUrl),
+                child: const Text('Jetzt herunterladen', style: TextStyle(color: Colors.white)),
+              ),
+            ),
           ],
         );
       },

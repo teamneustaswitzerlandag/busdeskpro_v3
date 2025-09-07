@@ -73,18 +73,11 @@ class MorePageViewState extends State<MorePageView> {
                     style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
                   ),
                   SizedBox(height: 20),
-                  SizedBox(
-                    width: double.infinity,
-                    child: ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: HexColor.fromHex(getColor('primary')),
-                        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 8),
-                      ),
-                      child: const Text(
-                        "Gespeicherte Radiuszeiten",
-                        style: TextStyle(color: Colors.white, fontSize: 14),
-                      ),
-                      onPressed: () {
+                  
+                  // Ersetze die InkWell Widgets mit optimierten Versionen
+                  RepaintBoundary(
+                    child: InkWell(
+                      onTap: () {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
@@ -92,21 +85,58 @@ class MorePageViewState extends State<MorePageView> {
                           ),
                         );
                       },
+                      borderRadius: BorderRadius.circular(12),
+                      child: Container(
+                        padding: EdgeInsets.symmetric(vertical: 8, horizontal: 12),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(12),
+                          border: Border.all(
+                            color: Colors.grey[200]!,
+                            width: 1,
+                          ),
+                        ),
+                        child: Row(
+                          children: [
+                            Container(
+                              width: 32,
+                              height: 32,
+                              decoration: BoxDecoration(
+                                color: HexColor.fromHex(getColor('primary')).withOpacity(0.1),
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                              child: Icon(
+                                Icons.access_time,
+                                color: HexColor.fromHex(getColor('primary')),
+                                size: 16,
+                              ),
+                            ),
+                            SizedBox(width: 12),
+                            Expanded(
+                              child: Text(
+                                'Gespeicherte Radienzeiten',
+                                style: TextStyle(
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w500,
+                                  color: Colors.grey[800],
+                                ),
+                              ),
+                            ),
+                            Icon(
+                              Icons.arrow_forward_ios,
+                              color: Colors.grey[400],
+                              size: 14,
+                            ),
+                          ],
+                        ),
+                      ),
                     ),
                   ),
-                  SizedBox(height: 5),
-                  SizedBox(
-                    width: double.infinity,
-                    child: ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: HexColor.fromHex(getColor('primary')),
-                        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 8),
-                      ),
-                      child: const Text(
-                        "Ändere Geo- Radius",
-                        style: TextStyle(color: Colors.white, fontSize: 14),
-                      ),
-                      onPressed: () {
+                  
+                  SizedBox(height: 6),
+                  
+                  RepaintBoundary(
+                    child: InkWell(
+                      onTap: () {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
@@ -114,8 +144,52 @@ class MorePageViewState extends State<MorePageView> {
                           ),
                         );
                       },
+                      borderRadius: BorderRadius.circular(12),
+                      child: Container(
+                        padding: EdgeInsets.symmetric(vertical: 8, horizontal: 12),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(12),
+                          border: Border.all(
+                            color: Colors.grey[200]!,
+                            width: 1,
+                          ),
+                        ),
+                        child: Row(
+                          children: [
+                            Container(
+                              width: 32,
+                              height: 32,
+                              decoration: BoxDecoration(
+                                color: HexColor.fromHex(getColor('primary')).withOpacity(0.1),
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                              child: Icon(
+                                Icons.location_on,
+                                color: HexColor.fromHex(getColor('primary')),
+                                size: 16,
+                              ),
+                            ),
+                            SizedBox(width: 12),
+                            Expanded(
+                              child: Text(
+                                'Ändere Geo Radius',
+                                style: TextStyle(
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w500,
+                                  color: Colors.grey[800],
+                                ),
+                              ),
+                            ),
+                            Icon(
+                              Icons.arrow_forward_ios,
+                              color: Colors.grey[400],
+                              size: 14,
+                            ),
+                          ],
+                        ),
+                      ),
                     ),
-                  )
+                  ),
                 ],
               ),
             ),
