@@ -656,14 +656,17 @@ print(filtered.length);
                                                         child: Row(
                                                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                                           children: [
-                                                            Text(
-                                                              'Ist AndroidAuto verbunden?',
-                                                              style: TextStyle(
-                                                                fontSize: 14,
-                                                                fontWeight: FontWeight.w500,
-                                                                color: Colors.black87,
+                                                            Expanded( // Expanded hinzufügen für flexiblen Text
+                                                              child: Text(
+                                                                'Ist AndroidAuto verbunden?',
+                                                                style: TextStyle(
+                                                                  fontSize: 14,
+                                                                  fontWeight: FontWeight.w500,
+                                                                  color: Colors.black87,
+                                                                ),
                                                               ),
                                                             ),
+                                                            SizedBox(width: 8), // Kleiner Abstand zwischen Text und Switch
                                                             Switch(
                                                               value: isAndroidAutoConnected,
                                                               onChanged: (bool value) {
