@@ -45,5 +45,5 @@ app.*.map.json
 /android/app/release
 
 # HERE SDK Plugin (zu groß für Git - 7.358 Dateien!)
-plugins/heresdk-navigate-flutter-4.22.1.0.183104/
-here-sdk-plugin/
+#plugins/heresdk-navigate-flutter-4.22.1.0.183104/
+#here-sdk-plugin/

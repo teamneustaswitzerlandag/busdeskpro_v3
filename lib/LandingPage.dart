@@ -53,7 +53,7 @@ class _LandingPageState extends State<LandingPage> {
 
   Timer? _newsTimer;
 
-  final String apkUrl = 'http://vcs-demo.westeurope.cloudapp.azure.com/busdeskpro/app-release-prod-${MandantAuth}.apk'; // Ersetze dies mit deiner tatsächlichen URL
+  final String apkUrl = 'http://vcs-demo.westeurope.cloudapp.azure.com/busdeskpro/app-release-${AppVersionDashed}.apk'; // Ersetze dies mit deiner tatsächlichen URL
 
   @override
   void initState() {
