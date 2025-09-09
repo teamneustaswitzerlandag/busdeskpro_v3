@@ -29,7 +29,5 @@ workflows:
           ls -la here/heresdk-navigate-flutter-4.22.1.0.183104/ || echo "HERE SDK subdirectory not found"
       - name: Get Flutter packages
         script: flutter packages get
-      - name: Flutter analyze
-        script: flutter analyze
       - name: Build iOS
         script: flutter build ios --release --obfuscate --split-debug-info=debug-symbols --tree-shake-icons

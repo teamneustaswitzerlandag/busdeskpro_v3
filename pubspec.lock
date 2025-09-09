@@ -552,7 +552,7 @@ packages:
   here_sdk:
     dependency: "direct main"
     description:
-      path: "../here-sdk-plugin/heresdk-navigate-flutter-4.22.1.0.183104"
+      path: "here/heresdk-navigate-flutter-4.22.1.0.183104"
       relative: true
     source: path
     version: "4.22.1"
