@@ -30,4 +30,4 @@ workflows:
       - name: Get Flutter packages
         script: flutter packages get
       - name: Build iOS
-        script: flutter build ios --simulator --release --obfuscate --split-debug-info=debug-symbols --tree-shake-icons
+        script: flutter build ios --simulator --obfuscate --split-debug-info=debug-symbols --tree-shake-icons
