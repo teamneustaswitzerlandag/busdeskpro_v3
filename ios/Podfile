@@ -39,6 +39,11 @@ post_install do |installer|
     flutter_additional_ios_build_settings(target)
     target.build_configurations.each do |config|
       config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = '14.0'
+      # HERE SDK specific configurations
+      if target.name == 'here_sdk'
+        config.build_settings['EXCLUDED_ARCHS[sdk=iphonesimulator*]'] = 'i386'
+        config.build_settings['OTHER_LDFLAGS'] = '-framework heresdk'
+      end
     end
   end
 end

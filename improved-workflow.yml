@@ -1,0 +1,40 @@
+workflows:
+  ios-workflow:
+    name: iOS Build with HERE SDK
+    max_build_duration: 60
+    environment:
+      flutter: 3.27.4
+      xcode: latest
+    scripts:
+      - name: Install Git LFS
+        script: brew install git-lfs
+      - name: Initialize LFS
+        script: git lfs install
+      - name: LFS Status Check
+        script: |
+          echo "=== LFS Status ==="
+          git lfs status
+          echo "=== LFS Files ==="
+          git lfs ls-files
+          echo "=== Repository Structure ==="
+          find . -name "here" -type d
+          echo "=== HERE SDK Directory ==="
+          ls -la here/ || echo "HERE SDK directory not found"
+      - name: Pull LFS files
+        script: git lfs pull
+      - name: Verify HERE SDK After Pull
+        script: |
+          echo "=== After LFS Pull ==="
+          ls -la here/
+          ls -la here/heresdk-navigate-flutter-4.22.1.0.183104/ || echo "HERE SDK subdirectory not found"
+      - name: Clean Flutter
+        script: flutter clean
+      - name: Get Flutter packages
+        script: flutter pub get
+      - name: Install iOS Pods
+        script: |
+          cd ios
+          pod install
+          cd ..
+      - name: Build iOS
+        script: flutter build ios --simulator --obfuscate --split-debug-info=debug-symbols --tree-shake-icons
