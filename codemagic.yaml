@@ -5,6 +5,11 @@ workflows:
     environment:
       flutter: 3.27.4  # ← Ihre lokale Flutter-Version
       xcode: latest
+      vars:
+        APP_STORE_CONNECT_ISSUER_ID: "35e99773-8f95-493c-90ed-a161f03a7f79"
+        APP_STORE_CONNECT_KEY_IDENTIFIER: "7URL86NG25"
+        APP_STORE_CONNECT_PRIVATE_KEY: "-----BEGIN PRIVATE KEY-----\nMIGTAgEAMBMGByqGSM49AgEGCCqGSM49AwEHBHkwdwIBAQQg5qIBayXtVvHs4qts4enTyQuerZAfm2pkD9lPOvNghkugCgYIKoZIzj0DAQehRANCAATp2+HAHGRrp6ZAZSG//MYoUqNspkQQdXMMOHbo+3KEtYG9Bk617XudGUwPmVN8t8SW1A0WSQlUPT7w5IJ/QGA7\n-----END PRIVATE KEY-----"
+        BUNDLE_ID: "com.example.busdeskpro"
     scripts:
       - name: Install Git LFS
         script: brew install git-lfs
@@ -30,4 +35,4 @@ workflows:
       - name: Get Flutter packages
         script: flutter packages get
       - name: Build iOS
-        script: flutter build ios --release --obfuscate --split-debug-info=debug-symbols --tree-shake-icons
+        script: flutter build ios --simulator --release --obfuscate --split-debug-info=debug-symbols --tree-shake-icons
