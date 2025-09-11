@@ -10,6 +10,7 @@ import 'package:bus_desk_pro/others/materialdashboard.dart';
 import 'package:bus_desk_pro/others/newsboard.dart';
 import 'package:bus_desk_pro/others/servicerepair.dart';
 import 'package:flutter/material.dart';
+import 'package:bus_desk_pro/config/globals.dart';
 
 class NotificationsPage extends StatefulWidget {
   @override
@@ -56,6 +57,30 @@ class _KachelGridState extends State<NotificationsPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        backgroundColor: HexColor.fromHex(getColor('primary')),
+        elevation: 0,
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back, color: Colors.white),
+          onPressed: () => Navigator.pop(context),
+        ),
+        title: Row(
+          children: [
+            Icon(Icons.info_outline_rounded, color: Colors.white, size: 18),
+            SizedBox(width: 6),
+            Flexible(
+              child: Text(
+                'Services',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.w600,
+                  fontSize: 18,
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
       body: Stack(
         children: [
           // Hintergrundbild - Optimiert

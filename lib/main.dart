@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:bus_desk_pro/LandingPage.dart';
 import 'package:bus_desk_pro/Login.dart';
@@ -8,6 +9,7 @@ import 'package:bus_desk_pro/maps/environment.dart';
 import 'package:bus_desk_pro/maps/here_new/common/ui_style.dart';
 import 'package:bus_desk_pro/menu/motifications.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:url_launcher/url_launcher_string.dart';
@@ -24,7 +26,31 @@ import 'package:here_sdk/core.errors.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  
+  // Systemleiste komplett verstecken für alle Android-Versionen
+  if (Platform.isAndroid) {
+    // Systemleiste komplett ausblenden
+    SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
+  }
+  
   runApp(const _BusDeskPro());
+}
+
+// Hilfsfunktion um Systemleiste bei Bedarf wieder anzuzeigen
+void showSystemUI() {
+  if (Platform.isAndroid) {
+    SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual, overlays: [
+      SystemUiOverlay.top,
+      SystemUiOverlay.bottom,
+    ]);
+  }
+}
+
+// Hilfsfunktion um Systemleiste wieder zu verstecken
+void hideSystemUI() {
+  if (Platform.isAndroid) {
+    SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
+  }
 }
 
 Future<void> requestPermissions() async {

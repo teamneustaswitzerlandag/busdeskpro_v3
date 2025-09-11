@@ -381,24 +381,160 @@ print(filtered.length);
                       ),
                     ),
                   ],
-                ) : (FilteredToursGbl.length == 0 ? Stack(
+                ) : (FilteredToursGbl.length == 0 ? Center(
+                  child: Container(
+                    margin: EdgeInsets.all(20),
+                    padding: EdgeInsets.all(24),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(16),
+                      border: Border.all(
+                        color: HexColor.fromHex(getColor('primary')).withOpacity(0.2),
+                        width: 1,
+                      ),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.1),
+                          blurRadius: 10,
+                          offset: Offset(0, 4),
+                        ),
+                      ],
+                    ),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
                       children: [
-                          Center(
+                        // Icon Header
+                        Container(
+                          padding: EdgeInsets.all(16),
+                          decoration: BoxDecoration(
+                            color: HexColor.fromHex(getColor('primary')).withOpacity(0.1),
+                            borderRadius: BorderRadius.circular(50),
+                          ),
+                          child: Icon(
+                            Icons.search_off_rounded,
+                            size: 48,
+                            color: HexColor.fromHex(getColor('primary')),
+                          ),
+                        ),
+                        SizedBox(height: 20),
+                        
+                        // Title
+                        Text(
+                          "Keine Touren gefunden",
+                          style: TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black87,
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
+                        SizedBox(height: 12),
+                        
+                        // Subtitle
+                        Text(
+                          "Es konnten keine Touren für Sie gefunden werden",
+                          style: TextStyle(
+                            fontSize: 14,
+                            color: Colors.grey[600],
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
+                        SizedBox(height: 20),
+                        
+                        // Possible causes section
+                        Container(
+                          padding: EdgeInsets.all(16),
+                          decoration: BoxDecoration(
+                            color: Colors.grey[50],
+                            borderRadius: BorderRadius.circular(12),
+                            border: Border.all(
+                              color: Colors.grey[300]!,
+                              width: 1,
+                            ),
+                          ),
                           child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Row(
+                                children: [
+                                  Icon(
+                                    Icons.info_outline_rounded,
+                                    size: 20,
+                                    color: HexColor.fromHex(getColor('primary')),
+                                  ),
+                                  SizedBox(width: 8),
                                   Text(
-                                  "Es konnten keine Touren gefunden werden\n\nMögliche Ursachen\n\n-Eingegebene Rufnummer (${PhoneNumberAuth}) kann nicht mit einem Fahreraccount identifiziert werden\n\n-Keine Touren zu diesem Zeitraum hinterlegt",
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.black,
+                                    "Mögliche Ursachen:",
+                                    style: TextStyle(
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.w600,
+                                      color: Colors.black87,
                                     ),
                                   ),
                                 ],
                               ),
+                              SizedBox(height: 12),
+                              
+                              // Cause 1
+                              Row(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Container(
+                                    margin: EdgeInsets.only(top: 6),
+                                    width: 6,
+                                    height: 6,
+                                    decoration: BoxDecoration(
+                                      color: HexColor.fromHex(getColor('primary')),
+                                      shape: BoxShape.circle,
+                                    ),
+                                  ),
+                                  SizedBox(width: 12),
+                                  Expanded(
+                                    child: Text(
+                                      "Eingegebene Rufnummer (${PhoneNumberAuth}) kann nicht mit einem Fahreraccount identifiziert werden",
+                                      style: TextStyle(
+                                        fontSize: 13,
+                                        color: Colors.grey[700],
+                                        height: 1.4,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              SizedBox(height: 8),
+                              
+                              // Cause 2
+                              Row(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Container(
+                                    margin: EdgeInsets.only(top: 6),
+                                    width: 6,
+                                    height: 6,
+                                    decoration: BoxDecoration(
+                                      color: HexColor.fromHex(getColor('primary')),
+                                      shape: BoxShape.circle,
+                                    ),
+                                  ),
+                                  SizedBox(width: 12),
+                                  Expanded(
+                                    child: Text(
+                                      "Keine Touren zu diesem Zeitraum hinterlegt",
+                                      style: TextStyle(
+                                        fontSize: 13,
+                                        color: Colors.grey[700],
+                                        height: 1.4,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ],
                           ),
+                        ),
                       ],
+                    ),
+                  ),
                 ) : ListView.builder(
                   itemCount: FilteredToursGbl.length,
                   itemBuilder: (context, index) {

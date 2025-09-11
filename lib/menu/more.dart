@@ -25,20 +25,30 @@ class MorePageViewState extends State<MorePageView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      /*appBar: AppBar(
-        automaticallyImplyLeading: false,
-        elevation: 0,
+      appBar: AppBar(
         backgroundColor: HexColor.fromHex(getColor('primary')),
-        title: Text(
-          'Weitere Optionen',
-          style: TextStyle(
-            fontWeight: FontWeight.bold,
-            color: Colors.white,
-            fontSize: 20.0,
-          ),
+        elevation: 0,
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back, color: Colors.white),
+          onPressed: () => Navigator.pop(context),
         ),
-        centerTitle: true,
-      ),*/
+        title: Row(
+          children: [
+            Icon(Icons.settings_rounded, color: Colors.white, size: 18),
+            SizedBox(width: 6),
+            Flexible(
+              child: Text(
+                'Mehr',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.w600,
+                  fontSize: 18,
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
       backgroundColor: Colors.white,
       body: Padding(
         padding: const EdgeInsets.all(16.0),

@@ -10,6 +10,7 @@ import 'package:bus_desk_pro/maps/mapEngine.dart';
 import 'package:bus_desk_pro/menu/home.dart';
 import 'package:bus_desk_pro/menu/messages.dart';
 import 'package:bus_desk_pro/others/newsboard.dart';
+import 'package:bus_desk_pro/widgets/news_board_popup.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -95,18 +96,40 @@ class _InitMap extends State<InitNavigationMap> {
           ),
           leading:
             Center(
+              child: Container(
+                width: 32,
+                height: 32,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: Colors.white.withOpacity(0.2),
+                  border: Border.all(color: Colors.white.withOpacity(0.3), width: 1),
+                ),
+                child: Center(
               child: BlinkingPoint(
-                size: 15,
+                    size: 12,
                 color: Colors.white,
-                duration: Duration(milliseconds: 500),
+                    duration: Duration(milliseconds: 800),
+                  ),
+                ),
               ),
             ),
           actions: [
             if (checkIfAnyModuleIsActive('Chat') == true)
-              IconButton(
-                  icon: Icon(
-                      Icons.chat_outlined,
-                      color: Colors.white
+              Container(
+                margin: EdgeInsets.symmetric(horizontal: 1),
+                child: IconButton(
+                  icon: Container(
+                    padding: EdgeInsets.all(8),
+                    decoration: BoxDecoration(
+                      color: Colors.white.withOpacity(0.15),
+                      borderRadius: BorderRadius.circular(12),
+                      border: Border.all(color: Colors.white.withOpacity(0.2), width: 1),
+                    ),
+                    child: Icon(
+                      Icons.forum_rounded,
+                      color: Colors.white,
+                      size: 20,
+                    ),
                   ),
                   onPressed: () {
                     Navigator.push(
@@ -116,57 +139,88 @@ class _InitMap extends State<InitNavigationMap> {
                       ),
                     );
                   },
-                  style: ButtonStyle(
-                    iconSize: MaterialStateProperty.all(30.0),
-                  )
+                ),
               ),
             if (checkIfAnyModuleIsActive('Notifications') == true)
-              IconButton(
-                  icon: Icon(
-                      Icons.info_outline,
-                      color: Colors.white
+              Container(
+                margin: EdgeInsets.symmetric(horizontal: 1),
+                child: IconButton(
+                  icon: Container(
+                    padding: EdgeInsets.all(8),
+                    decoration: BoxDecoration(
+                      color: Colors.white.withOpacity(0.15),
+                      borderRadius: BorderRadius.circular(12),
+                      border: Border.all(color: Colors.white.withOpacity(0.2), width: 1),
+                    ),
+                    child: Icon(
+                      Icons.notifications_rounded,
+                      color: Colors.white,
+                      size: 20,
+                    ),
                   ),
                   onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => NewsBoard(),
-                      ),
-                    );
+                    _showNewsBoardPopup();
                   },
-                  style: ButtonStyle(
-                    iconSize: MaterialStateProperty.all(30.0),
-                  )
+                ),
               ),
-            IconButton(
-                icon: Icon(
-                    Icons.groups_3_outlined,
-                    color: Colors.white
+            Container(
+              margin: EdgeInsets.symmetric(horizontal: 1),
+              child: IconButton(
+                icon: Container(
+                  padding: EdgeInsets.all(8),
+                  decoration: BoxDecoration(
+                    color: Colors.white.withOpacity(0.15),
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(color: Colors.white.withOpacity(0.2), width: 1),
+                  ),
+                  child: Icon(
+                    Icons.group_rounded,
+                    color: Colors.white,
+                    size: 20,
+                  ),
                 ),
                 onPressed: () => {
                   _showPessengerPopUp()
                 },
-                style: ButtonStyle(
-                  iconSize: MaterialStateProperty.all(40.0),
-                )
+              ),
             ),
             if (checkIfAnyModuleIsActive('EmergencyPhonenumbers'))
-              IconButton(
-                  icon: Icon(
-                      Icons.phone_outlined,
-                      color: Colors.white
+              Container(
+                margin: EdgeInsets.symmetric(horizontal: 1),
+                child: IconButton(
+                  icon: Container(
+                    padding: EdgeInsets.all(8),
+                    decoration: BoxDecoration(
+                      color: Colors.white.withOpacity(0.15),
+                      borderRadius: BorderRadius.circular(12),
+                      border: Border.all(color: Colors.white.withOpacity(0.2), width: 1),
+                    ),
+                    child: Icon(
+                      Icons.phone_rounded,
+                      color: Colors.white,
+                      size: 20,
+                    ),
                   ),
                   onPressed: () => {
                     openPhonembers(context)
                   },
-                  style: ButtonStyle(
-                    iconSize: MaterialStateProperty.all(30.0),
-                  )
+                ),
               ),
-            IconButton(
-                icon: Icon(
-                    Icons.airline_stops,
-                    color: Colors.white
+            Container(
+              margin: EdgeInsets.symmetric(horizontal: 1),
+              child: IconButton(
+                icon: Container(
+                  padding: EdgeInsets.all(8),
+                  decoration: BoxDecoration(
+                    color: Colors.white.withOpacity(0.15),
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(color: Colors.white.withOpacity(0.2), width: 1),
+                  ),
+                  child: Icon(
+                    Icons.route_rounded,
+                    color: Colors.white,
+                    size: 20,
+                  ),
                 ),
                 onPressed: () async {
 
@@ -222,9 +276,7 @@ class _InitMap extends State<InitNavigationMap> {
                     showStopListPopup(context, ergebnisse);
                   }
                 },
-                style: ButtonStyle(
-                  iconSize: MaterialStateProperty.all(30.0),
-                )
+              ),
             ),
             /*IconButton(
               icon: Icon(
@@ -249,101 +301,182 @@ class _InitMap extends State<InitNavigationMap> {
     List stop_ = widget.stop_ ?? [];
     return showDialog<void>(
       context: context,
-      barrierDismissible: false, // user must tap button!
+      barrierDismissible: false,
       builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text("Passagiere"),
-          content: Container(
-              width: MediaQuery.of(context).size.width * 0.9,
-              height: MediaQuery.of(context).size.height * 0.9,
+        return Dialog(
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+          child: Container(
+            width: MediaQuery.of(context).size.width * 0.95,
+            height: MediaQuery.of(context).size.height * 0.85,
               child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                // Moderner Header
+                Container(
+                  padding: EdgeInsets.all(16),
+                  decoration: BoxDecoration(
+                    color: HexColor.fromHex(getColor('primary')),
+                    borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(16),
+                      topRight: Radius.circular(16),
+                    ),
+                  ),
+                  child: Row(
                 children: [
+                      Icon(Icons.group_rounded, color: Colors.white, size: 24),
+                      SizedBox(width: 12),
+                      Text(
+                        "Passagiere & Stopps",
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      Spacer(),
+                      IconButton(
+                        icon: Icon(Icons.close_rounded, color: Colors.white),
+                        onPressed: () => Navigator.pop(context),
+                      ),
+                    ],
+                  ),
+                ),
+                // Kompakter Content
                   Expanded(
                     child: ListView.builder(
+                    padding: EdgeInsets.all(8),
                       itemCount: GblStops.length,
                       itemBuilder: (context, index) {
                         final stop = GblStops[index];
-                        return Row(
+                      return Container(
+                        margin: EdgeInsets.symmetric(vertical: 4),
+                        decoration: BoxDecoration(
+                          color: stop['canceled'] == true 
+                            ? Colors.red.withOpacity(0.1) 
+                            : Colors.grey.withOpacity(0.05),
+                          borderRadius: BorderRadius.circular(12),
+                          border: Border.all(
+                            color: stop['canceled'] == true 
+                              ? Colors.red.withOpacity(0.3) 
+                              : Colors.grey.withOpacity(0.2),
+                            width: 1,
+                          ),
+                        ),
+                        child: Padding(
+                          padding: EdgeInsets.all(12),
+                          child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Expanded(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
+                              // Name und Status
+                              Row(
                                 children: [
-                                  Row(
-                                      children: [Text(
+                                  Expanded(
+                                    child: Text(
                                         "${stop['firstname'] ?? ''} ${stop['lastname'] ?? ''}",
-                                        style: TextStyle(
-                                          fontWeight: FontWeight.bold,
-                                          color: stop['canceled'] != null && stop['canceled'] == true ? Colors.red : Colors.black,
-                                          fontSize: 16,
-                                          //decoration: stop['canceled'] != null && stop['canceled'] == true ? TextDecoration.lineThrough : TextDecoration.none,
-                                        ),
-                                      )]
-                                  ),
-                                  Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      Row(
-                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                        children: [
-                                          Expanded(
-                                            child: Padding(
-                                                padding: EdgeInsets.symmetric(horizontal: 20, vertical: 8),
-                                                child:Text(
-                                                  "${stop['address']}\n\n${(stop['info'] != null ? stop['info'] : '')}" ?? '',
-                                                  softWrap: true,
-                                                  overflow: TextOverflow.clip,
-                                                  style: TextStyle(
-                                                    fontWeight: FontWeight.normal,
-                                                    color: stop['canceled'] != null && stop['canceled'] == true ? Colors.red : Colors.black,
-                                                    fontSize: 14,
-                                                  ),
-                                                )
-                                            ),
-                                          )
-                                        ],
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        color: stop['canceled'] == true ? Colors.red : Colors.black87,
+                                        fontSize: 16,
                                       ),
-                                    ],
+                                    ),
                                   ),
-                                  Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      Row(
-                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  if (stop['canceled'] == true)
+                                    Container(
+                                      padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                                      decoration: BoxDecoration(
+                                        color: Colors.red,
+                                        borderRadius: BorderRadius.circular(12),
+                                      ),
+                                      child: Text(
+                                        "Abgemeldet",
+                                        style: TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 12,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                    ),
+                                ],
+                              ),
+                              SizedBox(height: 8),
+                              // Adresse und Info
+                              Text(
+                                "${stop['address'] ?? ''}",
+                                style: TextStyle(
+                                  color: Colors.grey[700],
+                                  fontSize: 14,
+                                ),
+                              ),
+                              if (stop['info'] != null && stop['info'].toString().isNotEmpty) ...[
+                                SizedBox(height: 4),
+                                Text(
+                                  "${stop['info']}",
+                                  style: TextStyle(
+                                    color: Colors.grey[600],
+                                    fontSize: 13,
+                                    fontStyle: FontStyle.italic,
+                                  ),
+                                ),
+                              ],
+                              SizedBox(height: 12),
+                              // Action Buttons - nur anzeigen wenn nicht "Ende der Fahrt"
+                              if ((stop['canceled'] == null || stop['canceled'] == false) && 
+                                  stop['firstname']?.toString().toLowerCase() != 'ende der fahrt' &&
+                                  stop['lastname']?.toString().toLowerCase() != 'ende der fahrt')
+                                Row(
                                         children: [
-                                          if (stop['canceled'] == null || stop['canceled'] == false)
-                                            IconButton(
-                                                onPressed: () => {
-                                                  launchUrlString("tel:${stop['phone']}")
-                                                },
-                                                icon: Icon(
-                                                  Icons.phone,
-                                                  color: Colors.green,
-                                                )
-                                            ),
-                                          if (stop['canceled'] == null || stop['canceled'] == false)
-                                            IconButton(
-                                                onPressed: () => {
-                                                  launchUrlString("tel:${stop['mobile']}")
-                                                },
-                                                icon: Icon(
-                                                  Icons.phone_android,
-                                                  color: Colors.green,
-                                                )
-                                            ),
-                                          if (stop['canceled'] == null || stop['canceled'] == false)
-                                            IconButton(
+                                    // Telefon Button
+                                    Container(
+                                      decoration: BoxDecoration(
+                                        color: Colors.green.withOpacity(0.1),
+                                        borderRadius: BorderRadius.circular(8),
+                                        border: Border.all(color: Colors.green.withOpacity(0.3)),
+                                      ),
+                                      child: IconButton(
+                                        icon: Icon(Icons.phone_rounded, color: Colors.green, size: 20),
+                                        onPressed: () => launchUrlString("tel:${stop['phone']}"),
+                                        padding: EdgeInsets.all(8),
+                                        constraints: BoxConstraints(minWidth: 40, minHeight: 40),
+                                      ),
+                                    ),
+                                    SizedBox(width: 8),
+                                    // Mobile Button
+                                    Container(
+                                      decoration: BoxDecoration(
+                                        color: Colors.blue.withOpacity(0.1),
+                                        borderRadius: BorderRadius.circular(8),
+                                        border: Border.all(color: Colors.blue.withOpacity(0.3)),
+                                      ),
+                                      child: IconButton(
+                                        icon: Icon(Icons.phone_android_rounded, color: Colors.blue, size: 20),
+                                        onPressed: () => launchUrlString("tel:${stop['mobile']}"),
+                                        padding: EdgeInsets.all(8),
+                                        constraints: BoxConstraints(minWidth: 40, minHeight: 40),
+                                      ),
+                                    ),
+                                    Spacer(),
+                                    // Abmelden Button
+                                    Container(
+                                      decoration: BoxDecoration(
+                                        color: Colors.red.withOpacity(0.1),
+                                        borderRadius: BorderRadius.circular(8),
+                                        border: Border.all(color: Colors.red.withOpacity(0.3)),
+                                      ),
+                                      child: IconButton(
+                                        icon: Icon(Icons.person_remove_rounded, color: Colors.red, size: 20),
                                                 onPressed: () {
                                                   showCustomDialog(
                                                       context,
-                                                      "Wirklich abmelden",
-                                                      "Ja, ich möchte den Passagier wirklich von der Fahrt abmelden?",
+                                            "Passagier abmelden",
+                                            "Möchten Sie ${stop['firstname']} ${stop['lastname']} wirklich von der Fahrt abmelden?",
                                                       [
                                                         Container(
-                                                            width: double.infinity, // Setzt die Breite auf die volle verfügbare Breite
-                                                            child: ElevatedButton(style: ElevatedButton.styleFrom(backgroundColor: HexColor.fromHex(getColor('primary')),),
+                                                width: double.infinity,
+                                                child: ElevatedButton(
+                                                  style: ElevatedButton.styleFrom(
+                                                    backgroundColor: HexColor.fromHex(getColor('primary')),
+                                                    padding: EdgeInsets.symmetric(vertical: 12),
+                                                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                                                  ),
                                                               onPressed: () {
                                                                 setState(() {
                                                                   GblStops[index]['canceled'] = true;
@@ -352,57 +485,58 @@ class _InitMap extends State<InitNavigationMap> {
                                                                 Navigator.pop(context);
                                                                 _showPessengerPopUp();
                                                               },
-                                                              child: Text('Ja', style: TextStyle(color: Colors.white)),
-                                                            )),
+                                                  child: Text('Ja, abmelden', style: TextStyle(color: Colors.white)),
+                                                ),
+                                              ),
+                                              SizedBox(height: 8),
                                                         Container(
-                                                            width: double.infinity, // Setzt die Breite auf die volle verfügbare Breite
-                                                            child: ElevatedButton(style: ElevatedButton.styleFrom(backgroundColor: HexColor.fromHex(getColor('primary')),),
-                                                              onPressed: () {
-                                                                Navigator.pop(context);
-                                                              },
-                                                              child: Text('Nein', style: TextStyle(color: Colors.white)),
-                                                            )),
-                                                      ]
-                                                  );
-                                                },
-                                                icon: Icon(
-                                                  Icons.cancel,
-                                                  color: Colors.red,
-                                                )
-                                            )
-                                        ],
+                                                width: double.infinity,
+                                                child: ElevatedButton(
+                                                  style: ElevatedButton.styleFrom(
+                                                    backgroundColor: Colors.grey[300],
+                                                    padding: EdgeInsets.symmetric(vertical: 12),
+                                                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                                                  ),
+                                                  onPressed: () => Navigator.pop(context),
+                                                  child: Text('Abbrechen', style: TextStyle(color: Colors.black87)),
+                                                ),
+                                              ),
+                                            ],
+                                          );
+                                        },
+                                        padding: EdgeInsets.all(8),
+                                        constraints: BoxConstraints(minWidth: 40, minHeight: 40),
+                                      ),
                                       ),
                                     ],
                                   ),
-                                  SizedBox(height: 8.0),
-                                  Divider(
-                                    color: Colors.black,  // Farbe der Linie
-                                    thickness: 1,  // Dicke der Linie
-                                    indent: 20,  // Abstand von links
-                                    endIndent: 20,  // Abstand von rechts
-                                  ),
-                                  SizedBox(height: 8.0),
                                 ],
                               ),
                             ),
-                          ],
                         );
                       },
                     ),
                   ),
                 ],
-              )
+            ),
           ),
-          actions: [
-            Container(
-                width: double.infinity, // Setzt die Breite auf die volle verfügbare Breite
-                child: ElevatedButton(style: ElevatedButton.styleFrom(backgroundColor: HexColor.fromHex(getColor('primary')),),
-                    child: Text("schließen", style: TextStyle(color: Colors.white)),
-                    onPressed: () => {
-                      Navigator.pop(context)
-                    }
-                ))
-          ],
+        );
+      },
+    );
+  }
+
+  Future<void> _showNewsBoardPopup() async {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return Dialog(
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+          child: Container(
+            width: MediaQuery.of(context).size.width * 0.95,
+            height: MediaQuery.of(context).size.height * 0.9,
+            child: NewsBoardPopup(),
+          ),
         );
       },
     );
@@ -430,35 +564,130 @@ void openPhonembers(BuildContext context) async {
     showDialog(
       context: context,
       builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text('Notfallrufnummern'),
-          content: SingleChildScrollView(
-            child: ListBody(
-              children: phoneNumbers.map((phone) {
-                return ListTile(
-                  title: Text(phone['name']),
-                  subtitle: Text(phone['number']),
-                  trailing: IconButton(
-                    icon: Icon(Icons.phone, color: Colors.green),
+        return Dialog(
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+          child: Container(
+            width: MediaQuery.of(context).size.width * 0.9,
+            height: MediaQuery.of(context).size.height * 0.7,
+            child: Column(
+              children: [
+                // Moderner Header
+                Container(
+                  padding: EdgeInsets.all(16),
+                  decoration: BoxDecoration(
+                    color: HexColor.fromHex(getColor('primary')),
+                    borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(16),
+                      topRight: Radius.circular(16),
+                    ),
+                  ),
+                  child: Row(
+                    children: [
+                      Icon(Icons.emergency_rounded, color: Colors.white, size: 24),
+                      SizedBox(width: 12),
+                      Text(
+                        "Notfallrufnummern",
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      Spacer(),
+                      IconButton(
+                        icon: Icon(Icons.close_rounded, color: Colors.white),
+                        onPressed: () => Navigator.pop(context),
+                      ),
+                    ],
+                  ),
+                ),
+                // Kompakter Content
+                Expanded(
+                  child: ListView.builder(
+                    padding: EdgeInsets.all(12),
+                    itemCount: phoneNumbers.length,
+                    itemBuilder: (context, index) {
+                      final phone = phoneNumbers[index];
+                      return Container(
+                        margin: EdgeInsets.symmetric(vertical: 6),
+                        decoration: BoxDecoration(
+                          color: Colors.red.withOpacity(0.05),
+                          borderRadius: BorderRadius.circular(12),
+                          border: Border.all(
+                            color: Colors.red.withOpacity(0.2),
+                            width: 1,
+                          ),
+                        ),
+                        child: Padding(
+                          padding: EdgeInsets.all(16),
+                          child: Row(
+                            children: [
+                              // Icon
+                              Container(
+                                padding: EdgeInsets.all(8),
+                                decoration: BoxDecoration(
+                                  color: Colors.red.withOpacity(0.1),
+                                  borderRadius: BorderRadius.circular(8),
+                                ),
+                                child: Icon(
+                                  Icons.phone_rounded,
+                                  color: Colors.red,
+                                  size: 20,
+                                ),
+                              ),
+                              SizedBox(width: 16),
+                              // Text Content
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      phone['name'] ?? 'Unbekannt',
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 16,
+                                        color: Colors.black87,
+                                      ),
+                                    ),
+                                    SizedBox(height: 4),
+                                    Text(
+                                      phone['number'] ?? '',
+                                      style: TextStyle(
+                                        fontSize: 14,
+                                        color: Colors.grey[700],
+                                        fontFamily: 'monospace',
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              // Call Button
+                              Container(
+                                decoration: BoxDecoration(
+                                  color: Colors.red.withOpacity(0.1),
+                                  borderRadius: BorderRadius.circular(8),
+                                  border: Border.all(color: Colors.red.withOpacity(0.3)),
+                                ),
+                                child: IconButton(
+                                  icon: Icon(Icons.call_rounded, color: Colors.red, size: 20),
                     onPressed: () {
                       sendLogs("log_call_phonenumber", "tel:${phone['number']}");
                       launchUrlString('tel:${phone['number']}');
+                                  },
+                                  padding: EdgeInsets.all(8),
+                                  constraints: BoxConstraints(minWidth: 40, minHeight: 40),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      );
                     },
                   ),
-                );
-              }).toList(),
+                ),
+              ],
             ),
           ),
-          actions: <Widget>[
-            Container(
-                width: double.infinity, // Setzt die Breite auf die volle verfügbare Breite
-                child: ElevatedButton(style: ElevatedButton.styleFrom(backgroundColor: HexColor.fromHex(getColor('primary')),),
-                  child: Text('Schließen', style: TextStyle(color: Colors.white)),
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                )),
-          ],
         );
       },
     );
@@ -471,29 +700,140 @@ void showStopListPopup(BuildContext context, List<Map<String, dynamic>> ergebnis
   showDialog(
     context: context,
     builder: (BuildContext context) {
-      return AlertDialog(
-        title: const Text("Ankunftszeiten (ETA)"),
-        content: SizedBox(
-          width: double.maxFinite,
+      return Dialog(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        child: Container(
+          width: MediaQuery.of(context).size.width * 0.9,
+          height: MediaQuery.of(context).size.height * 0.7,
+          child: Column(
+            children: [
+              // Moderner Header
+              Container(
+                padding: EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                  color: HexColor.fromHex(getColor('primary')),
+                  borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(16),
+                    topRight: Radius.circular(16),
+                  ),
+                ),
+                child: Row(
+                  children: [
+                    Icon(Icons.schedule_rounded, color: Colors.white, size: 24),
+                    SizedBox(width: 12),
+                    Text(
+                      "Ankunftszeiten (ETA)",
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    Spacer(),
+                    IconButton(
+                      icon: Icon(Icons.close_rounded, color: Colors.white),
+                      onPressed: () => Navigator.pop(context),
+                    ),
+                  ],
+                ),
+              ),
+              // Kompakter Content
+              Expanded(
           child: ListView.builder(
-            shrinkWrap: true,
+                  padding: EdgeInsets.all(12),
             itemCount: ergebnisse.length,
             itemBuilder: (context, index) {
               final stop = ergebnisse[index];
-              return ListTile(
-                leading: const Icon(Icons.directions_bus, color: Colors.blueAccent),
-                title: Text('${stop["firstname"] == 'null' || stop["firstname"] == null ? '' : stop["firstname"]} ${stop["lastname"]}'),
-                subtitle: Text('ETA: ${stop["eta_arrival"]}'),
+                    return Container(
+                      margin: EdgeInsets.symmetric(vertical: 6),
+                      decoration: BoxDecoration(
+                        color: Colors.blue.withOpacity(0.05),
+                        borderRadius: BorderRadius.circular(12),
+                        border: Border.all(
+                          color: Colors.blue.withOpacity(0.2),
+                          width: 1,
+                        ),
+                      ),
+                      child: Padding(
+                        padding: EdgeInsets.all(16),
+                        child: Row(
+                          children: [
+                            // Icon
+                            Container(
+                              padding: EdgeInsets.all(8),
+                              decoration: BoxDecoration(
+                                color: Colors.blue.withOpacity(0.1),
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                              child: Icon(
+                                Icons.directions_bus_rounded,
+                                color: Colors.blue,
+                                size: 20,
+                              ),
+                            ),
+                            SizedBox(width: 16),
+                            // Text Content
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    '${stop["firstname"] == 'null' || stop["firstname"] == null ? '' : stop["firstname"]} ${stop["lastname"]}',
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 16,
+                                      color: Colors.black87,
+                                    ),
+                                  ),
+                                  SizedBox(height: 4),
+                                  Row(
+                                    children: [
+                                      Icon(
+                                        Icons.access_time_rounded,
+                                        color: Colors.blue,
+                                        size: 16,
+                                      ),
+                                      SizedBox(width: 6),
+                                      Text(
+                                        'ETA: ${stop["eta_arrival"]}',
+                                        style: TextStyle(
+                                          fontSize: 14,
+                                          color: Colors.grey[700],
+                                          fontWeight: FontWeight.w500,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              ),
+                            ),
+                            // Status Badge
+                            Container(
+                              padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                              decoration: BoxDecoration(
+                                color: Colors.blue.withOpacity(0.1),
+                                borderRadius: BorderRadius.circular(12),
+                                border: Border.all(color: Colors.blue.withOpacity(0.3)),
+                              ),
+                              child: Text(
+                                "Ankunft",
+                                style: TextStyle(
+                                  color: Colors.blue,
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
               );
             },
           ),
         ),
-        actions: [
-          TextButton(
-            child: const Text("Schließen"),
-            onPressed: () => Navigator.of(context).pop(),
+            ],
           ),
-        ],
+        ),
       );
     },
   );
