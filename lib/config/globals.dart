@@ -4,8 +4,8 @@ String MandantAuth = "";
 String PhoneNumberAuth = "";
 String AuthCode = "";
 String GoogleKey = "AIzaSyDjIyOeJktq5NohQimw-EPbirdPQwfOfHg";
-String AppVersion = "3.0.3";
-String AppVersionDashed = "3-0-3";
+String AppVersion = "3.0.4";
+String AppVersionDashed = "3-0-4";
 String? AppUserId = "";
 var GblTenant = null;
 
