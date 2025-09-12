@@ -314,29 +314,34 @@ class _LiveChatViewState extends State<LiveChatView> with TickerProviderStateMix
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
+        mainAxisSize: MainAxisSize.min,
         children: [
           Icon(
             Icons.chat_bubble_outline,
-            size: 80,
+            size: MediaQuery.of(context).orientation == Orientation.landscape ? 40 : 60,
             color: Colors.grey[400],
           ),
-          SizedBox(height: 16),
+          SizedBox(height: MediaQuery.of(context).orientation == Orientation.landscape ? 8 : 12),
           Text(
             "Noch keine Nachrichten",
             style: TextStyle(
-              fontSize: 18,
+              fontSize: MediaQuery.of(context).orientation == Orientation.landscape ? 14 : 16,
               fontWeight: FontWeight.w500,
               color: Colors.grey[600],
             ),
+            textAlign: TextAlign.center,
           ),
-          SizedBox(height: 8),
-          Text(
-            "Starte eine Unterhaltung!",
-            style: TextStyle(
-              fontSize: 14,
-              color: Colors.grey[500],
+          if (MediaQuery.of(context).orientation == Orientation.portrait) ...[
+            SizedBox(height: 4),
+            Text(
+              "Starte eine Unterhaltung!",
+              style: TextStyle(
+                fontSize: 12,
+                color: Colors.grey[500],
+              ),
+              textAlign: TextAlign.center,
             ),
-          ),
+          ],
         ],
       ),
     );

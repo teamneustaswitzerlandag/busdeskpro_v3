@@ -385,6 +385,10 @@ print(filtered.length);
                   child: Container(
                     margin: EdgeInsets.all(20),
                     padding: EdgeInsets.all(24),
+                    constraints: BoxConstraints(
+                      maxWidth: MediaQuery.of(context).size.width * 0.9,
+                      maxHeight: MediaQuery.of(context).size.height * 0.8,
+                    ),
                     decoration: BoxDecoration(
                       color: Colors.white,
                       borderRadius: BorderRadius.circular(16),
@@ -400,9 +404,10 @@ print(filtered.length);
                         ),
                       ],
                     ),
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
+                    child: SingleChildScrollView(
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
                         // Icon Header
                         Container(
                           padding: EdgeInsets.all(16),
@@ -422,7 +427,7 @@ print(filtered.length);
                         Text(
                           "Keine Touren gefunden",
                           style: TextStyle(
-                            fontSize: 20,
+                            fontSize: MediaQuery.of(context).orientation == Orientation.landscape ? 18 : 20,
                             fontWeight: FontWeight.bold,
                             color: Colors.black87,
                           ),
@@ -434,7 +439,7 @@ print(filtered.length);
                         Text(
                           "Es konnten keine Touren für Sie gefunden werden",
                           style: TextStyle(
-                            fontSize: 14,
+                            fontSize: MediaQuery.of(context).orientation == Orientation.landscape ? 12 : 14,
                             color: Colors.grey[600],
                           ),
                           textAlign: TextAlign.center,
@@ -466,7 +471,7 @@ print(filtered.length);
                                   Text(
                                     "Mögliche Ursachen:",
                                     style: TextStyle(
-                                      fontSize: 14,
+                                      fontSize: MediaQuery.of(context).orientation == Orientation.landscape ? 12 : 14,
                                       fontWeight: FontWeight.w600,
                                       color: Colors.black87,
                                     ),
@@ -493,10 +498,12 @@ print(filtered.length);
                                     child: Text(
                                       "Eingegebene Rufnummer (${PhoneNumberAuth}) kann nicht mit einem Fahreraccount identifiziert werden",
                                       style: TextStyle(
-                                        fontSize: 13,
+                                        fontSize: MediaQuery.of(context).orientation == Orientation.landscape ? 11 : 13,
                                         color: Colors.grey[700],
                                         height: 1.4,
                                       ),
+                                      softWrap: true,
+                                      overflow: TextOverflow.visible,
                                     ),
                                   ),
                                 ],
@@ -521,7 +528,7 @@ print(filtered.length);
                                     child: Text(
                                       "Keine Touren zu diesem Zeitraum hinterlegt",
                                       style: TextStyle(
-                                        fontSize: 13,
+                                        fontSize: MediaQuery.of(context).orientation == Orientation.landscape ? 11 : 13,
                                         color: Colors.grey[700],
                                         height: 1.4,
                                       ),
@@ -532,7 +539,8 @@ print(filtered.length);
                             ],
                           ),
                         ),
-                      ],
+                        ],
+                      ),
                     ),
                   ),
                 ) : ListView.builder(
