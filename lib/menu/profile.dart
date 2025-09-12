@@ -280,11 +280,12 @@ class _QuickLinksViewState extends State<QuickLinksView> {
       backgroundColor: Colors.white, // Weißer Hintergrund
       appBar: AppBar(
         backgroundColor: HexColor.fromHex(getColor('primary')),
+        automaticallyImplyLeading: false,
         elevation: 0,
-        leading: IconButton(
+        /*leading: IconButton(
           icon: Icon(Icons.arrow_back, color: Colors.white),
           onPressed: () => Navigator.pop(context),
-        ),
+        ),*/
         title: Row(
           children: [
             Icon(Icons.person_rounded, color: Colors.white, size: 18),

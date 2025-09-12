@@ -27,11 +27,8 @@ class MorePageViewState extends State<MorePageView> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: HexColor.fromHex(getColor('primary')),
+        automaticallyImplyLeading: false,
         elevation: 0,
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: Colors.white),
-          onPressed: () => Navigator.pop(context),
-        ),
         title: Row(
           children: [
             Icon(Icons.settings_rounded, color: Colors.white, size: 18),

@@ -383,10 +383,7 @@ class _DocumentListPageState extends State<DocumentListPage> with TickerProvider
       appBar: AppBar(
         elevation: 0,
         backgroundColor: HexColor.fromHex(getColor('primary')),
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: Colors.white),
-          onPressed: () => Navigator.pop(context),
-        ),
+        automaticallyImplyLeading: false,
         title: Row(
           children: [
             Icon(Icons.folder_open, color: Colors.white, size: 18),

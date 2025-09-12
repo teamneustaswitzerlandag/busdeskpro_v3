@@ -165,10 +165,7 @@ class _LiveChatViewState extends State<LiveChatView> with TickerProviderStateMix
       appBar: AppBar(
         elevation: 0,
         backgroundColor: HexColor.fromHex(getColor('primary')),
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: Colors.white),
-          onPressed: () => Navigator.pop(context),
-        ),
+        automaticallyImplyLeading: false,
         title: Row(
           children: [
             Icon(Icons.chat, color: Colors.white, size: 20),
