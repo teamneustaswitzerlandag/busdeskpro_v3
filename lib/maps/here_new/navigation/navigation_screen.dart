@@ -265,7 +265,7 @@ class _NavigationScreenState extends State<NavigationScreen>
                         onPressed: () async {
                           _stopNavigation();
                           bool result = await reachedDestinationHandler(context);
-                          if (result == false) {
+                          if (result == false && mounted) {
 
                             _startAndroidAutoNavigationToCurrentDestination();
 
@@ -279,6 +279,8 @@ class _NavigationScreenState extends State<NavigationScreen>
                               )),
                                   (Route<dynamic> route) => false,
                             );
+
+                            
                           }
                         },
                         icon: Icon(
@@ -321,9 +323,39 @@ class _NavigationScreenState extends State<NavigationScreen>
       ),
       canPop: false,
       onPopInvokedWithResult: (bool didPop, _) async {
-        if (!didPop && await Dialogs.askForExitFromNavigation(context)) {
-          _stopNavigation();
-          Navigator.of(context).pop();
+        if (!didPop && mounted) {
+          final shouldExit = await Dialogs.askForExitFromNavigation(context);
+          if (shouldExit && mounted) {
+            _stopNavigation();
+            // Verwende mehrere PostFrameCallbacks, um sicherzustellen, dass der Dialog vollständig geschlossen ist
+            WidgetsBinding.instance.addPostFrameCallback((_) {
+              WidgetsBinding.instance.addPostFrameCallback((_) {
+                // Prüfe erneut, ob das Widget noch gemountet ist
+                if (mounted) {
+                  try {
+                    // Versuche zuerst mit rootNavigator
+                    final rootNavigator = Navigator.of(context, rootNavigator: true);
+                    if (rootNavigator.canPop()) {
+                      rootNavigator.pop();
+                      return;
+                    }
+                  } catch (e) {
+                    // Fallback: Versuche mit normalem Navigator
+                    if (mounted) {
+                      try {
+                        final navigator = Navigator.of(context, rootNavigator: false);
+                        if (navigator.canPop()) {
+                          navigator.pop();
+                        }
+                      } catch (e2) {
+                        print('Navigation error: $e2');
+                      }
+                    }
+                  }
+                }
+              });
+            });
+          }
         }
       },
     );
@@ -372,7 +404,9 @@ class _NavigationScreenState extends State<NavigationScreen>
       bool? result = false; // CUSTOM BusDesk Pro: Disable Source Window //await Dialogs.askForPositionSource(context);
       if (result == null) {
         // Nothing answered. Go back.
-        Navigator.of(context).pop();
+        if (mounted && Navigator.of(context).canPop()) {
+          Navigator.of(context).pop();
+        }
         return;
       }
 
@@ -915,7 +949,9 @@ class _NavigationScreenState extends State<NavigationScreen>
             //widget.onNextStep?.call();
             if (await Dialogs.askForExitFromNavigation(context)) {
               _stopNavigation();
-              Navigator.of(context).popUntil((route) => route.settings.name == LandingScreen.navRoute);
+              if (mounted && Navigator.of(context).canPop()) {
+                Navigator.of(context).popUntil((route) => route.settings.name == LandingScreen.navRoute);
+              }
             }
           },
         ),*/
@@ -1020,7 +1056,9 @@ class _NavigationScreenState extends State<NavigationScreen>
     if (state == AppLifecycleState.detached) {
       _notificationsManager.dismissNotification();
       _stopNavigation();
-      Navigator.of(context).popUntil((route) => route.settings.name == LandingScreen.navRoute);
+      if (mounted && Navigator.of(context).canPop()) {
+        Navigator.of(context).popUntil((route) => route.settings.name == LandingScreen.navRoute);
+      }
     }
   }
 

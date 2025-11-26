@@ -554,7 +554,9 @@ void openPhonembers(BuildContext context) async {
     },
   );
 
-  final response = await http.get(Uri.parse(getUrl('get-emergencynumbers')));
+  final response = await http.get(
+    Uri.parse('${getUrl('get-emergencynumbers')}?phonenumber=$PhoneNumberAuth'),
+  );
 
   Navigator.of(context).pop(); // Schließt den Ladekreis
 

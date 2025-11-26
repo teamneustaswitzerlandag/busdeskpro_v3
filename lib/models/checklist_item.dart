@@ -4,7 +4,7 @@ class ChecklistItem {
   final String projectId;
   final String? parentId;
   final String title;
-  final String description;
+  final String? description;
   final int orderIndex;
   final int level;
   final String createdBy;
@@ -20,7 +20,7 @@ class ChecklistItem {
     required this.projectId,
     this.parentId,
     required this.title,
-    required this.description,
+    this.description,
     required this.orderIndex,
     required this.level,
     required this.createdBy,
@@ -32,22 +32,28 @@ class ChecklistItem {
   });
 
   factory ChecklistItem.fromJson(Map<String, dynamic> json) {
-    return ChecklistItem(
-      id: json['id'],
-      groupId: json['group_id'],
-      projectId: json['project_id'],
-      parentId: json['parent_id'],
-      title: json['title'],
-      description: json['description'],
-      orderIndex: json['order_index'],
-      level: json['level'],
-      createdBy: json['created_by'],
-      createdByEmail: json['created_by_email'],
-      createdAt: DateTime.parse(json['created_at']),
-      updatedAt: DateTime.parse(json['updated_at']),
-      completed: json['completed'] ?? false,
-      completionInfo: json['completion_info'],
-    );
+    try {
+      return ChecklistItem(
+        id: json['id'] as String,
+        groupId: json['group_id'] as String,
+        projectId: json['project_id'] as String,
+        parentId: json['parent_id'] as String?,
+        title: json['title'] as String,
+        description: json['description'] as String?,
+        orderIndex: json['order_index'] as int,
+        level: json['level'] as int,
+        createdBy: json['created_by'] as String,
+        createdByEmail: json['created_by_email'] as String,
+        createdAt: DateTime.parse(json['created_at'] as String),
+        updatedAt: DateTime.parse(json['updated_at'] as String),
+        completed: json['completed'] as bool? ?? false,
+        completionInfo: json['completion_info'],
+      );
+    } catch (e) {
+      print('Error parsing ChecklistItem: $e');
+      print('JSON data: $json');
+      rethrow;
+    }
   }
 
   Map<String, dynamic> toJson() {

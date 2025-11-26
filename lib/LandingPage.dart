@@ -12,6 +12,7 @@ import 'package:url_launcher/url_launcher_string.dart';
 import 'menu/home.dart';
 import 'menu/messages.dart';
 import 'menu/documents.dart';
+import 'menu/travels.dart';
 import 'menu/profile.dart';
 import 'menu/more.dart';
 import 'package:bus_desk_pro/config/globals.dart';
@@ -59,7 +60,7 @@ class _LandingPageState extends State<LandingPage> {
   void initState() {
     super.initState();
     _pages = [
-      TourListScreen(),
+      _getHomePage(),
       NotificationsPage(),
       if (checkIfAnyModuleIsActive('Chat') == true)
         MessagesPage(),
@@ -68,6 +69,18 @@ class _LandingPageState extends State<LandingPage> {
       ProfilePage(),
       MorePage(),
     ];
+  }
+
+  Widget _getHomePage() {
+    // Prüfe welches Modul aktiv ist
+    if (checkIfAnyModuleIsActive('tours') == true) {
+      return TourListScreen();
+    } else if (checkIfAnyModuleIsActive('travels') == true) {
+      return TravelsPage();
+    } else {
+      // Fallback: Standard Home (Touren)
+      return TourListScreen();
+    }
   }
 
   @override

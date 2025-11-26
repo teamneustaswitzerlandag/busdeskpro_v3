@@ -4,8 +4,8 @@ String MandantAuth = "";
 String PhoneNumberAuth = "";
 String AuthCode = "";
 String GoogleKey = "AIzaSyDjIyOeJktq5NohQimw-EPbirdPQwfOfHg";
-String AppVersion = "3.0.5";
-String AppVersionDashed = "3-0-5";
+String AppVersion = "3.0.8";
+String AppVersionDashed = "3-0-8";
 String? AppUserId = "";
 var GblTenant = null;
 
@@ -17,6 +17,7 @@ bool isLoading = true;
 String loadingText = '';
 List<dynamic> GblStops = [];
 String TourNameGbl = '';
+var CurrentTourData = null; // Speichert die kompletten Tour-Daten
 List<dynamic> ArrivalTimesReal = [];
 
 var GlobalMapView = null;

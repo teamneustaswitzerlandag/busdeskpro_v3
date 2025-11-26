@@ -46,7 +46,7 @@ class _DocumentListPageState extends State<DocumentListPage> with TickerProvider
     try {
       String jsonString = await rootBundle.loadString('lib/config/apis.json');
       Map<String, dynamic> parsedJson = json.decode(jsonString);
-      final url = Uri.parse(getUrl('get-documents'));
+      final url = Uri.parse('${getUrl('get-documents')}?phonenumber=$PhoneNumberAuth');
 
       final response = await http.get(url);
 
@@ -598,7 +598,7 @@ class _DocumentListPageState extends State<DocumentListPage> with TickerProvider
                               fontSize: 12,
                               color: Colors.grey[500],
                             ),
-                          ),
+                          )/*,
                           SizedBox(width: 16),
                           Icon(
                             Icons.storage,
@@ -612,7 +612,7 @@ class _DocumentListPageState extends State<DocumentListPage> with TickerProvider
                               fontSize: 12,
                               color: Colors.grey[500],
                             ),
-                          ),
+                          ),*/
                         ],
                       ),
                       

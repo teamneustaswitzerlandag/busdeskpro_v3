@@ -131,12 +131,12 @@ class _KachelGridState extends State<NotificationsPage> {
                       label: button4Label,
                       onPressed: () => _navigateToPage(context, EuropeanAccidentReport(), 'AccidentReport'),
                     ),
-                  if (checkIfAnyModuleIsActive('ClothOrders') == true)
-                    _buildOptimizedKachel(
-                      icon: Icons.checkroom,
-                      label: button5Label,
-                      onPressed: () => _navigateToPage(context, OrderPage(), 'ClothOrders'),
-                    ),
+                  // if (checkIfAnyModuleIsActive('ClothOrders') == true)
+                  //   _buildOptimizedKachel(
+                  //     icon: Icons.checkroom,
+                  //     label: button5Label,
+                  //     onPressed: () => _navigateToPage(context, OrderPage(), 'ClothOrders'),
+                  //   ),
                   if (checkIfAnyModuleIsActive('MaterialMapping') == true)
                     _buildOptimizedKachel(
                       icon: Icons.qr_code,

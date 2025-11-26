@@ -1,0 +1,163 @@
+{
+  "body": [
+    {
+      "name": "Schlienz Reisen GmbH",
+      "modules": [
+        {
+          "module": "tours",
+          "active": true
+        },
+        {
+          "module": "travels", 
+          "active": true
+        },
+        {
+          "module": "Chat",
+          "active": true
+        },
+        {
+          "module": "Documents",
+          "active": true
+        },
+        {
+          "module": "Notifications",
+          "active": true
+        },
+        {
+          "module": "LoginPhonenumber",
+          "active": true
+        },
+        {
+          "module": "LoginEmployeeNumber",
+          "active": false
+        },
+        {
+          "module": "BeforeDriveCheck",
+          "active": true
+        },
+        {
+          "module": "Knowledge",
+          "active": true
+        },
+        {
+          "module": "ClothOrders",
+          "active": true
+        },
+        {
+          "module": "LostFound",
+          "active": true
+        },
+        {
+          "module": "ServiceRepair",
+          "active": true
+        },
+        {
+          "module": "AccidentReport",
+          "active": true
+        },
+        {
+          "module": "MaterialMapping",
+          "active": true
+        },
+        {
+          "module": "EmergencyPhonenumbers",
+          "active": true
+        },
+        {
+          "module": "TourDisplayCustomization",
+          "active": false
+        }
+      ],
+      "apis": [
+        {
+          "api": "get-tours",
+          "url": "https://prod-10.germanywestcentral.logic.azure.com/workflows/5c3d553c707c40dab2793723a40e6ec8/triggers/manual/paths/invoke/{phonenumber}/{deviceId}?api-version=2016-06-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=2zvIO8I_vVnaI_7DukXaKlKRqsTYbp1QbpzHVX8F5YI"
+        },
+        {
+          "api": "get-news",
+          "url": "https://prod-16.germanywestcentral.logic.azure.com:443/workflows/8b256a94c2a440adae510566e6296a9b/triggers/manual/paths/invoke?api-version=2016-06-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=va3UC69PKIhF5971IklzeW7RJJaIe7giwwJvAiqIafk"
+        },
+        {
+          "api": "get-docs", 
+          "url": "https://prod-19.germanywestcentral.logic.azure.com/workflows/5b3984c255d04ea8927754af915d5446/triggers/manual/paths/invoke?api-version=2016-06-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=HC8bSHEYRLgwAki3vuycoJmqUPe3cRY514SXGFRNA70"
+        },
+        {
+          "api": "get-beforedrivecheck",
+          "url": "https://prod-24.germanywestcentral.logic.azure.com/workflows/dd607eb6770a42d9a075f5159862255f/triggers/manual/paths/invoke?api-version=2016-06-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=VVie5bsi0YUMAyjG2hoPTtHXwrVuRabb5lS_j3NvU-o"
+        },
+        {
+          "api": "get-notifications",
+          "url": "https://prod-16.germanywestcentral.logic.azure.com:443/workflows/8b256a94c2a440adae510566e6296a9b/triggers/manual/paths/invoke?api-version=2016-06-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=va3UC69PKIhF5971IklzeW7RJJaIe7giwwJvAiqIafk"
+        },
+        {
+          "api": "get-documents",
+          "url": "https://prod-19.germanywestcentral.logic.azure.com/workflows/5b3984c255d04ea8927754af915d5446/triggers/manual/paths/invoke?api-version=2016-06-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=HC8bSHEYRLgwAki3vuycoJmqUPe3cRY514SXGFRNA70"
+        },
+        {
+          "api": "open-document",
+          "url": "https://api.example.com/documents/{documentId}/open"
+        },
+        {
+          "api": "get-messages",
+          "url": "https://api.example.com/messages/USER"
+        },
+        {
+          "api": "send-message",
+          "url": "https://api.example.com/messages/send"
+        },
+        {
+          "api": "get-emergencynumbers",
+          "url": "https://api.example.com/emergency-numbers"
+        },
+        {
+          "api": "get-knowledge",
+          "url": "https://api.example.com/knowledge/{fullname}"
+        },
+        {
+          "api": "get-orders",
+          "url": "https://api.example.com/orders/{fullname}"
+        },
+        {
+          "api": "get-clothlist",
+          "url": "https://api.example.com/cloth-list"
+        },
+        {
+          "api": "send-clothorder",
+          "url": "https://api.example.com/cloth-order/send"
+        },
+        {
+          "api": "get-checkuplist",
+          "url": "https://lruvonukzenvlxoclrcy.supabase.co/functions/v1/busdesk-checklist-api/group-1754044589170"
+        },
+        {
+          "api": "send-repair",
+          "url": "https://api.example.com/repair/submit"
+        },
+        {
+          "api": "employee-login",
+          "url": "https://api.example.com/auth/employee-login"
+        }
+      ],
+      "colors": [
+        {
+          "name": "primary",
+          "value": "#2196F3"
+        }
+      ],
+      "logos": [
+        {
+          "name": "main",
+          "value": {
+            "$content": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg=="
+          }
+        }
+      ],
+      "languages": [
+        {
+          "name": "default",
+          "value": "de"
+        }
+      ]
+    }
+  ]
+}

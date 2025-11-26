@@ -42,6 +42,7 @@ class _TourListScreenState extends State<TourListScreen> {
   String _yesterday = '';
   String _today = '';
   String _tomorrow = '';
+  DateTime? _selectedDate; // Ausgewähltes Datum für DatePicker
 
   //List<dynamic> data = [];
 
@@ -54,7 +55,15 @@ class _TourListScreenState extends State<TourListScreen> {
     String jsonString = await rootBundle.loadString('lib/config/apis.json');
     print(jsonString);
     Map<String, dynamic> parsedJson = json.decode(jsonString);
-    final url = Uri.parse((getUrl('get-tours')).replaceAll("{phonenumber}", PhoneNumberAuth));
+    String urlString = (getUrl('get-tours')).replaceAll("{phonenumber}", PhoneNumberAuth);
+    
+    // Füge Datum-Parameter hinzu, wenn DatePicker-Modul aktiv ist und ein Datum ausgewählt wurde
+    if (checkIfAnyModuleIsActive('home_datepicker') == true && _selectedDate != null) {
+      final dateString = DateFormat('yyyy-MM-dd').format(_selectedDate!);
+      urlString += '&date=$dateString';
+    }
+    
+    final url = Uri.parse(urlString);
     print(url);
     try {
       final response = await http.get(url);
@@ -101,7 +110,13 @@ class _TourListScreenState extends State<TourListScreen> {
         setState(() {
           AllToursGbl = jsonData;
           isLoading = false;
-          FilteredToursGbl = AllToursGbl.where((tour) => isToday(tour['date'])).toList();
+          // Wenn ein Datum ausgewählt ist, zeige alle geladenen Touren (bereits von API gefiltert)
+          // Ansonsten filtere nach "Heute"
+          if (_selectedDate != null) {
+            FilteredToursGbl = AllToursGbl;
+          } else {
+            FilteredToursGbl = AllToursGbl.where((tour) => isToday(tour['date'])).toList();
+          }
           ExpandedToursGbl.addAll(List.filled(FilteredToursGbl.length, false));
           cacheTourList = true;
           filterTours();
@@ -163,10 +178,76 @@ class _TourListScreenState extends State<TourListScreen> {
         date.day == tomorrow.day;
   }
 
+  // Prüft, ob eine Tour Stops hat
+  bool _hasStops(Map<String, dynamic> tour) {
+    final stops = tour['stops'];
+    if (stops == null) return false;
+    if (stops is! List) return false;
+    return stops.isNotEmpty;
+  }
+
+  // Entfernt HTML-Tags aus einem String
+  String _stripHtmlTags(String htmlString) {
+    // Entferne HTML-Tags mit RegExp
+    String text = htmlString.replaceAll(RegExp(r'<[^>]*>'), '');
+    // Entferne HTML-Entities
+    text = text.replaceAll('&nbsp;', ' ');
+    text = text.replaceAll('&amp;', '&');
+    text = text.replaceAll('&lt;', '<');
+    text = text.replaceAll('&gt;', '>');
+    text = text.replaceAll('&quot;', '"');
+    text = text.replaceAll('&#39;', "'");
+    // Entferne mehrfache Leerzeichen und Zeilenumbrüche
+    text = text.replaceAll(RegExp(r'\s+'), ' ').trim();
+    return text;
+  }
+
+  // Öffnet den DatePicker für die Datumsauswahl
+  Future<void> _selectDate(BuildContext context) async {
+    final DateTime? picked = await showDatePicker(
+      context: context,
+      initialDate: _selectedDate ?? DateTime.now(),
+      firstDate: DateTime(2000),
+      lastDate: DateTime(2100),
+      locale: const Locale('de', 'DE'),
+      builder: (context, child) {
+        return Theme(
+          data: Theme.of(context).copyWith(
+            colorScheme: ColorScheme.light(
+              primary: HexColor.fromHex(getColor('primary')),
+              onPrimary: Colors.white,
+              onSurface: Colors.black,
+            ),
+            textButtonTheme: TextButtonThemeData(
+              style: TextButton.styleFrom(
+                foregroundColor: HexColor.fromHex(getColor('primary')),
+              ),
+            ),
+          ),
+          child: child!,
+        );
+      },
+    );
+    
+    if (picked != null) {
+      setState(() {
+        _selectedDate = picked;
+        _selectedFilter = null; // Filter zurücksetzen wenn Datum gewählt wird
+        isLoading = true; // Loading-Indikator anzeigen
+        loadingText = 'Lade Touren für ${DateFormat('dd.MM.yyyy').format(picked)}...';
+      });
+      // Daten mit dem ausgewählten Datum neu laden
+      fetchData();
+    }
+  }
+
   void filterTours() {
     setState(() {
       List<dynamic> filtered = [];
-      if (_selectedFilter == 'Gestern') {
+      // Wenn ein Datum ausgewählt ist, überspringe die Filterung (Daten sind bereits von API gefiltert)
+      if (_selectedDate != null) {
+        filtered = AllToursGbl;
+      } else if (_selectedFilter == 'Gestern') {
         filtered =
             AllToursGbl.where((tour) => isYesterday(tour['date'])).toList();
       } else if (_selectedFilter == 'Heute') {
@@ -221,7 +302,14 @@ print(filtered.length);
             bottom: 16, // Abstand vom unteren Rand
             right: 16,  // Abstand vom rechten Rand
             child: FloatingActionButton(
-              onPressed: null, // AdressPicker: Old Logic
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => AdressPicker(),
+                  ),
+                );
+              },
               child: Icon(
                   Icons.route,
                   color: Colors.white
@@ -266,62 +354,95 @@ print(filtered.length);
                 padding: EdgeInsets.symmetric(vertical: 8.0),
                 child: Column(
                   children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: ['Gestern', 'Heute', 'Morgen'].map((filter) {
-                        final isSelected = _selectedFilter == filter;
-                        return Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 12.0),
-                          child: ElevatedButton(
+                    Wrap(
+                      alignment: WrapAlignment.center,
+                      spacing: 8.0,
+                      runSpacing: 8.0,
+                      children: [
+                        // Filter-Buttons
+                        ...['Gestern', 'Heute', 'Morgen'].map((filter) {
+                          final isSelected = _selectedFilter == filter;
+                          return ElevatedButton(
                             style: ElevatedButton.styleFrom(
                               backgroundColor: isSelected
                                   ? HexColor.fromHex(getColor('primary'))
                                   : Colors.white,
                             ),
                             onPressed: () {
+                              final wasDateSelected = _selectedDate != null;
                               setState(() {
                                 _selectedFilter = filter;
+                                _selectedDate = null; // Datum zurücksetzen wenn Filter gewählt wird
+                                // Wenn vorher ein Datum ausgewählt war, müssen Daten neu geladen werden
+                                if (wasDateSelected) {
+                                  isLoading = true;
+                                  loadingText = 'Lade Touren...';
+                                }
                               });
-                              filterTours();
+                              // Wenn vorher ein Datum ausgewählt war, Daten neu laden
+                              if (wasDateSelected) {
+                                fetchData();
+                              } else {
+                                filterTours();
+                              }
                             },
                             child: Text(filter, style: TextStyle(color: isSelected
                                 ? Colors.white
                                 : HexColor.fromHex(getColor('primary')),)),
-                          )/*GestureDetector(
-                            onTap: () {
-                              setState(() {
-                                _selectedFilter = filter;
-                              });
-                              filterTours();
-                            },
-                            child: Container(
-                              decoration: BoxDecoration(
-                                color: isSelected
-                                    ? HexColor.fromHex(getColor('primary')).shade200
-                                    : Colors.transparent,
-                                borderRadius: BorderRadius.circular(25.0),
-                                border: Border.all(
-                                  color: HexColor.fromHex(getColor('primary')),
-                                  width: 1,
-                                ),
-                              ),
-                              padding: EdgeInsets.symmetric(
-                                  horizontal: 20.0, vertical: 10.0),
-                              child: Text(
-                                filter,
-                                style: TextStyle(
-                                    color: isSelected
-                                        ? Colors.white
-                                        : HexColor.fromHex(getColor('primary')),
-                                    fontWeight: FontWeight.normal,
-                                    fontSize: 14.0
-                                ),
+                          );
+                        }),
+                        // DatePicker-Button, wenn Modul aktiv ist
+                        if (checkIfAnyModuleIsActive('home_datepicker') == true)
+                          ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: _selectedDate != null
+                                  ? HexColor.fromHex(getColor('primary'))
+                                  : Colors.white,
+                              shape: CircleBorder(),
+                              padding: EdgeInsets.all(12.0),
+                              minimumSize: Size(48, 48),
+                            ),
+                            onPressed: () => _selectDate(context),
+                            child: Icon(
+                              Icons.calendar_today_rounded,
+                              color: _selectedDate != null
+                                  ? Colors.white
+                                  : HexColor.fromHex(getColor('primary')),
+                            ),
+                          ),
+                      ],
+                    ),
+                    // Zeige ausgewähltes Datum an, wenn vorhanden
+                    if (checkIfAnyModuleIsActive('home_datepicker') == true && _selectedDate != null)
+                      Padding(
+                        padding: const EdgeInsets.only(top: 8.0),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                              'Ausgewähltes Datum: ${DateFormat('dd.MM.yyyy').format(_selectedDate!)}',
+                              style: TextStyle(
+                                fontSize: 12,
+                                color: HexColor.fromHex(getColor('primary')),
+                                fontWeight: FontWeight.w500,
                               ),
                             ),
-                          ),*/
-                        );
-                      }).toList(),
-                    ),
+                            SizedBox(width: 8),
+                            TextButton(
+                              onPressed: () {
+                                setState(() {
+                                  _selectedDate = null;
+                                });
+                                fetchData(); // Daten neu laden ohne Datum
+                              },
+                              child: Text(
+                                'Zurücksetzen',
+                                style: TextStyle(fontSize: 12),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
                     SizedBox(height: 8.0),
                     Container(
                       decoration: BoxDecoration(
@@ -571,13 +692,13 @@ print(filtered.length);
                                         style:
                                         TextStyle(fontWeight: FontWeight.bold,
                                             color: Colors.black,
-                                            fontSize: 12)),
+                                            fontSize: checkIfAnyModuleIsActive('TourDisplayCustomization') ? 16 : 12)),
                                     Padding(
                                       padding: EdgeInsets.only(right: 60), // <— hier Abstand einstellen
                                       child: Text(tour['start'],
                                           style: TextStyle(
                                               color: Colors.black87,
-                                              fontSize: 12)),
+                                              fontSize: checkIfAnyModuleIsActive('TourDisplayCustomization') ? 18 : 12)),
                                     ),
                                   ],
                                 ),
@@ -589,13 +710,13 @@ print(filtered.length);
                                         style:
                                         TextStyle(fontWeight: FontWeight.bold,
                                             color: Colors.black,
-                                            fontSize: 12)),
+                                            fontSize: checkIfAnyModuleIsActive('TourDisplayCustomization') ? 16 : 12)),
                                     Padding(
                                       padding: EdgeInsets.only(right: 60),
                                       child: Text(tour['destination'],
                                           style: TextStyle(
                                               color: Colors.black87,
-                                              fontSize: 12)),
+                                              fontSize: checkIfAnyModuleIsActive('TourDisplayCustomization') ? 18 : 12)),
                                     ),
                                   ],
                                 ),
@@ -607,13 +728,13 @@ print(filtered.length);
                                         style:
                                         TextStyle(fontWeight: FontWeight.bold,
                                             color: Colors.black,
-                                            fontSize: 12)),
+                                            fontSize: checkIfAnyModuleIsActive('TourDisplayCustomization') ? 16 : 12)),
                                     Padding(
                                       padding: EdgeInsets.only(right: 60),
                                       child: Text(tour['end'],
                                           style: TextStyle(
                                               color: Colors.black87,
-                                              fontSize: 12)),
+                                              fontSize: checkIfAnyModuleIsActive('TourDisplayCustomization') ? 18 : 12)),
                                     ),
                                   ],
                                 ),
@@ -637,16 +758,46 @@ print(filtered.length);
                           if (ExpandedToursGbl[index])
                             Column(
                               children: [
+                                // Detaillierte Fahrinformation (Details)
+                                if (tour['details'] != null && 
+                                    tour['details'].toString().trim().isNotEmpty)
+                                  Container(
+                                    padding: EdgeInsets.all(16.0),
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          'Detaillierte Fahrinformation',
+                                          style: TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                            color: Colors.black,
+                                            fontSize: checkIfAnyModuleIsActive('TourDisplayCustomization') ? 18 : 14,
+                                          ),
+                                        ),
+                                        SizedBox(height: 8),
+                                        Text(
+                                          _stripHtmlTags(tour['details'].toString()),
+                                          style: TextStyle(
+                                            fontSize: checkIfAnyModuleIsActive('TourDisplayCustomization') ? 16 : 12,
+                                            color: Colors.black87,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
                                 ListTile(
                                   title: Text(
-                                      'Tour\n${tour['tour']}\n\n'
-                                          'Fahrer\n${tour['general']['driver']}\n\n'
-                                          'Fahrertelefon\n ${tour['general']['phone']}\n\n'
-                                          'Fahrzeugtelefon\n ${tour['general']['vehiclephone']}\n\n'
-                                          'Begleitperson\n ${tour['general']['guide']}\n\n'
-                                          'Begleitpersontelefon\n ${tour['general']['guidephone']}\n\n',
+                                      checkIfAnyModuleIsActive('TourDisplayCustomization')
+                                          ? 'Tour\n${tour['tour']}\n\n'
+                                          : 'Tour\n${tour['tour']}\n\n'
+                                              'Fahrer\n${tour['general']['driver']}\n\n'
+                                              'Fahrertelefon\n ${tour['general']['phone']}\n\n'
+                                              'Fahrzeugtelefon\n ${tour['general']['vehiclephone']}\n\n'
+                                              'Begleitperson\n${tour['general']['guide']}\n\n'
+                                              'Begleitpersontelefon\n ${tour['general']['guidephone']}\n\n',
                                       style: TextStyle(
-                                          color: Colors.black87, fontSize: 12)
+                                          color: Colors.black87, 
+                                          fontSize: checkIfAnyModuleIsActive('TourDisplayCustomization') ? 16 : 12)
                                   ),
                                 ),
                                 ...tour['stops']
@@ -708,19 +859,22 @@ print(filtered.length);
                               width: double.infinity,
                               margin: const EdgeInsets.only(
                                   left: 10.0, right: 10.0, bottom: 10.0),
-                              child: Row(
+                              child: Column(
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
+                                    Row(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      children: [
                                   Padding(
                                     padding: const EdgeInsets.symmetric(horizontal: 2.0),
                                     child: ElevatedButton(
                                     style: ElevatedButton.styleFrom(
-                                      backgroundColor: minOneAddressNoLatLng == true ? Colors.grey.shade300 : ((currentStoppIndex == 1 && TourNameGbl == tour['tour']) || TourNameGbl != tour['tour']
+                                      backgroundColor: (minOneAddressNoLatLng == true || !_hasStops(tour)) ? Colors.grey.shade300 : ((currentStoppIndex == 1 && TourNameGbl == tour['tour']) || TourNameGbl != tour['tour']
                                           ? HexColor.fromHex(getColor('primary'))
                                           : Colors.white),
                                       maximumSize: Size(100, 100),
                                     ),
-                                    onPressed: minOneAddressNoLatLng == true ? null : () {
+                                    onPressed: (minOneAddressNoLatLng == true || !_hasStops(tour)) ? null : () {
                                       showCustomDialog(
                                           context,
                                           "Tour starten",
@@ -770,6 +924,7 @@ print(filtered.length);
                                                   child: Text("Abfahrkontrolle", style: TextStyle(color: Colors.white)),
                                                   onPressed: () {
                                                     sendLogs("log_tour_beforecheck_started", tour['tour']);
+                                                    CurrentTourData = tour;
                                                     GblStops = tour['stops'];
                                                     Navigator.push(
                                                       context,
@@ -856,20 +1011,20 @@ print(filtered.length);
                                       );
                                     },
                                     child: Text('starten',
-                                        style: TextStyle(color: (currentStoppIndex == 1 && TourNameGbl == tour['tour']) || TourNameGbl != tour['tour']
+                                        style: TextStyle(color: (minOneAddressNoLatLng == true || !_hasStops(tour)) ? Colors.grey[600] : ((currentStoppIndex == 1 && TourNameGbl == tour['tour']) || TourNameGbl != tour['tour']
                                             ? Colors.white
-                                            : HexColor.fromHex(getColor('primary')), fontSize: 12,)),
+                                            : HexColor.fromHex(getColor('primary'))), fontSize: 12,)),
                                   )),
                                   Padding(
                                       padding: const EdgeInsets.symmetric(horizontal: 2.0),
                                       child: ElevatedButton(
                                     style: ElevatedButton.styleFrom(
-                                      backgroundColor: currentStoppIndex > 1 && TourNameGbl == tour['tour']
+                                      backgroundColor: (!_hasStops(tour)) ? Colors.grey.shade300 : (currentStoppIndex > 1 && TourNameGbl == tour['tour']
                                           ? HexColor.fromHex(getColor('primary'))
-                                          : Colors.white,
+                                          : Colors.white),
                                       maximumSize: Size(100, 100),
                                     ),
-                                    onPressed: () {
+                                    onPressed: (!_hasStops(tour)) ? null : () {
                                       TourNameGbl = tour['tour'];
                                       Navigator.push(
                                         context,
@@ -883,28 +1038,44 @@ print(filtered.length);
                                         ),
                                       );
                                     },
-                                    child: Text("fortsetz.", style: TextStyle(color: currentStoppIndex > 1 && TourNameGbl == tour['tour']
+                                    child: Text("fortsetz.", style: TextStyle(color: (!_hasStops(tour)) ? Colors.grey[600] : (currentStoppIndex > 1 && TourNameGbl == tour['tour']
                                         ? Colors.white
-                                        : HexColor.fromHex(getColor('primary')), fontSize: 12,)),
+                                        : HexColor.fromHex(getColor('primary'))), fontSize: 12,)),
                                   )),
                                   Padding(
                                       padding: const EdgeInsets.symmetric(horizontal: 2.0),
                                       child: ElevatedButton(
                                     style: ElevatedButton.styleFrom(
-                                      backgroundColor: currentStoppIndex > 1 && TourNameGbl == tour['tour']
+                                      backgroundColor: (!_hasStops(tour)) ? Colors.grey.shade300 : (currentStoppIndex > 1 && TourNameGbl == tour['tour']
                                           ? HexColor.fromHex(getColor('primary'))
-                                          : Colors.white,
+                                          : Colors.white),
                                     ),
-                                    onPressed: () {
+                                    onPressed: (!_hasStops(tour)) ? null : () {
                                       setState(() {
                                         currentStoppIndex = 1;
                                       });
                                     },
-                                    child: Text("beenden", style: TextStyle(color: currentStoppIndex > 1 && TourNameGbl == tour['tour']
+                                    child: Text("beenden", style: TextStyle(color: (!_hasStops(tour)) ? Colors.grey[600] : (currentStoppIndex > 1 && TourNameGbl == tour['tour']
                                         ? Colors.white
-                                        : HexColor.fromHex(getColor('primary')), fontSize: 12,)),
+                                        : HexColor.fromHex(getColor('primary'))), fontSize: 12,)),
                                   ))
-                                ])
+                                      ],
+                                    ),
+                                    // Hinweis wenn keine Stops vorhanden sind
+                                    if (!_hasStops(tour))
+                                      Padding(
+                                        padding: const EdgeInsets.only(top: 4.0),
+                                        child: Text(
+                                          'Keine Teilnehmer',
+                                          style: TextStyle(
+                                            fontSize: 10,
+                                            color: Colors.grey[600],
+                                          ),
+                                          textAlign: TextAlign.center,
+                                        ),
+                                      ),
+                                  ],
+                                ),
                             ),
                             Container(
                               decoration: const BoxDecoration(

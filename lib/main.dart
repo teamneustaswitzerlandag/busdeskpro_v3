@@ -10,6 +10,7 @@ import 'package:bus_desk_pro/maps/here_new/common/ui_style.dart';
 import 'package:bus_desk_pro/menu/motifications.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:url_launcher/url_launcher_string.dart';
@@ -120,6 +121,16 @@ class BusDeskPro extends State<_BusDeskPro> {
     if (!_isSdkInitialized) {
       return MaterialApp(
         debugShowCheckedModeBanner: false,
+        localizationsDelegates: const [
+          GlobalMaterialLocalizations.delegate,
+          GlobalWidgetsLocalizations.delegate,
+          GlobalCupertinoLocalizations.delegate,
+        ],
+        supportedLocales: const [
+          Locale('de', 'DE'),
+          Locale('en', 'US'),
+        ],
+        locale: const Locale('de', 'DE'),
         home: Scaffold(
           body: Center(
             child: Column(
@@ -138,6 +149,16 @@ class BusDeskPro extends State<_BusDeskPro> {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'BusDesk Pro',
+      localizationsDelegates: const [
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ],
+      supportedLocales: const [
+        Locale('de', 'DE'),
+        Locale('en', 'US'),
+      ],
+      locale: const Locale('de', 'DE'),
       theme: ThemeData(
         colorScheme: const ColorScheme.light(
           primary: Colors.black,
@@ -163,6 +184,16 @@ class InitErrorScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
+      localizationsDelegates: const [
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ],
+      supportedLocales: const [
+        Locale('de', 'DE'),
+        Locale('en', 'US'),
+      ],
+      locale: const Locale('de', 'DE'),
       theme: UIStyle.lightTheme,
       home: Scaffold(
         body: Container(

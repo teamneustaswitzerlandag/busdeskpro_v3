@@ -20,6 +20,10 @@
 
   <uses-permission android:name="android.car.permission.CAR_DISPLAY_IN_CLUSTER"/>
 
+  <!-- Kontakt-Berechtigungen -->
+  <uses-permission android:name="android.permission.READ_CONTACTS"/>
+  <uses-permission android:name="android.permission.WRITE_CONTACTS"/>
+
 
   <application android:label="BusDesk Pro" android:name="${applicationName}" android:icon="@mipmap/ic_launcher">
     <meta-data android:name="com.google.android.geo.API_KEY" android:value="AIzaSyDjIyOeJktq5NohQimw-EPbirdPQwfOfHg"/>

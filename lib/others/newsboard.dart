@@ -43,7 +43,7 @@ class _NewsBoardState extends State<NewsBoard> with TickerProviderStateMixin {
     try {
       String jsonString = await rootBundle.loadString('lib/config/apis.json');
       Map<String, dynamic> parsedJson = json.decode(jsonString);
-      final url = Uri.parse(getUrl('get-notifications'));
+      final url = Uri.parse('${getUrl('get-notifications')}&phonenumber=$PhoneNumberAuth');
 
       final response = await http.get(url);
 

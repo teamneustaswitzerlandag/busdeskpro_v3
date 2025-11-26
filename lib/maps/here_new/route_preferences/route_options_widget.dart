@@ -132,6 +132,7 @@ class RouteOptionsWidget extends StatelessWidget {
       initialDate: now,
       firstDate: DateTime(now.year - _departureYearDelta),
       lastDate: DateTime(now.year + _departureYearDelta),
+      locale: const Locale('de', 'DE'),
     );
   }
 
