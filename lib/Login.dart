@@ -156,7 +156,13 @@ class _LoginScreenState extends State<LoginScreen> with WidgetsBindingObserver {
   }
 
   @override
+  @override
   Widget build(BuildContext context) {
+    // Bei Phone-Eingabe oder OTP-Eingabe: Logo unten, Eingabe oben (wegen Tastatur-Überlagerung)
+    final bool isPhoneInputMode = _tenantValidated && _selectedLoginType == 'phone' && !_otpSent;
+    final bool isOtpInputMode = _tenantValidated && _selectedLoginType == 'phone' && _otpSent;
+    final bool isKeyboardInputMode = isPhoneInputMode || isOtpInputMode;
+    
     return WillPopScope(
       onWillPop: () async {
         // Verhindere Zurück-Navigation
@@ -170,59 +176,102 @@ class _LoginScreenState extends State<LoginScreen> with WidgetsBindingObserver {
             child: Container(
               height: MediaQuery.of(context).size.height - MediaQuery.of(context).padding.top - 40,
               child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
+                mainAxisAlignment: isKeyboardInputMode ? MainAxisAlignment.start : MainAxisAlignment.center,
                 children: [
-                  // Logo - nur anzeigen wenn Tenant validiert UND nicht bei Mandant-Eingabe
-                  if (_tenantValidated && _currentTenant != null && _selectedLoginType != 'phone')
-                    _buildLogo()
-                  else if (_tenantValidated && _currentTenant != null && _selectedLoginType == 'phone')
-                    _buildLogo()
-                  else if (!_tenantValidated)
-                    SizedBox.shrink(), // Kein Logo bei Mandant-Eingabe
-                  
-                  SizedBox(height: 40),
-                  
-                  // Mandant Eingabe - nur wenn noch nicht validiert
-                  if (!_tenantValidated)
-                    _buildMandantInput(),
-                  
-                  // Abstand zwischen Mandant-Eingabe und Button
-                  if (!_tenantValidated)
+                  // Bei Phone-Input: Eingabefelder zuerst (oben)
+                  if (isPhoneInputMode) ...[
+                    // Kleiner Abstand von oben
                     SizedBox(height: 20),
-                  
-                  // Tenant Validierung Button - nur wenn noch nicht validiert
-                  if (!_tenantValidated)
-                    _buildValidateTenantButton(),
-                  
-                  SizedBox(height: 20),
-                  
-                  // Login Type Selection - nur wenn Tenant validiert und Module verfügbar
-                  if (_tenantValidated && _shouldShowLoginTypeSelection())
-                    _buildLoginTypeSelection(),
-                  
-                  SizedBox(height: 20),
-                  
-                  // Phone/Employee Input - nur wenn Tenant validiert und OTP noch nicht gesendet
-                  if (_tenantValidated && !_otpSent)
-                    if (_selectedLoginType == 'phone')
-                      _buildPhoneInput()
-                    else
-                      _buildEmployeeInput(),
-                  
-                  SizedBox(height: 20),
-                  
-                  // OTP Input - nur bei Phone Login und nach SMS-Versand
-                  if (_tenantValidated && _selectedLoginType == 'phone' && _otpSent)
-                    _buildOtpInput(),
-                  
-                  SizedBox(height: 30),
-                  
-                  // Login Button - nur wenn Tenant validiert
-                  if (_tenantValidated)
+                    
+                    // Login Type Selection - nur wenn Module verfügbar
+                    if (_shouldShowLoginTypeSelection())
+                      _buildLoginTypeSelection(),
+                    
+                    SizedBox(height: 20),
+                    
+                    // Phone Input
+                    _buildPhoneInput(),
+                    
+                    SizedBox(height: 30),
+                    
+                    // Login Button
                     _buildLoginButton(),
-                  
-                  // Zusätzlicher Platz am Ende für Tastatur
-                  SizedBox(height: 100),
+                    
+                    // Flexibler Abstand, um Logo nach unten zu drücken
+                    Spacer(),
+                    
+                    // Logo am Ende (unten)
+                    _buildLogo(),
+                    
+                    // Zusätzlicher Platz am Ende für Tastatur und SnackBar
+                    SizedBox(height: 80),
+                  ] else if (isOtpInputMode) ...[
+                    // OTP-Eingabe: Code-Eingabe oben, Logo unten
+                    // Kleiner Abstand von oben
+                    SizedBox(height: 20),
+                    
+                    // OTP Input
+                    _buildOtpInput(),
+                    
+                    SizedBox(height: 30),
+                    
+                    // Login Button
+                    _buildLoginButton(),
+                    
+                    // Flexibler Abstand, um Logo nach unten zu drücken
+                    Spacer(),
+                    
+                    // Logo am Ende (unten)
+                    _buildLogo(),
+                    
+                    // Zusätzlicher Platz am Ende für Tastatur und SnackBar
+                    SizedBox(height: 80),
+                  ] else ...[
+                    // Normales Layout: Logo oben, Eingabe unten
+                    
+                    // Logo - nur anzeigen wenn Tenant validiert UND nicht bei Mandant-Eingabe
+                    if (_tenantValidated && _currentTenant != null && _selectedLoginType != 'phone')
+                      _buildLogo()
+                    else if (_tenantValidated && _currentTenant != null && _selectedLoginType == 'phone')
+                      _buildLogo()
+                    else if (!_tenantValidated)
+                      SizedBox.shrink(), // Kein Logo bei Mandant-Eingabe
+                    
+                    SizedBox(height: 40),
+                    
+                    // Mandant Eingabe - nur wenn noch nicht validiert
+                    if (!_tenantValidated)
+                      _buildMandantInput(),
+                    
+                    // Abstand zwischen Mandant-Eingabe und Button
+                    if (!_tenantValidated)
+                      SizedBox(height: 20),
+                    
+                    // Tenant Validierung Button - nur wenn noch nicht validiert
+                    if (!_tenantValidated)
+                      _buildValidateTenantButton(),
+                    
+                    SizedBox(height: 20),
+                    
+                    // Login Type Selection - nur wenn Tenant validiert und Module verfügbar (nicht bei Phone-Input)
+                    if (_tenantValidated && _shouldShowLoginTypeSelection() && _selectedLoginType != 'phone')
+                      _buildLoginTypeSelection(),
+                    
+                    SizedBox(height: 20),
+                    
+                    // Employee Input - nur wenn Tenant validiert und OTP noch nicht gesendet
+                    if (_tenantValidated && !_otpSent && _selectedLoginType == 'employee')
+                      _buildEmployeeInput(),
+                    
+                    SizedBox(height: 30),
+                    
+                    // Login Button - nur wenn Tenant validiert (nicht bei Phone/OTP-Input, da oben)
+                    if (_tenantValidated)
+                      _buildLoginButton(),
+                    
+                    // Zusätzlicher Platz am Ende für Tastatur
+                    SizedBox(height: 100),
+                  ],
                 ],
               ),
             ),

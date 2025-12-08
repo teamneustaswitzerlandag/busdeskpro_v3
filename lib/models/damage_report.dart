@@ -1,3 +1,40 @@
+// Einzelner Schaden mit individueller Dokumentation
+class IndividualDamage {
+  final String itemId;
+  final String itemTitle;
+  final String? comment;
+  final List<String> photoUrls;
+  final DateTime createdAt;
+
+  IndividualDamage({
+    required this.itemId,
+    required this.itemTitle,
+    this.comment,
+    required this.photoUrls,
+    required this.createdAt,
+  });
+
+  Map<String, dynamic> toJson() {
+    return {
+      'item_id': itemId,
+      'item_title': itemTitle,
+      'comment': comment,
+      'photo_urls': photoUrls,
+      'created_at': createdAt.toIso8601String(),
+    };
+  }
+
+  factory IndividualDamage.fromJson(Map<String, dynamic> json) {
+    return IndividualDamage(
+      itemId: json['item_id'],
+      itemTitle: json['item_title'],
+      comment: json['comment'],
+      photoUrls: List<String>.from(json['photo_urls'] ?? []),
+      createdAt: DateTime.parse(json['created_at']),
+    );
+  }
+}
+
 class DamageReport {
   final String categoryId;
   final String categoryTitle;
@@ -5,6 +42,7 @@ class DamageReport {
   final String? comment;
   final List<String> photoUrls;
   final DateTime createdAt;
+  final Map<String, IndividualDamage>? individualDamages; // Neue Eigenschaft
 
   DamageReport({
     required this.categoryId,
@@ -13,6 +51,7 @@ class DamageReport {
     this.comment,
     required this.photoUrls,
     required this.createdAt,
+    this.individualDamages,
   });
 
   Map<String, dynamic> toJson() {
@@ -23,17 +62,28 @@ class DamageReport {
       'comment': comment,
       'photo_urls': photoUrls,
       'created_at': createdAt.toIso8601String(),
+      'individual_damages': individualDamages?.map(
+        (key, value) => MapEntry(key, value.toJson()),
+      ),
     };
   }
 
   factory DamageReport.fromJson(Map<String, dynamic> json) {
+    Map<String, IndividualDamage>? individualDamages;
+    if (json['individual_damages'] != null) {
+      individualDamages = (json['individual_damages'] as Map<String, dynamic>).map(
+        (key, value) => MapEntry(key, IndividualDamage.fromJson(value)),
+      );
+    }
+    
     return DamageReport(
       categoryId: json['category_id'],
       categoryTitle: json['category_title'],
       selectedDamages: List<String>.from(json['selected_damages']),
       comment: json['comment'],
-      photoUrls: List<String>.from(json['photo_urls']),
+      photoUrls: List<String>.from(json['photo_urls'] ?? []),
       createdAt: DateTime.parse(json['created_at']),
+      individualDamages: individualDamages,
     );
   }
 }

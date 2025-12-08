@@ -240,15 +240,22 @@ class _InitMap extends State<InitNavigationMap> {
 
                   const String apiKey = 'm_xqMoC6hEma5peZ929OSw4NTmX0d0XFKD4hsqwVhbQ';
                   GeoCoordinates pos = GeoCoordinates(currentPosition!.latitude, currentPosition!.longitude);
-                  String origin = "${pos.latitude},${pos.longitude}";
-
+                  
+                  // Startpunkt ist die aktuelle Position
+                  String currentOrigin = "${pos.latitude},${pos.longitude}";
+                  
                   List<Map<String, dynamic>> ergebnisse = [];
+                  
+                  // Kumulative Zeit ab jetzt
+                  DateTime currentTime = DateTime.now();
 
-                  for (var ziel in GblStops) {
-                    print('_A1');
+                  for (int i = 0; i < GblStops.length; i++) {
+                    var ziel = GblStops[i];
+                    print('_A1 - Berechne Route zu Stopp ${i + 1}');
+                    
                     final String destination = '${ziel["lat"]},${ziel["long"]}';
                     final String url =
-                        'https://router.hereapi.com/v8/routes?transportMode=car&origin=$origin&destination=$destination&return=summary&apiKey=$apiKey';
+                        'https://router.hereapi.com/v8/routes?transportMode=car&origin=$currentOrigin&destination=$destination&return=summary&apiKey=$apiKey';
 
                     final response = await http.get(Uri.parse(url));
                     print('_B1');
@@ -260,13 +267,22 @@ class _InitMap extends State<InitNavigationMap> {
 
                       if (section != null) {
                         final summary = section['summary'];
-                        final arrival = section['arrival'];
+                        
+                        // Fahrzeit in Sekunden zur aktuellen Zeit addieren
+                        int durationInSeconds = summary['duration'] ?? 0;
+                        currentTime = currentTime.add(Duration(seconds: durationInSeconds));
+                        
+                        // ETA formatieren (HH:mm:ss)
+                        String etaFormatted = '${currentTime.hour.toString().padLeft(2, '0')}:${currentTime.minute.toString().padLeft(2, '0')}:${currentTime.second.toString().padLeft(2, '0')}';
 
                         ergebnisse.add({
                           "firstname": ziel["firstname"],
                           "lastname": ziel["lastname"],
-                          "eta_arrival": arrival["time"].split("T")[1].split("+")[0]
+                          "eta_arrival": etaFormatted
                         });
+                        
+                        // Nächster Startpunkt ist das aktuelle Ziel
+                        currentOrigin = destination;
                       }
                     }
                   }

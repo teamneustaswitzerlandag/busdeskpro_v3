@@ -13,6 +13,7 @@ class ChecklistItem {
   final DateTime updatedAt;
   final bool completed;
   final dynamic completionInfo;
+  final List<String>? availableVehicles;
 
   ChecklistItem({
     required this.id,
@@ -29,10 +30,21 @@ class ChecklistItem {
     required this.updatedAt,
     required this.completed,
     this.completionInfo,
+    this.availableVehicles,
   });
 
   factory ChecklistItem.fromJson(Map<String, dynamic> json) {
     try {
+      // Parse available_vehicles
+      List<String>? availableVehicles;
+      if (json['available_vehicles'] != null) {
+        if (json['available_vehicles'] is List) {
+          availableVehicles = (json['available_vehicles'] as List)
+              .map((v) => v.toString())
+              .toList();
+        }
+      }
+      
       return ChecklistItem(
         id: json['id'] as String,
         groupId: json['group_id'] as String,
@@ -48,6 +60,7 @@ class ChecklistItem {
         updatedAt: DateTime.parse(json['updated_at'] as String),
         completed: json['completed'] as bool? ?? false,
         completionInfo: json['completion_info'],
+        availableVehicles: availableVehicles,
       );
     } catch (e) {
       print('Error parsing ChecklistItem: $e');
@@ -90,6 +103,7 @@ class ChecklistItem {
     DateTime? updatedAt,
     bool? completed,
     dynamic completionInfo,
+    List<String>? availableVehicles,
   }) {
     return ChecklistItem(
       id: id ?? this.id,
@@ -106,6 +120,7 @@ class ChecklistItem {
       updatedAt: updatedAt ?? this.updatedAt,
       completed: completed ?? this.completed,
       completionInfo: completionInfo ?? this.completionInfo,
+      availableVehicles: availableVehicles ?? this.availableVehicles,
     );
   }
 }

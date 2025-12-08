@@ -98,14 +98,15 @@ class _KachelGridState extends State<NotificationsPage> {
             ),
           ),
           // Content - Optimiert
-          Center(
+          Padding(
+            padding: EdgeInsets.only(top: 8.0),
             child: RepaintBoundary( // Isoliert den Grid
               child: GridView.count(
                 crossAxisCount: 2,
-                mainAxisSpacing: 16.0,
-                crossAxisSpacing: 16.0,
-                padding: EdgeInsets.all(16.0),
-                childAspectRatio: 1,
+                mainAxisSpacing: 4.0,
+                crossAxisSpacing: 8.0,
+                padding: EdgeInsets.symmetric(horizontal: 12.0, vertical: 4.0),
+                childAspectRatio: 1.7,
                 children: [
                   if (checkIfAnyModuleIsActive('Notifications') == true)
                     _buildOptimizedKachel(
@@ -173,27 +174,34 @@ class _KachelGridState extends State<NotificationsPage> {
         color: Colors.transparent,
         child: InkWell(
           onTap: onPressed,
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: BorderRadius.circular(20),
           child: Container(
             decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(12),
-              color: Colors.white.withOpacity(0.1),
+              borderRadius: BorderRadius.circular(20),
+              color: Colors.white,
               border: Border.all(
-                color: Colors.white.withOpacity(0.3),
+                color: Colors.grey.shade300,
                 width: 1,
               ),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.05),
+                  blurRadius: 4,
+                  offset: Offset(0, 2),
+                ),
+              ],
             ),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Icon(
                   icon,
-                  size: 40,
+                  size: 28,
                   color: HexColor.fromHex(getColor('primary')),
                 ),
-                SizedBox(height: 8),
+                SizedBox(height: 4),
                 Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 8),
+                  padding: EdgeInsets.symmetric(horizontal: 6),
                   child: Text(
                     label,
                     style: TextStyle(
@@ -239,16 +247,22 @@ class _KachelGridState extends State<NotificationsPage> {
                 },
               ),
               actions: [
+                TextButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                  child: Text('Abbrechen'),
+                ),
                 ElevatedButton(
                   style: ElevatedButton.styleFrom(backgroundColor: HexColor.fromHex(getColor('primary'))),
                   onPressed: isButtonEnabled
                       ? () {
                     Navigator.of(context).pop();
-                    _showVorgangLaeuftDialog(context, vorgangsName);
                     sendLogs('started_${vorgangsName}', '${vehicle}');
+                    _showUebermitteltMeldung(context, vorgangsName);
                   }
                       : null,
-                  child: Text('Jetzt $vorgangsName starten', style: TextStyle(color: Colors.white)),
+                  child: Text('$vorgangsName starten', style: TextStyle(color: Colors.white)),
                 ),
               ],
             );
@@ -258,25 +272,19 @@ class _KachelGridState extends State<NotificationsPage> {
     );
   }
 
-  void _showVorgangLaeuftDialog(BuildContext context, String vorgangsName) {
-    showDialog(
-      context: context,
-      barrierDismissible: false,
-      builder: (context) {
-        return AlertDialog(
-          title: Text('$vorgangsName läuft'),
-          content: Text('\n\n'),
-          actions: [
-            ElevatedButton(
-              style: ElevatedButton.styleFrom(backgroundColor: HexColor.fromHex(getColor('primary'))),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-              child: Text('Jetzt $vorgangsName beenden', style: TextStyle(color: Colors.white)),
-            ),
+  void _showUebermitteltMeldung(BuildContext context, String vorgangsName) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Row(
+          children: [
+            Icon(Icons.check_circle, color: Colors.white),
+            SizedBox(width: 12),
+            Text('$vorgangsName wird übermittelt'),
           ],
-        );
-      },
+        ),
+        backgroundColor: Colors.green,
+        duration: Duration(seconds: 3),
+      ),
     );
   }
 }

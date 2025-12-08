@@ -7,6 +7,8 @@ import 'package:flutter/services.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
+import 'package:camera/camera.dart';
+import 'package:path_provider/path_provider.dart';
 import 'dart:io';
 import '../models/checklist_item.dart';
 import '../models/damage_report.dart';
@@ -25,13 +27,22 @@ class BeforeDriveView extends StatefulWidget {
 
 class _BeforeDriveViewState extends State<BeforeDriveView> {
   List<ChecklistItem> checklistItems = [];
+  List<ChecklistItem> filteredChecklistItems = [];
   Map<String, CategoryStatus> categoryStatuses = {};
   Map<String, DamageReport> damageReports = {};
   bool isLoading = true;
+  String? vehicleLicensePlate;
 
   @override
   void initState() {
     super.initState();
+    // Hole Fahrzeugkennzeichen aus CurrentTourData
+    if (CurrentTourData != null && 
+        CurrentTourData['general'] != null && 
+        CurrentTourData['general']['vehicle'] != null) {
+      vehicleLicensePlate = CurrentTourData['general']['vehicle'].toString();
+      print('Fahrzeugkennzeichen: $vehicleLicensePlate');
+    }
     fetchQuestions();
   }
 
@@ -74,6 +85,10 @@ class _BeforeDriveViewState extends State<BeforeDriveView> {
           checklistItems = checklistData
               .map((item) => ChecklistItem.fromJson(item))
               .toList();
+          
+          // Filtere Items basierend auf Fahrzeugkennzeichen
+          _filterItemsByVehicle();
+          
           _initializeCategoryStatuses();
           isLoading = false;
         });
@@ -114,13 +129,43 @@ class _BeforeDriveViewState extends State<BeforeDriveView> {
     }
   }
 
+  /// Filtert Checklist-Items basierend auf dem Fahrzeugkennzeichen
+  void _filterItemsByVehicle() {
+    if (vehicleLicensePlate == null || vehicleLicensePlate!.isEmpty) {
+      // Wenn kein Fahrzeugkennzeichen vorhanden ist, zeige alle Items
+      filteredChecklistItems = checklistItems;
+      return;
+    }
+    
+    filteredChecklistItems = checklistItems.where((item) {
+      // Wenn available_vehicles null ist, gilt das Item für alle Fahrzeuge
+      if (item.availableVehicles == null) {
+        return true;
+      }
+      
+      // Wenn available_vehicles leer ist, gilt es für alle Fahrzeuge
+      if (item.availableVehicles!.isEmpty) {
+        return true;
+      }
+      
+      // Prüfe, ob das Fahrzeugkennzeichen in der Liste ist
+      return item.availableVehicles!.contains(vehicleLicensePlate);
+    }).toList();
+    
+    print('Gefilterte Items: ${filteredChecklistItems.length} von ${checklistItems.length}');
+  }
+
   List<ChecklistItem> _getRootItems() {
-    return checklistItems.where((item) => item.parentId == null).toList()
+    return filteredChecklistItems
+        .where((item) => item.parentId == null)
+        .toList()
       ..sort((a, b) => a.orderIndex.compareTo(b.orderIndex));
   }
 
   List<ChecklistItem> _getChildItems(String parentId) {
-    return checklistItems.where((item) => item.parentId == parentId).toList()
+    return filteredChecklistItems
+        .where((item) => item.parentId == parentId)
+        .toList()
       ..sort((a, b) => a.orderIndex.compareTo(b.orderIndex));
   }
 
@@ -220,9 +265,8 @@ class _BeforeDriveViewState extends State<BeforeDriveView> {
   }
 
   bool _isFahrerangabenCategory(ChecklistItem category) {
-    // Prüft ob es die Fahrerangaben-Kategorie ist (order_index 7 oder Titel enthält "Fahrerangaben")
-    return category.title.toLowerCase().contains('fahrerangaben') || 
-           category.orderIndex == 7;
+    // Prüft ob es die Fahrerangaben-Kategorie ist (nur Titel-Check)
+    return category.title.toLowerCase().contains('fahrerangaben');
   }
 
   void _handleCategoryOk(ChecklistItem category) {
@@ -297,7 +341,7 @@ class _BeforeDriveViewState extends State<BeforeDriveView> {
       MaterialPageRoute(
         builder: (context) => SummaryView(
           categories: _getRootItems(),
-          allChecklistItems: checklistItems,
+          allChecklistItems: filteredChecklistItems,
           categoryStatuses: categoryStatuses,
           damageReports: damageReports,
           onConfirm: _submitCheckup,
@@ -325,30 +369,67 @@ class _BeforeDriveViewState extends State<BeforeDriveView> {
       final status = categoryStatuses[category.id]!;
       
       if (status.hasIssues) {
+        final childItems = _getChildItems(category.id);
+        final uncheckedChildren = childItems
+            .where((child) => status.uncheckedSubItems.contains(child.id))
+            .toList();
+        
         // Prüfen ob es eine explizite Dokumentation gibt
         if (damageReports.containsKey(category.id)) {
-          // Mit Dokumentation
-          allDamageReports.add(damageReports[category.id]!.toJson());
-        } else {
-          // Ohne Dokumentation - aber trotzdem Mängel
-          final childItems = _getChildItems(category.id);
-          final uncheckedChildren = childItems
-              .where((child) => status.uncheckedSubItems.contains(child.id))
-              .toList();
+          // Mit Dokumentation - aber sicherstellen, dass ALLE unchecked Items enthalten sind
+          final existingReport = damageReports[category.id]!;
           
-          // DamageReport ohne Kommentar/Fotos erstellen
-          final autoDamageReport = DamageReport(
-            categoryId: category.id,
-            categoryTitle: category.title,
-            selectedDamages: uncheckedChildren.map((c) => c.title).toList(),
-            comment: null,
-            photoUrls: [],
-            createdAt: DateTime.now(),
+          // Alle unchecked Items sammeln (auch die ohne explizite Dokumentation)
+          final allUncheckedTitles = uncheckedChildren.map((c) => c.title).toList();
+          
+          // Merge: Dokumentierte Schäden + alle anderen unchecked Items
+          final mergedDamages = <String>{
+            ...existingReport.selectedDamages,
+            ...allUncheckedTitles,
+          }.toList();
+          
+          final mergedReport = DamageReport(
+            categoryId: existingReport.categoryId,
+            categoryTitle: existingReport.categoryTitle,
+            selectedDamages: mergedDamages,
+            comment: existingReport.comment,
+            photoUrls: existingReport.photoUrls,
+            createdAt: existingReport.createdAt,
+            individualDamages: existingReport.individualDamages, // WICHTIG: Individuelle Dokumentationen übernehmen
           );
           
-          allDamageReports.add(autoDamageReport.toJson());
+          allDamageReports.add(mergedReport.toJson());
+        } else {
+          // Ohne Dokumentation - aber trotzdem Mängel
+          if (uncheckedChildren.isNotEmpty) {
+            // DamageReport ohne Kommentar/Fotos erstellen
+            final autoDamageReport = DamageReport(
+              categoryId: category.id,
+              categoryTitle: category.title,
+              selectedDamages: uncheckedChildren.map((c) => c.title).toList(),
+              comment: null,
+              photoUrls: [],
+              createdAt: DateTime.now(),
+            );
+            
+            allDamageReports.add(autoDamageReport.toJson());
+          }
         }
       }
+    }
+    
+    // Debug: Alle Schadensmeldungen ausgeben
+    print('=== Alle Schadensmeldungen ===');
+    for (var report in allDamageReports) {
+      print('Kategorie: ${report['category_title']}');
+      print('Schäden: ${report['selected_damages']}');
+      if (report['individual_damages'] != null) {
+        print('Individuelle Dokumentationen:');
+        (report['individual_damages'] as Map<String, dynamic>).forEach((key, value) {
+          print('  - ${value['item_title']}: ${value['comment'] ?? 'Kein Kommentar'}');
+        });
+      }
+      print('---');
     }
     
     // JSON für Backend generieren (vollständig für Logs)
@@ -409,8 +490,17 @@ class _BeforeDriveViewState extends State<BeforeDriveView> {
       print('No damage reports to send');
     }
     
+    // An Teams WebHook senden (wenn Schadensmeldungen vorhanden)
+    if (allDamageReports.isNotEmpty) {
+      await _sendToTeamsWebhook(driverName, tourName, allDamageReports);
+      await _sendToPowerAutomate(driverName, tourName, allDamageReports);
+    }
+    
     // Logging für interne Zwecke (vollständige Daten)
     sendLogs('beforedrive_check', fullJsonString);
+    
+    // Abfahrtskontrolle als durchgeführt speichern (persistent)
+    await saveCompletedBeforeDriveCheck(vehicleLicensePlate);
     
      Navigator.pushReplacement(
        context,
@@ -422,9 +512,245 @@ class _BeforeDriveViewState extends State<BeforeDriveView> {
          ),
        ),
     );
-    
-    // Temporär: Zurück zur vorherigen Seite
-    // Navigator.pop(context);
+  }
+
+  // Bild zu Freeimage.host hochladen und URL zurückgeben (kein API-Key nötig)
+  Future<String?> _uploadImageToCloud(String imagePath) async {
+    try {
+      final File imageFile = File(imagePath);
+      if (!await imageFile.exists()) {
+        print('Bild existiert nicht: $imagePath');
+        return null;
+      }
+      
+      // Bild als Base64 kodieren
+      final bytes = await imageFile.readAsBytes();
+      final base64Image = base64Encode(bytes);
+      
+      // Zu Freeimage.host hochladen (kostenlos, kein API-Key nötig)
+      final response = await http.post(
+        Uri.parse('https://freeimage.host/api/1/upload'),
+        body: {
+          'key': '6d207e02198a847aa98d0a2a901485a5', // Öffentlicher Demo-Key
+          'action': 'upload',
+          'source': base64Image,
+          'format': 'json',
+        },
+      );
+      
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body);
+        if (data['status_code'] == 200) {
+          final imageUrl = data['image']['url'];
+          print('Bild erfolgreich hochgeladen: $imageUrl');
+          return imageUrl;
+        } else {
+          print('Upload fehlgeschlagen: ${data['status_txt']}');
+          return null;
+        }
+      } else {
+        print('Upload fehlgeschlagen: ${response.statusCode}');
+        print('Response: ${response.body}');
+        return null;
+      }
+    } catch (e) {
+      print('Fehler beim Hochladen: $e');
+      return null;
+    }
+  }
+
+  Future<void> _sendToTeamsWebhook(String? driverName, String? tourName, List<Map<String, dynamic>> damageReports) async {
+    try {
+      const String webhookUrl = 'https://stoursgmbh.webhook.office.com/webhookb2/9134579b-f7d9-4d76-9d9e-e3782777a7ce@460562eb-be1e-4516-8341-1b9a20cbb82c/IncomingWebhook/218ff5e056c0447e844bed08288f9fd9/e0a0bd90-472b-466e-b55d-024a45ad5c3c/V2XELB_w0OK2oxs436AVJk7n76o1jvgRgluSKSdlx5-oU1';
+      
+      // Bilder hochladen und URLs sammeln
+      List<String> allImageUrls = [];
+      
+      // Schadensliste für Teams formatieren
+      String damagesList = '';
+      for (var report in damageReports) {
+        String categoryTitle = report['category_title'] ?? 'Unbekannte Kategorie';
+        List<dynamic> damages = report['selected_damages'] ?? [];
+        String comment = report['comment'] ?? '';
+        Map<String, dynamic>? individualDamages = report['individual_damages'];
+        
+        damagesList += '**${categoryTitle}**\n\n';
+        
+        if (damages.isNotEmpty) {
+          for (var damage in damages) {
+            damagesList += '- $damage';
+            
+            // Prüfe ob es eine individuelle Dokumentation für diesen Schaden gibt
+            if (individualDamages != null) {
+              for (var entry in individualDamages.entries) {
+                var individualDamage = entry.value;
+                if (individualDamage['item_title'] == damage) {
+                  String? itemComment = individualDamage['comment'];
+                  List<dynamic>? photoUrls = individualDamage['photo_urls'];
+                  
+                  if (itemComment != null && itemComment.isNotEmpty) {
+                    damagesList += ' _(${itemComment})_';
+                  }
+                  
+                  // Bilder für diesen Schaden hochladen
+                  if (photoUrls != null && photoUrls.isNotEmpty) {
+                    for (var photoPath in photoUrls) {
+                      final uploadedUrl = await _uploadImageToCloud(photoPath.toString());
+                      if (uploadedUrl != null) {
+                        allImageUrls.add(uploadedUrl);
+                        damagesList += '\n  📷 [Foto]($uploadedUrl)';
+                      }
+                    }
+                  }
+                  break;
+                }
+              }
+            }
+            
+            damagesList += '\n';
+          }
+        }
+        
+        damagesList += '\n';
+      }
+      
+      // Sections für Teams erstellen
+      List<Map<String, dynamic>> sections = [
+        {
+          'activityTitle': '<at>Team</at> - Bitte beachten!',
+          'activitySubtitle': 'Es wurden Schäden bei der Abfahrtskontrolle gemeldet',
+          'facts': [
+            {
+              'name': '🚗 Kennzeichen:',
+              'value': vehicleLicensePlate ?? 'Nicht verfügbar'
+            },
+            {
+              'name': '👤 Fahrer:',
+              'value': driverName ?? 'Nicht verfügbar'
+            },
+            {
+              'name': '🗓️ Tour:',
+              'value': tourName ?? 'Nicht verfügbar'
+            },
+            {
+              'name': '⏰ Zeitpunkt:',
+              'value': DateTime.now().toString().substring(0, 19)
+            }
+          ],
+          'text': '**Gemeldete Schäden:**\n\n$damagesList'
+        }
+      ];
+      
+      // Bilder als Vorschauen mit klickbarem Link hinzufügen
+      if (allImageUrls.isNotEmpty) {
+        // Erstelle eine Liste von Bild-Objekten für die images-Property
+        List<Map<String, String>> imagesList = [];
+        for (var imageUrl in allImageUrls) {
+          imagesList.add({
+            'image': imageUrl,
+            'title': 'Zum Vergrößern klicken'
+          });
+        }
+        
+        sections.add({
+          'title': '📸 Fotos der Schäden',
+          'images': imagesList,
+        });
+        
+        // Zusätzlich Links zum Öffnen in voller Größe
+        String linksText = '';
+        int imageCount = 1;
+        for (var imageUrl in allImageUrls) {
+          linksText += '[🔍 Foto $imageCount in voller Größe]($imageUrl)  \n';
+          imageCount++;
+        }
+        
+        sections.add({
+          'text': linksText,
+        });
+      }
+      
+      // Teams MessageCard mit @mention erstellen
+      Map<String, dynamic> teamsMessage = {
+        'type': 'MessageCard',
+        '@context': 'https://schema.org/extensions',
+        'summary': 'Abfahrtskontrolle - Schäden gemeldet',
+        'themeColor': 'FF6B35',
+        'title': '⚠️ Abfahrtskontrolle - Schäden gemeldet',
+        'sections': sections,
+        'mentions': [
+          {
+            'type': 'mention',
+            'text': '<at>Team</at>',
+            'mentioned': {
+              'id': 'everyone',
+              'name': 'Team'
+            }
+          }
+        ]
+      };
+      
+      print('Sending to Teams webhook...');
+      
+      final response = await http.post(
+        Uri.parse(webhookUrl),
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: json.encode(teamsMessage),
+      );
+      
+      print('Teams webhook response status: ${response.statusCode}');
+      
+      if (response.statusCode == 200 || response.statusCode == 202) {
+        print('Successfully sent to Teams webhook');
+      } else {
+        print('Failed to send to Teams webhook: ${response.statusCode}');
+        print('Response body: ${response.body}');
+      }
+    } catch (e) {
+      print('Error sending to Teams webhook: $e');
+      // Fehler wird geloggt, aber Prozess wird nicht unterbrochen
+    }
+  }
+
+  Future<void> _sendToPowerAutomate(String? driverName, String? tourName, List<Map<String, dynamic>> damageReports) async {
+    try {
+      const String powerAutomateUrl = 'https://ef24c3593e63ece0be27bab074268e.42.environment.api.powerplatform.com:443/powerautomate/automations/direct/workflows/90bf46e8354047779c7e2e5e500869aa/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=mzDEe3vo658HqJXtc68wkL19e_vofT4-XwJZzwlFXAA';
+      
+      // Payload für Power Automate vorbereiten
+      Map<String, dynamic> payload = {
+        'timestamp': DateTime.now().toIso8601String(),
+        'vehicle_license_plate': vehicleLicensePlate ?? 'Nicht verfügbar',
+        'driver_name': driverName ?? 'Nicht verfügbar',
+        'tour': tourName ?? 'Nicht verfügbar',
+        'damage_reports': damageReports,
+        'has_issues': true,
+      };
+      
+      print('Sending to Power Automate...');
+      print('Power Automate payload: ${json.encode(payload)}');
+      
+      final response = await http.post(
+        Uri.parse(powerAutomateUrl),
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: json.encode(payload),
+      );
+      
+      print('Power Automate response status: ${response.statusCode}');
+      
+      if (response.statusCode == 200 || response.statusCode == 202) {
+        print('Successfully sent to Power Automate');
+      } else {
+        print('Failed to send to Power Automate: ${response.statusCode}');
+        print('Response body: ${response.body}');
+      }
+    } catch (e) {
+      print('Error sending to Power Automate: $e');
+      // Fehler wird geloggt, aber Prozess wird nicht unterbrochen
+    }
   }
 
   bool get _allCategoriesChecked {
@@ -446,13 +772,27 @@ class _BeforeDriveViewState extends State<BeforeDriveView> {
             Navigator.pop(context);
           },
         ),
-        title: const Text(
-          'Prüfung',
-          style: TextStyle(
-            fontWeight: FontWeight.bold,
-            color: Colors.white,
-            fontSize: 20.0,
-          ),
+        title: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const Text(
+              'Prüfung',
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                color: Colors.white,
+                fontSize: 20.0,
+              ),
+            ),
+            if (vehicleLicensePlate != null && vehicleLicensePlate!.isNotEmpty)
+              Text(
+                'Fahrzeug: $vehicleLicensePlate',
+                style: const TextStyle(
+                  color: Colors.white70,
+                  fontSize: 14.0,
+                ),
+              ),
+          ],
         ),
         centerTitle: false,
       ),
@@ -618,64 +958,94 @@ class _BeforeDriveViewState extends State<BeforeDriveView> {
                                     size: 24.0,
                                   ),
                                 ),
-                              // Alle Kategorien haben die beiden Buttons
-                              Row(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  // Problem/Mangel Button (Daumen runter)
-                    GestureDetector(
-                                    onTap: () => _handleCategoryNotOk(category),
-                      child: Container(
-                                      padding: const EdgeInsets.all(8.0),
-                        decoration: BoxDecoration(
-                                        color: status.isOk == false
-                                            ? Colors.red 
-                                            : Colors.grey.shade200,
-                                        borderRadius: BorderRadius.circular(6.0),
-                                        border: status.isOk == null
-                                            ? Border.all(color: Colors.grey.shade400, width: 2.0)
-                                            : null,
-                                      ),
-                                      child: Icon(
-                                        Icons.thumb_down,
-                                        color: status.isOk == false
-                                            ? Colors.white 
-                                            : Colors.grey.shade600,
-                                        size: 24.0,
-                                      ),
+                              // Fahrerangaben: Nur Pfeil zum Öffnen
+                              if (_isFahrerangabenCategory(category)) ...[
+                                // Status-Icon anzeigen wenn abgeschlossen
+                                if (status.isSelected)
+                                  Container(
+                                    margin: const EdgeInsets.only(right: 8.0),
+                                    child: Icon(
+                                      status.isOk == true ? Icons.check_circle : Icons.cancel,
+                                      color: status.isOk == true ? Colors.green : Colors.red,
+                                      size: 24.0,
                                     ),
                                   ),
-                                  const SizedBox(width: 8.0),
-                                  // Alles OK Button (Daumen hoch)
-                                  GestureDetector(
-                                    onTap: () => _handleCategoryOk(category),
-                                    child: Container(
-                                      padding: const EdgeInsets.all(8.0),
-                                      decoration: BoxDecoration(
-                                        color: status.isOk == true
-                                            ? Colors.green 
-                                            : Colors.grey.shade200,
-                                        borderRadius: BorderRadius.circular(6.0),
-                                        border: status.isOk == null
-                                            ? Border.all(color: Colors.grey.shade400, width: 2.0)
-                            : null,
-                      ),
-                                      child: Icon(
-                                        Icons.thumb_up,
-                                        color: status.isOk == true
-                                            ? Colors.white 
-                                            : Colors.grey.shade600,
-                                        size: 24.0,
-                                      ),
+                                // Pfeil zum Öffnen
+                                GestureDetector(
+                                  onTap: () => _navigateToDetail(category),
+                                  child: Container(
+                                    padding: const EdgeInsets.all(8.0),
+                                    decoration: BoxDecoration(
+                                      color: HexColor.fromHex(getColor('primary')),
+                                      borderRadius: BorderRadius.circular(6.0),
+                                    ),
+                                    child: Icon(
+                                      Icons.arrow_forward_ios,
+                                      color: Colors.white,
+                                      size: 20.0,
                                     ),
                                   ),
-                                ],
-                              ),
+                                ),
+                              ] else ...[
+                                // Alle anderen Kategorien: Daumen hoch/runter Buttons
+                                Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    // Problem/Mangel Button (Daumen runter)
+                                    GestureDetector(
+                                      onTap: () => _handleCategoryNotOk(category),
+                                      child: Container(
+                                        padding: const EdgeInsets.all(8.0),
+                                        decoration: BoxDecoration(
+                                          color: status.isOk == false
+                                              ? Colors.red 
+                                              : Colors.grey.shade200,
+                                          borderRadius: BorderRadius.circular(6.0),
+                                          border: status.isOk == null
+                                              ? Border.all(color: Colors.grey.shade400, width: 2.0)
+                                              : null,
+                                        ),
+                                        child: Icon(
+                                          Icons.thumb_down,
+                                          color: status.isOk == false
+                                              ? Colors.white 
+                                              : Colors.grey.shade600,
+                                          size: 24.0,
+                                        ),
+                                      ),
+                                    ),
+                                    const SizedBox(width: 8.0),
+                                    // Alles OK Button (Daumen hoch)
+                                    GestureDetector(
+                                      onTap: () => _handleCategoryOk(category),
+                                      child: Container(
+                                        padding: const EdgeInsets.all(8.0),
+                                        decoration: BoxDecoration(
+                                          color: status.isOk == true
+                                              ? Colors.green 
+                                              : Colors.grey.shade200,
+                                          borderRadius: BorderRadius.circular(6.0),
+                                          border: status.isOk == null
+                                              ? Border.all(color: Colors.grey.shade400, width: 2.0)
+                                              : null,
+                                        ),
+                                        child: Icon(
+                                          Icons.thumb_up,
+                                          color: status.isOk == true
+                                              ? Colors.white 
+                                              : Colors.grey.shade600,
+                                          size: 24.0,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ],
                             ],
                           ),
-                          onTap: status.hasSubItems 
+                          onTap: _isFahrerangabenCategory(category) 
                               ? () => _navigateToDetail(category)
-                              : null,
+                              : (status.hasSubItems ? () => _navigateToDetail(category) : null),
                       ),
                       );
                     },
@@ -743,30 +1113,62 @@ class CategoryDetailView extends StatefulWidget {
 class _CategoryDetailViewState extends State<CategoryDetailView> {
   late Map<String, bool?> itemCheckedState; // null = nicht ausgewählt
   DamageReport? damageReport;
+  Map<String, IndividualDamage> individualDamages = {}; // Individuelle Dokumentationen pro Item
 
   @override
   void initState() {
     super.initState();
     itemCheckedState = {};
     for (var item in widget.childItems) {
-      // Wenn in uncheckedSubItems -> false (Mangel), sonst true (OK)
-      if (widget.initialStatus.uncheckedSubItems.contains(item.id)) {
-        itemCheckedState[item.id] = false;
+      // Wenn der Oberpunkt noch keinen Status hat (isOk == null), 
+      // dann sollten auch die Unterpunkte null sein
+      if (widget.initialStatus.isOk == null) {
+        itemCheckedState[item.id] = null; // Noch nicht ausgewählt
+      } else if (widget.initialStatus.uncheckedSubItems.contains(item.id)) {
+        itemCheckedState[item.id] = false; // Mangel
       } else {
-        itemCheckedState[item.id] = true; // Standardmäßig OK
+        itemCheckedState[item.id] = true; // OK
       }
     }
     damageReport = widget.existingReport;
+    
+    // Lade existierende individuelle Dokumentationen
+    if (widget.existingReport?.individualDamages != null) {
+      individualDamages = Map.from(widget.existingReport!.individualDamages!);
+    }
   }
 
   bool _isFahrerangabenCategory() {
-    return widget.category.title.toLowerCase().contains('fahrerangaben') || 
-           widget.category.orderIndex == 7;
+    return widget.category.title.toLowerCase().contains('fahrerangaben');
   }
 
   void _handleBackButton() {
-    // Prüfen ob irgendwas geändert wurde
-    final hasChanges = itemCheckedState.values.any((value) => value != null);
+    // Prüfen ob der Benutzer überhaupt etwas geändert hat
+    // Vergleiche mit dem initialen Status
+    bool hasChanges = false;
+    
+    // Wenn initialStatus.isOk == null, dann prüfe ob irgendwelche Items auf nicht-null gesetzt wurden
+    if (widget.initialStatus.isOk == null) {
+      hasChanges = itemCheckedState.values.any((value) => value != null);
+    } else {
+      // Wenn initialStatus bereits gesetzt war, prüfe ob sich etwas geändert hat
+      final currentCheckedItems = itemCheckedState.entries
+          .where((e) => e.value == true)
+          .map((e) => e.key)
+          .toList();
+      final currentUncheckedItems = itemCheckedState.entries
+          .where((e) => e.value == false)
+          .map((e) => e.key)
+          .toList();
+      
+      // Vergleiche mit initialen Werten
+      final initialCheckedItems = widget.initialStatus.checkedSubItems;
+      final initialUncheckedItems = widget.initialStatus.uncheckedSubItems;
+      
+      hasChanges = !_listsEqual(currentCheckedItems, initialCheckedItems) ||
+                   !_listsEqual(currentUncheckedItems, initialUncheckedItems) ||
+                   damageReport != widget.existingReport;
+    }
     
     if (!hasChanges) {
       // Keine Änderungen - einfach zurück ohne zu speichern
@@ -774,6 +1176,109 @@ class _CategoryDetailViewState extends State<CategoryDetailView> {
     } else {
       // Es gibt Änderungen - normal speichern
       _saveAndReturn();
+    }
+  }
+  
+  bool _listsEqual(List<String> list1, List<String> list2) {
+    if (list1.length != list2.length) return false;
+    final sorted1 = List<String>.from(list1)..sort();
+    final sorted2 = List<String>.from(list2)..sort();
+    return sorted1.toString() == sorted2.toString();
+  }
+
+  Future<void> _sendDriverUnfitNotification(String unfitReason) async {
+    try {
+      // Fahrzeugkennzeichen und Fahrerinformationen holen
+      String? vehicleLicensePlate;
+      String? driverName;
+      String? tourName;
+      
+      if (CurrentTourData != null && CurrentTourData['general'] != null) {
+        vehicleLicensePlate = CurrentTourData['general']['vehicle']?.toString();
+        driverName = CurrentTourData['general']['driver'];
+        tourName = CurrentTourData['tour'];
+      }
+      
+      // Teams WebHook senden
+      await _sendDriverUnfitToTeams(vehicleLicensePlate, driverName, tourName, unfitReason);
+      
+      print('Driver unfit notification sent successfully');
+    } catch (e) {
+      print('Error sending driver unfit notification: $e');
+    }
+  }
+
+  Future<void> _sendDriverUnfitToTeams(String? vehicleLicensePlate, String? driverName, String? tourName, String unfitReason) async {
+    try {
+      const String webhookUrl = 'https://stoursgmbh.webhook.office.com/webhookb2/9134579b-f7d9-4d76-9d9e-e3782777a7ce@460562eb-be1e-4516-8341-1b9a20cbb82c/IncomingWebhook/218ff5e056c0447e844bed08288f9fd9/e0a0bd90-472b-466e-b55d-024a45ad5c3c/V2XELB_w0OK2oxs436AVJk7n76o1jvgRgluSKSdlx5-oU1';
+      
+      // Teams MessageCard mit @mention erstellen
+      Map<String, dynamic> teamsMessage = {
+        'type': 'MessageCard',
+        '@context': 'https://schema.org/extensions',
+        'summary': 'DRINGEND: Fahrer meldet Fahrtuntüchtigkeit',
+        'themeColor': 'DC143C', // Crimson Red für hohe Dringlichkeit
+        'title': '🚨 DRINGEND: Fahrtuntüchtigkeit gemeldet',
+        'sections': [
+          {
+            'activityTitle': '<at>Team</at> - SOFORTIGE MASSNAHMEN ERFORDERLICH!',
+            'activitySubtitle': 'Ein Fahrer hat sich als fahrtuntüchtig gemeldet',
+            'facts': [
+              {
+                'name': '🚗 Kennzeichen:',
+                'value': vehicleLicensePlate ?? 'Nicht verfügbar'
+              },
+              {
+                'name': '👤 Fahrer:',
+                'value': driverName ?? 'Nicht verfügbar'
+              },
+              {
+                'name': '🗓️ Tour:',
+                'value': tourName ?? 'Nicht verfügbar'
+              },
+              {
+                'name': '⏰ Zeitpunkt:',
+                'value': DateTime.now().toString().substring(0, 19)
+              },
+              {
+                'name': '⚠️ Grund:',
+                'value': unfitReason
+              }
+            ],
+            'text': '**WICHTIG:** Der Fahrer wurde angewiesen, das Fahrzeug zu verlassen und sich an die Disposition zu wenden.\n\nBitte umgehend Kontakt aufnehmen und Ersatzfahrer organisieren!'
+          }
+        ],
+        'mentions': [
+          {
+            'type': 'mention',
+            'text': '<at>Team</at>',
+            'mentioned': {
+              'id': 'everyone',
+              'name': 'Team'
+            }
+          }
+        ]
+      };
+      
+      print('Sending driver unfit notification to Teams webhook...');
+      
+      final response = await http.post(
+        Uri.parse(webhookUrl),
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: json.encode(teamsMessage),
+      );
+      
+      print('Teams webhook response status: ${response.statusCode}');
+      
+      if (response.statusCode == 200 || response.statusCode == 202) {
+        print('Successfully sent driver unfit notification to Teams');
+      } else {
+        print('Failed to send to Teams webhook: ${response.statusCode}');
+      }
+    } catch (e) {
+      print('Error sending driver unfit notification to Teams: $e');
     }
   }
 
@@ -788,17 +1293,73 @@ class _CategoryDetailViewState extends State<CategoryDetailView> {
         .map((e) => e.key)
         .toList();
 
+    // Wenn der initiale Status null war und der Benutzer nichts geändert hat,
+    // dann sollte der Status auch null bleiben
+    bool? isOk;
+    
+    // Spezielle Logik für Fahrerangaben
+    if (_isFahrerangabenCategory()) {
+      // Fahrerangaben ist abgeschlossen wenn:
+      // - Alle Items auf "OK" (true) gesetzt wurden ODER
+      // - Mindestens ein Item auf "Nicht OK" (false) gesetzt wurde
+      final allItemsSelected = itemCheckedState.values.every((v) => v != null);
+      final hasAnyNotOk = uncheckedItems.isNotEmpty;
+      final allOk = checkedItems.length == widget.childItems.length;
+      
+      if (!allItemsSelected && !hasAnyNotOk) {
+        // Noch nicht alle Items bewertet und keiner auf "Nicht OK"
+        isOk = null;
+      } else if (hasAnyNotOk) {
+        // Mindestens einer auf "Nicht OK" -> Kategorie ist "Nicht OK"
+        isOk = false;
+      } else if (allOk) {
+        // Alle auf "OK" -> Kategorie ist "OK"
+        isOk = true;
+      } else {
+        isOk = null;
+      }
+    } else {
+      // Normale Logik für andere Kategorien
+      if (widget.initialStatus.isOk == null) {
+        // Wenn alle Items noch null sind, dann Status auch null
+        if (checkedItems.isEmpty && uncheckedItems.isEmpty) {
+          isOk = null;
+        } else {
+          // Wenn mindestens ein Item ausgewählt wurde, dann basierend auf uncheckedItems
+          isOk = uncheckedItems.isEmpty;
+        }
+      } else {
+        // Wenn initialer Status bereits gesetzt war, dann basierend auf uncheckedItems
+        isOk = uncheckedItems.isEmpty;
+      }
+    }
+
     final status = CategoryStatus(
       categoryId: widget.category.id,
-      isOk: uncheckedItems.isEmpty,
+      isOk: isOk,
       hasSubItems: true,
       checkedSubItems: checkedItems,
       uncheckedSubItems: uncheckedItems,
     );
 
+    // DamageReport mit individuellen Dokumentationen erstellen
+    final uncheckedChildItems = widget.childItems
+        .where((child) => uncheckedItems.contains(child.id))
+        .toList();
+    
+    final updatedReport = DamageReport(
+      categoryId: widget.category.id,
+      categoryTitle: widget.category.title,
+      selectedDamages: uncheckedChildItems.map((c) => c.title).toList(),
+      comment: damageReport?.comment,
+      photoUrls: damageReport?.photoUrls ?? [],
+      createdAt: damageReport?.createdAt ?? DateTime.now(),
+      individualDamages: individualDamages.isNotEmpty ? individualDamages : null,
+    );
+
     Navigator.pop(context, {
       'status': status,
-      'report': damageReport,
+      'report': uncheckedItems.isNotEmpty ? updatedReport : null,
     });
   }
 
@@ -855,80 +1416,176 @@ class _CategoryDetailViewState extends State<CategoryDetailView> {
                       color: Colors.grey.shade600,
                       size: 24.0,
                     ),
-                    title: Text(
-                        item.title,
-                      style: const TextStyle(
-                        fontSize: 15.0,
-                        fontWeight: FontWeight.w500,
-                      ),
+                    title: Row(
+                      children: [
+                        Expanded(
+                          child: Text(
+                            item.title,
+                            style: const TextStyle(
+                              fontSize: 15.0,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                        ),
+                        // Dokumentations-Icon anzeigen, wenn dokumentiert
+                        if (individualDamages.containsKey(item.id))
+                          Container(
+                            margin: const EdgeInsets.only(left: 8.0),
+                            child: Icon(
+                              Icons.description,
+                              color: Colors.blue,
+                              size: 20.0,
+                            ),
+                          ),
+                      ],
                     ),
-                    trailing: GestureDetector(
+                    trailing: _isFahrerangabenCategory() 
+                      // Fahrerangaben: Daumen hoch UND Daumen runter
+                      ? Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            // Daumen runter
+                            GestureDetector(
+                              onTap: () async {
+                                // Spezielle Prüfung für Fahrerangaben
+                                final verklickt = await showDialog<bool>(
+                                  context: context,
+                                  barrierDismissible: false,
+                                  builder: (context) => AlertDialog(
+                                    title: const Text('Achtung!'),
+                                    content: const Text(
+                                      'Haben Sie sich verklickt? Sie sind im Begriff sich fahrtuntüchtig zu melden.',
+                                    ),
+                                    actions: [
+                                      TextButton(
+                                        onPressed: () => Navigator.pop(context, true),
+                                        child: const Text('Ja, verklickt'),
+                                      ),
+                                      TextButton(
+                                        onPressed: () => Navigator.pop(context, false),
+                                        style: TextButton.styleFrom(
+                                          foregroundColor: Colors.red,
+                                        ),
+                                        child: const Text('Nein, ich bin fahrtuntüchtig'),
+                                      ),
+                                    ],
+                                  ),
+                                );
+
+                                if (verklickt == true) {
+                                  return;
+                                } else if (verklickt == false) {
+                                  await showDialog(
+                                    context: context,
+                                    barrierDismissible: false,
+                                    builder: (context) => AlertDialog(
+                                      title: const Text('Fahrtuntüchtigkeit'),
+                                      content: const Text(
+                                        'Bitte verlassen Sie das Fahrzeug und wenden Sie sich an Ihre Disposition.',
+                                      ),
+                                      actions: [
+                                        TextButton(
+                                          onPressed: () async {
+                                            showDialog(
+                                              context: context,
+                                              barrierDismissible: false,
+                                              builder: (BuildContext context) {
+                                                return AlertDialog(
+                                                  content: Column(
+                                                    mainAxisSize: MainAxisSize.min,
+                                                    children: [
+                                                      CircularProgressIndicator(
+                                                        valueColor: AlwaysStoppedAnimation<Color>(
+                                                          HexColor.fromHex(getColor('primary')),
+                                                        ),
+                                                      ),
+                                                      const SizedBox(height: 16.0),
+                                                      const Text(
+                                                        'Meldung wird gesendet...',
+                                                        style: TextStyle(fontSize: 16.0),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                );
+                                              },
+                                            );
+                                            
+                                            await _sendDriverUnfitNotification(item.title);
+                                            
+                                            Navigator.pop(context);
+                                            Navigator.pop(context);
+                                            Navigator.pop(context);
+                                            Navigator.pop(context);
+                                          },
+                                          child: const Text('Verstanden'),
+                                        ),
+                                      ],
+                                    ),
+                                  );
+                                }
+                              },
+                              child: Container(
+                                padding: const EdgeInsets.all(8.0),
+                                decoration: BoxDecoration(
+                                  color: isChecked == false
+                                      ? Colors.red 
+                                      : Colors.grey.shade200,
+                                  borderRadius: BorderRadius.circular(6.0),
+                                  border: isChecked == null
+                                      ? Border.all(color: Colors.grey.shade400, width: 2.0)
+                                      : null,
+                                ),
+                                child: Icon(
+                                  Icons.thumb_down,
+                                  color: isChecked == false
+                                      ? Colors.white 
+                                      : Colors.grey.shade600,
+                                  size: 24.0,
+                                ),
+                              ),
+                            ),
+                            const SizedBox(width: 8.0),
+                            // Daumen hoch
+                            GestureDetector(
+                              onTap: () {
+                                setState(() {
+                                  itemCheckedState[item.id] = true;
+                                });
+                              },
+                              child: Container(
+                                padding: const EdgeInsets.all(8.0),
+                                decoration: BoxDecoration(
+                                  color: isChecked == true
+                                      ? Colors.green 
+                                      : Colors.grey.shade200,
+                                  borderRadius: BorderRadius.circular(6.0),
+                                  border: isChecked == null
+                                      ? Border.all(color: Colors.grey.shade400, width: 2.0)
+                                      : null,
+                                ),
+                                child: Icon(
+                                  Icons.thumb_up,
+                                  color: isChecked == true
+                                      ? Colors.white 
+                                      : Colors.grey.shade600,
+                                  size: 24.0,
+                                ),
+                              ),
+                            ),
+                          ],
+                        )
+                      // Alle anderen Kategorien: Nur Daumen runter (wie bisher)
+                      : GestureDetector(
                       onTap: () async {
                         // Toggle zwischen OK (true) und Mangel (false)
                         final newValue = isChecked == false ? true : false;
-                        
-                        // Spezielle Prüfung für Fahrerangaben BEVOR der Status gesetzt wird
-                        if (_isFahrerangabenCategory() && newValue == false) {
-                          final verklickt = await showDialog<bool>(
-                            context: context,
-                            barrierDismissible: false,
-                            builder: (context) => AlertDialog(
-                              title: const Text('Achtung!'),
-                              content: const Text(
-                                'Haben Sie sich verklickt? Sie sind im Begriff sich fahrtuntüchtig zu melden.',
-                              ),
-                              actions: [
-                                TextButton(
-                                  onPressed: () => Navigator.pop(context, true),
-                                  child: const Text('Ja, verklickt'),
-                                ),
-                                TextButton(
-                                  onPressed: () => Navigator.pop(context, false),
-                                  style: TextButton.styleFrom(
-                                    foregroundColor: Colors.red,
-                                  ),
-                                  child: const Text('Nein, ich bin fahrtuntüchtig'),
-                                ),
-                              ],
-                            ),
-                          );
-
-                          if (verklickt == true) {
-                            // Verklickt - nichts tun
-                            return;
-                          } else if (verklickt == false) {
-                            // Nicht verklickt - zweite Warnung und raus
-                            await showDialog(
-                              context: context,
-                              barrierDismissible: false,
-                              builder: (context) => AlertDialog(
-                                title: const Text('Fahrtuntüchtigkeit'),
-                                content: const Text(
-                                  'Bitte verlassen Sie das Fahrzeug und wenden Sie sich an Ihre Disposition.',
-                                ),
-                                actions: [
-                                  TextButton(
-                                    onPressed: () {
-                                      Navigator.pop(context); // Dialog schließen
-                                      Navigator.pop(context); // Detail-Screen schließen
-                                      Navigator.pop(context); // Hauptscreen schließen (zurück zur Tourenübersicht)
-                                    },
-                                    child: const Text('Verstanden'),
-                                  ),
-                                ],
-                              ),
-                            );
-                            return;
-                          }
-                        }
                         
                         setState(() {
                           itemCheckedState[item.id] = newValue;
                         });
                         
                         // Wenn auf Mangel gesetzt, Dokumentations-Dialog anzeigen
-                        // (ABER NICHT bei Fahrerangaben, da wurde schon geprüft)
-                        if (newValue == false && !_isFahrerangabenCategory()) {
+                        if (newValue == false) {
                           final wantsToDocument = await showDialog<bool>(
                             context: context,
                             builder: (context) => AlertDialog(
@@ -953,25 +1610,31 @@ class _CategoryDetailViewState extends State<CategoryDetailView> {
                             ),
                           );
 
-                          // Wenn "Ja", Dokumentations-Modal öffnen
+                          // Wenn "Ja", Dokumentations-Modal für einzelnes Item öffnen
                           if (wantsToDocument == true) {
-                            final result = await showModalBottomSheet<DamageReport>(
+                            final result = await showModalBottomSheet<IndividualDamage>(
                               context: context,
                               isScrollControlled: true,
                               backgroundColor: Colors.transparent,
-                              builder: (context) => DocumentationModal(
-                                category: widget.category,
-                                selectedDamages: [item],
-                                existingReport: damageReport,
+                              builder: (context) => IndividualDamageModal(
+                                item: item,
+                                existingDamage: individualDamages[item.id],
                               ),
                             );
 
                             if (result != null) {
                               setState(() {
-                                damageReport = result;
+                                individualDamages[item.id] = result;
                               });
                             }
                           }
+                        }
+                        
+                        // Wenn zurück auf OK gesetzt, individuelle Dokumentation entfernen
+                        if (newValue == true && individualDamages.containsKey(item.id)) {
+                          setState(() {
+                            individualDamages.remove(item.id);
+                          });
                         }
                       },
                         child: Container(
@@ -1056,7 +1719,6 @@ class DocumentationModal extends StatefulWidget {
 
 class _DocumentationModalState extends State<DocumentationModal> {
   final TextEditingController _commentController = TextEditingController();
-  final ImagePicker _picker = ImagePicker();
   List<String> _photoUrls = [];
 
   @override
@@ -1070,16 +1732,17 @@ class _DocumentationModalState extends State<DocumentationModal> {
 
   Future<void> _takePhoto() async {
     try {
-      final XFile? photo = await _picker.pickImage(
-        source: ImageSource.camera,
-        maxWidth: 1920,
-        maxHeight: 1080,
-        imageQuality: 85,
+      // In-App Kamera öffnen
+      final String? photoPath = await Navigator.push<String>(
+        context,
+        MaterialPageRoute(
+          builder: (context) => const InAppCameraScreen(),
+        ),
       );
 
-      if (photo != null) {
+      if (photoPath != null) {
         setState(() {
-          _photoUrls.add(photo.path);
+          _photoUrls.add(photoPath);
         });
       }
     } catch (e) {
@@ -1346,6 +2009,325 @@ class _DocumentationModalState extends State<DocumentationModal> {
   }
 }
 
+// Individuelles Dokumentations-Modal für einzelne Items
+class IndividualDamageModal extends StatefulWidget {
+  final ChecklistItem item;
+  final IndividualDamage? existingDamage;
+
+  const IndividualDamageModal({
+    super.key,
+    required this.item,
+    this.existingDamage,
+  });
+
+  @override
+  _IndividualDamageModalState createState() => _IndividualDamageModalState();
+}
+
+class _IndividualDamageModalState extends State<IndividualDamageModal> {
+  final TextEditingController _commentController = TextEditingController();
+  List<String> _photoUrls = [];
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.existingDamage != null) {
+      _commentController.text = widget.existingDamage!.comment ?? '';
+      _photoUrls = List.from(widget.existingDamage!.photoUrls);
+    }
+  }
+
+  Future<void> _takePhoto() async {
+    try {
+      // In-App Kamera öffnen
+      final String? photoPath = await Navigator.push<String>(
+        context,
+        MaterialPageRoute(
+          builder: (context) => const InAppCameraScreen(),
+        ),
+      );
+
+      if (photoPath != null) {
+        setState(() {
+          _photoUrls.add(photoPath);
+        });
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Fehler beim Aufnehmen des Fotos: $e'),
+          backgroundColor: Colors.red,
+        ),
+      );
+    }
+  }
+
+  void _removePhoto(int index) {
+    setState(() {
+      _photoUrls.removeAt(index);
+    });
+  }
+
+  void _saveAndReturn() {
+    final damage = IndividualDamage(
+      itemId: widget.item.id,
+      itemTitle: widget.item.title,
+      comment: _commentController.text.isEmpty ? null : _commentController.text,
+      photoUrls: _photoUrls,
+      createdAt: DateTime.now(),
+    );
+
+    Navigator.pop(context, damage);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: const BorderRadius.only(
+          topLeft: Radius.circular(20.0),
+          topRight: Radius.circular(20.0),
+        ),
+      ),
+      child: DraggableScrollableSheet(
+        initialChildSize: 0.9,
+        minChildSize: 0.5,
+        maxChildSize: 0.95,
+        expand: false,
+        builder: (context, scrollController) {
+          return Column(
+            children: [
+              // Handle-Bar zum Ziehen
+              Container(
+                margin: const EdgeInsets.symmetric(vertical: 12.0),
+                width: 40.0,
+                height: 4.0,
+                decoration: BoxDecoration(
+                  color: Colors.grey.shade300,
+                  borderRadius: BorderRadius.circular(2.0),
+                ),
+              ),
+              // Header
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
+                decoration: BoxDecoration(
+                  border: Border(
+                    bottom: BorderSide(
+                      color: Colors.grey.shade200,
+                      width: 1.0,
+                    ),
+                  ),
+                ),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Mangel dokumentieren',
+                            style: TextStyle(
+                              fontSize: 20.0,
+                              fontWeight: FontWeight.bold,
+                              color: HexColor.fromHex(getColor('primary')),
+                            ),
+                          ),
+                          const SizedBox(height: 4.0),
+                          Text(
+                            widget.item.title,
+                            style: TextStyle(
+                              fontSize: 14.0,
+                              color: Colors.grey.shade600,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    IconButton(
+                      icon: const Icon(Icons.close),
+                      onPressed: () => Navigator.pop(context),
+                    ),
+                  ],
+                ),
+              ),
+              // Content
+              Expanded(
+                child: SingleChildScrollView(
+                  controller: scrollController,
+                  padding: const EdgeInsets.all(16.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      // Kommentar
+                      const Text(
+                        'Kommentar',
+                        style: TextStyle(
+                          fontSize: 16.0,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      const SizedBox(height: 8.0),
+                      TextField(
+                        controller: _commentController,
+                        maxLines: 5,
+                        decoration: InputDecoration(
+                          hintText: 'Beschreiben Sie den Mangel...',
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(8.0),
+                          ),
+                          filled: true,
+                          fillColor: Colors.grey.shade50,
+                        ),
+                      ),
+                      const SizedBox(height: 24.0),
+
+                      // Fotos
+                      const Text(
+                        'Fotos',
+                        style: TextStyle(
+                          fontSize: 16.0,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      const SizedBox(height: 8.0),
+                      
+                      // Foto-Grid
+                      if (_photoUrls.isNotEmpty)
+                        GridView.builder(
+                          shrinkWrap: true,
+                          physics: const NeverScrollableScrollPhysics(),
+                          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount: 3,
+                            crossAxisSpacing: 8.0,
+                            mainAxisSpacing: 8.0,
+                          ),
+                          itemCount: _photoUrls.length,
+                          itemBuilder: (context, index) {
+                            return Stack(
+                              children: [
+                                Container(
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(8.0),
+                                    border: Border.all(
+                                      color: Colors.grey.shade300,
+                                      width: 1.0,
+                                    ),
+                                  ),
+                                  child: ClipRRect(
+                                    borderRadius: BorderRadius.circular(8.0),
+                                    child: Image.file(
+                                      File(_photoUrls[index]),
+                                      fit: BoxFit.cover,
+                                      width: double.infinity,
+                                      height: double.infinity,
+                                    ),
+                                  ),
+                                ),
+                                Positioned(
+                                  top: 4.0,
+                                  right: 4.0,
+                                  child: GestureDetector(
+                                    onTap: () => _removePhoto(index),
+                                    child: Container(
+                                      padding: const EdgeInsets.all(4.0),
+                                      decoration: BoxDecoration(
+                                        color: Colors.red,
+                                        shape: BoxShape.circle,
+                                      ),
+                                      child: const Icon(
+                                        Icons.close,
+                                        color: Colors.white,
+                                        size: 16.0,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            );
+                          },
+                        ),
+                      
+                      const SizedBox(height: 12.0),
+                      
+                      // Foto hinzufügen Button
+                      GestureDetector(
+                        onTap: _takePhoto,
+                        child: Container(
+                          width: double.infinity,
+                          height: 120.0,
+                          decoration: BoxDecoration(
+                            color: Colors.grey.shade100,
+                            borderRadius: BorderRadius.circular(8.0),
+                            border: Border.all(
+                              color: Colors.grey.shade400,
+                              width: 2.0,
+                              style: BorderStyle.solid,
+                            ),
+                          ),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(
+                                Icons.camera_alt,
+                                size: 48.0,
+                                color: Colors.grey.shade600,
+                              ),
+                              const SizedBox(height: 8.0),
+                              Text(
+                                'Foto hinzufügen',
+                                style: TextStyle(
+                                  fontSize: 14.0,
+                                  color: Colors.grey.shade700,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 24.0),
+
+                      // Hinzufügen Button
+                      SizedBox(
+                        width: double.infinity,
+                        child: ElevatedButton(
+                          onPressed: _saveAndReturn,
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: HexColor.fromHex(getColor('primary')),
+                            foregroundColor: Colors.white,
+                            padding: const EdgeInsets.symmetric(vertical: 16.0),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(8.0),
+                            ),
+                          ),
+                          child: const Text(
+                            'Speichern',
+                            style: TextStyle(
+                              fontSize: 16.0,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          );
+        },
+      ),
+    );
+  }
+
+  @override
+  void dispose() {
+    _commentController.dispose();
+    super.dispose();
+  }
+}
+
 // Zusammenfassungs-Screen
 class SummaryView extends StatefulWidget {
   final List<ChecklistItem> categories;
@@ -1498,25 +2480,58 @@ class _SummaryViewState extends State<SummaryView> {
                                       child: Column(
                                         crossAxisAlignment: CrossAxisAlignment.start,
                                         children: uncheckedChildren.map((child) {
+                                          // Prüfe ob es eine individuelle Dokumentation gibt
+                                          IndividualDamage? individualDamage;
+                                          if (report?.individualDamages != null) {
+                                            individualDamage = report!.individualDamages![child.id];
+                                          }
+                                          
                                           return Padding(
                                             padding: const EdgeInsets.only(bottom: 4.0),
-                                            child: Row(
-        children: [
-                                                Icon(
-                                                  Icons.circle,
-                                                  size: 6.0,
-                                                  color: Colors.orange.shade700,
+                                            child: Column(
+                                              crossAxisAlignment: CrossAxisAlignment.start,
+                                              children: [
+                                                Row(
+                                                  children: [
+                                                    Icon(
+                                                      Icons.circle,
+                                                      size: 6.0,
+                                                      color: Colors.orange.shade700,
+                                                    ),
+                                                    const SizedBox(width: 8.0),
+                                                    Expanded(
+                                                      child: Text(
+                                                        child.title,
+                                                        style: TextStyle(
+                                                          fontSize: 14.0,
+                                                          color: Colors.orange.shade800,
+                                                        ),
+                                                      ),
+                                                    ),
+                                                    // Icon für individuelle Dokumentation
+                                                    if (individualDamage != null)
+                                                      Icon(
+                                                        Icons.description,
+                                                        size: 16.0,
+                                                        color: Colors.blue,
+                                                      ),
+                                                  ],
                                                 ),
-                                                const SizedBox(width: 8.0),
-                                                Expanded(
-                                                  child: Text(
-                                                    child.title,
-                                                    style: TextStyle(
-                                                      fontSize: 14.0,
-                                                      color: Colors.orange.shade800,
+                                                // Individuelle Dokumentation anzeigen
+                                                if (individualDamage?.comment != null) ...[
+                                                  const SizedBox(height: 2.0),
+                                                  Padding(
+                                                    padding: const EdgeInsets.only(left: 14.0),
+                                                    child: Text(
+                                                      '💬 ${individualDamage!.comment!}',
+                                                      style: TextStyle(
+                                                        fontSize: 12.0,
+                                                        color: Colors.grey.shade700,
+                                                        fontStyle: FontStyle.italic,
+                                                      ),
                                                     ),
                                                   ),
-                                                ),
+                                                ],
                                               ],
                                             ),
                                           );
@@ -1632,6 +2647,182 @@ class _SummaryViewState extends State<SummaryView> {
           ),
         ],
       ),
+    );
+  }
+}
+
+// In-App Kamera Screen
+class InAppCameraScreen extends StatefulWidget {
+  const InAppCameraScreen({super.key});
+
+  @override
+  _InAppCameraScreenState createState() => _InAppCameraScreenState();
+}
+
+class _InAppCameraScreenState extends State<InAppCameraScreen> {
+  CameraController? _controller;
+  List<CameraDescription>? _cameras;
+  bool _isInitialized = false;
+  bool _isTakingPicture = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _initializeCamera();
+  }
+
+  Future<void> _initializeCamera() async {
+    try {
+      _cameras = await availableCameras();
+      if (_cameras != null && _cameras!.isNotEmpty) {
+        // Verwende die Rückkamera (erste Kamera)
+        _controller = CameraController(
+          _cameras![0],
+          ResolutionPreset.high,
+          enableAudio: false,
+        );
+        
+        await _controller!.initialize();
+        
+        if (mounted) {
+          setState(() {
+            _isInitialized = true;
+          });
+        }
+      }
+    } catch (e) {
+      print('Fehler beim Initialisieren der Kamera: $e');
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Kamera konnte nicht initialisiert werden: $e'),
+            backgroundColor: Colors.red,
+          ),
+        );
+        Navigator.pop(context);
+      }
+    }
+  }
+
+  Future<void> _takePicture() async {
+    if (_controller == null || !_controller!.value.isInitialized || _isTakingPicture) {
+      return;
+    }
+
+    setState(() {
+      _isTakingPicture = true;
+    });
+
+    try {
+      final XFile picture = await _controller!.takePicture();
+      
+      // Speichere das Bild in einem permanenten Verzeichnis
+      final Directory appDir = await getApplicationDocumentsDirectory();
+      final String fileName = 'damage_${DateTime.now().millisecondsSinceEpoch}.jpg';
+      final String savedPath = '${appDir.path}/$fileName';
+      
+      // Kopiere das Bild
+      await File(picture.path).copy(savedPath);
+      
+      if (mounted) {
+        Navigator.pop(context, savedPath);
+      }
+    } catch (e) {
+      print('Fehler beim Aufnehmen des Fotos: $e');
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Fehler beim Aufnehmen: $e'),
+            backgroundColor: Colors.red,
+          ),
+        );
+        setState(() {
+          _isTakingPicture = false;
+        });
+      }
+    }
+  }
+
+  @override
+  void dispose() {
+    _controller?.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Colors.black,
+      appBar: AppBar(
+        backgroundColor: Colors.black,
+        leading: IconButton(
+          icon: const Icon(Icons.close, color: Colors.white),
+          onPressed: () => Navigator.pop(context),
+        ),
+        title: const Text(
+          'Foto aufnehmen',
+          style: TextStyle(color: Colors.white),
+        ),
+        centerTitle: true,
+      ),
+      body: _isInitialized
+          ? Stack(
+              children: [
+                // Kamera-Vorschau
+                Center(
+                  child: CameraPreview(_controller!),
+                ),
+                // Aufnahme-Button
+                Positioned(
+                  bottom: 40.0,
+                  left: 0,
+                  right: 0,
+                  child: Center(
+                    child: GestureDetector(
+                      onTap: _isTakingPicture ? null : _takePicture,
+                      child: Container(
+                        width: 80.0,
+                        height: 80.0,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          border: Border.all(
+                            color: Colors.white,
+                            width: 4.0,
+                          ),
+                        ),
+                        child: Center(
+                          child: _isTakingPicture
+                              ? const CircularProgressIndicator(
+                                  color: Colors.white,
+                                )
+                              : Container(
+                                  width: 60.0,
+                                  height: 60.0,
+                                  decoration: const BoxDecoration(
+                                    color: Colors.white,
+                                    shape: BoxShape.circle,
+                                  ),
+                                ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            )
+          : const Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  CircularProgressIndicator(color: Colors.white),
+                  SizedBox(height: 16.0),
+                  Text(
+                    'Kamera wird geladen...',
+                    style: TextStyle(color: Colors.white),
+                  ),
+                ],
+              ),
+            ),
     );
   }
 }

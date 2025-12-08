@@ -55,7 +55,7 @@ class _TourListScreenState extends State<TourListScreen> {
     String jsonString = await rootBundle.loadString('lib/config/apis.json');
     print(jsonString);
     Map<String, dynamic> parsedJson = json.decode(jsonString);
-    String urlString = (getUrl('get-tours')).replaceAll("{phonenumber}", PhoneNumberAuth);
+    String urlString = (getUrl('get-tours')).replaceAll("{phonenumber}", PhoneNumberAuth).replaceAll("{deviceId}", AppUserId ?? '');
     
     // Füge Datum-Parameter hinzu, wenn DatePicker-Modul aktiv ist und ein Datum ausgewählt wurde
     if (checkIfAnyModuleIsActive('home_datepicker') == true && _selectedDate != null) {
@@ -276,6 +276,310 @@ print(filtered.length);
     });
   }
 
+  // Ruft offene Schäden für ein Fahrzeug von der API ab
+  Future<List<Map<String, dynamic>>> _fetchOpenDamages(String licensePlate) async {
+    try {
+      // Kennzeichen URL-encodieren für die API
+      final encodedPlate = Uri.encodeComponent(licensePlate);
+      final url = 'https://ef24c3593e63ece0be27bab074268e.42.environment.api.powerplatform.com/powerautomate/automations/direct/workflows/7dbeb02b09a5415a8c1f0105f1277e28/triggers/manual/paths/invoke/$encodedPlate?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=uCrS33fSJR9b491p96FmBBDbfUqlTxTt2oMpwnPL-c0';
+      
+      final response = await http.get(Uri.parse(url));
+      
+      if (response.statusCode == 200) {
+        final List<dynamic> damages = jsonDecode(response.body);
+        final damageList = damages.map((d) => d as Map<String, dynamic>).toList();
+        
+        // Nach Datum aufsteigend sortieren (älteste zuerst)
+        damageList.sort((a, b) {
+          final dateA = DateTime.tryParse(a['createdon'] ?? '') ?? DateTime(1970);
+          final dateB = DateTime.tryParse(b['createdon'] ?? '') ?? DateTime(1970);
+          return dateA.compareTo(dateB);
+        });
+        
+        return damageList;
+      } else {
+        print('Fehler beim Abrufen der Schäden: ${response.statusCode}');
+        return [];
+      }
+    } catch (e) {
+      print('Fehler beim Abrufen der Schäden: $e');
+      return [];
+    }
+  }
+
+  // Zeigt Dialog mit offenen Schäden an und fragt ob fortgefahren werden soll
+  Future<bool> _showOpenDamagesDialog(BuildContext context, String licensePlate, List<Map<String, dynamic>> damages) async {
+    return await showDialog<bool>(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) => AlertDialog(
+        title: Row(
+          children: [
+            Icon(Icons.warning_amber_rounded, color: Colors.orange, size: 28),
+            const SizedBox(width: 8),
+            Expanded(
+              child: Text(
+                'Offene Schäden für $licensePlate',
+                style: const TextStyle(fontSize: 18),
+              ),
+            ),
+          ],
+        ),
+        content: Container(
+          width: double.maxFinite,
+          constraints: BoxConstraints(maxHeight: MediaQuery.of(context).size.height * 0.5),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                'Für dieses Fahrzeug sind ${damages.length} offene Schäden gemeldet:',
+                style: const TextStyle(fontWeight: FontWeight.bold),
+              ),
+              const SizedBox(height: 12),
+              Flexible(
+                child: ListView.builder(
+                  shrinkWrap: true,
+                  itemCount: damages.length,
+                  itemBuilder: (context, index) {
+                    final damage = damages[index];
+                    final damageName = damage['damage'] ?? 'Unbekannter Schaden';
+                    final createdOn = damage['createdon'] != null 
+                        ? DateTime.tryParse(damage['createdon'])
+                        : null;
+                    final driver = damage['driver'];
+                    
+                    return Container(
+                      margin: const EdgeInsets.only(bottom: 8),
+                      padding: const EdgeInsets.all(12),
+                      decoration: BoxDecoration(
+                        color: Colors.orange.shade50,
+                        borderRadius: BorderRadius.circular(8),
+                        border: Border.all(color: Colors.orange.shade200),
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            children: [
+                              Icon(Icons.error_outline, color: Colors.orange.shade700, size: 18),
+                              const SizedBox(width: 8),
+                              Expanded(
+                                child: Text(
+                                  damageName,
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.orange.shade900,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                          if (createdOn != null || driver != null) ...[
+                            const SizedBox(height: 4),
+                            Row(
+                              children: [
+                                if (createdOn != null)
+                                  Text(
+                                    DateFormat('dd.MM.yyyy HH:mm').format(createdOn),
+                                    style: TextStyle(
+                                      fontSize: 12,
+                                      color: Colors.grey.shade600,
+                                    ),
+                                  ),
+                                if (createdOn != null && driver != null)
+                                  Text(' • ', style: TextStyle(color: Colors.grey.shade600)),
+                                if (driver != null)
+                                  Expanded(
+                                    child: Text(
+                                      driver,
+                                      style: TextStyle(
+                                        fontSize: 12,
+                                        color: Colors.grey.shade600,
+                                      ),
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
+                                  ),
+                              ],
+                            ),
+                          ],
+                        ],
+                      ),
+                    );
+                  },
+                ),
+              ),
+              const SizedBox(height: 12),
+              Container(
+                padding: const EdgeInsets.all(12),
+                decoration: BoxDecoration(
+                  color: Colors.blue.shade50,
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: Row(
+                  children: [
+                    Icon(Icons.info_outline, color: Colors.blue.shade700, size: 20),
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: Text(
+                        'Diese Schäden müssen nicht mehr gemeldet werden.r',
+                        style: TextStyle(
+                          fontSize: 13,
+                          color: Colors.blue.shade900,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context, false),
+            child: const Text('Abbrechen'),
+          ),
+          ElevatedButton(
+            onPressed: () => Navigator.pop(context, true),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: HexColor.fromHex(getColor('primary')),
+            ),
+            child: const Text('Verstanden, fortfahren', style: TextStyle(color: Colors.white)),
+          ),
+        ],
+      ),
+    ) ?? false;
+  }
+
+  // Startet die Abfahrtskontrolle mit Schadensprüfung und Touren-Aktualisierung
+  Future<void> _startBeforeDriveCheck(BuildContext context, Map<String, dynamic> tour) async {
+    // Zuerst Touren aktualisieren
+    final updatedTour = await _refreshToursAndGetUpdated(context, tour['tour']);
+    
+    if (updatedTour == null) {
+      // Fehler beim Aktualisieren - mit alter Tour fortfahren
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Touren konnten nicht aktualisiert werden. Verwende gespeicherte Daten.')),
+      );
+    }
+    
+    final tourToUse = updatedTour ?? tour;
+    final vehicleLicensePlate = tourToUse['general']?['vehicle']?.toString();
+    
+    if (vehicleLicensePlate == null || vehicleLicensePlate.isEmpty) {
+      // Kein Kennzeichen vorhanden, direkt starten
+      _navigateToBeforeDriveView(context, tourToUse);
+      return;
+    }
+    
+    // Lade-Dialog anzeigen für Schadensprüfung
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) => const Center(
+        child: Card(
+          child: Padding(
+            padding: EdgeInsets.all(20),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                CircularProgressIndicator(),
+                SizedBox(height: 16),
+                Text('Prüfe offene Schäden...'),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+    
+    // Schäden abrufen
+    final damages = await _fetchOpenDamages(vehicleLicensePlate);
+    
+    // Lade-Dialog schließen
+    if (context.mounted) Navigator.pop(context);
+    
+    if (damages.isNotEmpty) {
+      // Schäden-Dialog anzeigen
+      final shouldContinue = await _showOpenDamagesDialog(context, vehicleLicensePlate, damages);
+      if (!shouldContinue) return;
+    }
+    
+    // Zur Abfahrtskontrolle navigieren
+    _navigateToBeforeDriveView(context, tourToUse);
+  }
+
+  // Navigiert zur BeforeDriveView
+  void _navigateToBeforeDriveView(BuildContext context, Map<String, dynamic> tour) {
+    sendLogs("log_tour_beforecheck_started", tour['tour']);
+    CurrentTourData = tour;
+    GblStops = tour['stops'];
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => BeforeDriveView(
+          lat: tour['lat'],
+          long: tour['long'],
+          stops: tour['stops'],
+        ),
+      ),
+    );
+  }
+
+  // Aktualisiert die Touren und gibt die aktualisierte Tour zurück
+  Future<Map<String, dynamic>?> _refreshToursAndGetUpdated(BuildContext context, String tourName) async {
+    // Lade-Dialog anzeigen
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (ctx) => Center(
+        child: Card(
+          child: Padding(
+            padding: const EdgeInsets.all(24),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(Icons.download_rounded, size: 48, color: HexColor.fromHex(getColor('primary'))),
+                const SizedBox(height: 16),
+                const CircularProgressIndicator(),
+                const SizedBox(height: 16),
+                const Text(
+                  'Touren werden aktualisiert...',
+                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+
+    try {
+      // Touren über fetchData() neu laden (gleiche Logik wie Refresh-Button)
+      await fetchData();
+      
+      // Lade-Dialog schließen
+      if (context.mounted) Navigator.pop(context);
+      
+      // Die aktualisierte Tour aus AllToursGbl finden
+      for (var t in AllToursGbl) {
+        if (t['tour'] == tourName) {
+          return t as Map<String, dynamic>;
+        }
+      }
+      
+      // Tour nicht gefunden
+      print('Tour "$tourName" wurde nach Refresh nicht gefunden');
+      return null;
+    } catch (e) {
+      print('Fehler beim Aktualisieren der Touren: $e');
+      // Lade-Dialog schließen
+      if (context.mounted) Navigator.pop(context);
+      return null;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -310,9 +614,12 @@ print(filtered.length);
                   ),
                 );
               },
-              child: Icon(
-                  Icons.route,
-                  color: Colors.white
+              child: Transform.rotate(
+                angle: 1.5708, // 90 Grad nach rechts drehen (π/2)
+                child: Icon(
+                    Icons.route,
+                    color: Colors.white
+                ),
               ),
               backgroundColor: HexColor.fromHex(getColor('primary')),
             ),
@@ -738,6 +1045,35 @@ print(filtered.length);
                                     ),
                                   ],
                                 ),
+                                // Grüner Hinweis wenn Abfahrtskontrolle bereits durchgeführt
+                                if (checkIfAnyModuleIsActive('BeforeDriveCheck') == true && 
+                                    hasCompletedBeforeDriveCheckToday(tour['general']?['vehicle']?.toString()))
+                                  Container(
+                                    margin: const EdgeInsets.only(top: 8.0),
+                                    padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 6.0),
+                                    decoration: BoxDecoration(
+                                      color: Colors.green.shade50,
+                                      borderRadius: BorderRadius.circular(6.0),
+                                      border: Border.all(color: Colors.green.shade300, width: 1.0),
+                                    ),
+                                    child: Row(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        Icon(Icons.check_circle, color: Colors.green.shade700, size: 16.0),
+                                        const SizedBox(width: 6.0),
+                                        Flexible(
+                                          child: Text(
+                                            'Abfahrtskontrolle durchgeführt',
+                                            style: TextStyle(
+                                              color: Colors.green.shade700,
+                                              fontSize: 11.0,
+                                              fontWeight: FontWeight.w500,
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
                               ],
                             ),
                             /*trailing: IconButton(
@@ -881,17 +1217,30 @@ print(filtered.length);
                                           "Möchtest Du die Tour starten?",
                                           [
                                             Builder(
-                                              builder: (context) =>
+                                              builder: (dialogContext) =>
                                                 Container(
                                                   width: double.infinity, // Setzt die Breite auf die volle verfügbare Breite
                                                   child: ElevatedButton(style: ElevatedButton.styleFrom(backgroundColor: HexColor.fromHex(getColor('primary')),),
                                                     child: Text("Tour starten", style: TextStyle(color: Colors.white)),
-                                                    onPressed: () {
-                                                      Navigator.pop(context);
-                                                      sendLogs("log_tour_started", tour['tour']);
+                                                    onPressed: () async {
+                                                      Navigator.pop(dialogContext);
+                                                      
+                                                      // Touren aktualisieren und aktualisierte Tour holen
+                                                      final updatedTour = await _refreshToursAndGetUpdated(context, tour['tour']);
+                                                      
+                                                      if (updatedTour == null) {
+                                                        // Fehler beim Aktualisieren - mit alter Tour fortfahren
+                                                        ScaffoldMessenger.of(context).showSnackBar(
+                                                          const SnackBar(content: Text('Touren konnten nicht aktualisiert werden. Verwende gespeicherte Daten.')),
+                                                        );
+                                                      }
+                                                      
+                                                      final tourToUse = updatedTour ?? tour;
+                                                      
+                                                      sendLogs("log_tour_started", tourToUse['tour']);
                                                       
                                                       // Android Auto Navigation starten
-                                                      _startAndroidAutoNavigation(tour);
+                                                      _startAndroidAutoNavigation(tourToUse);
                                                       
                                                       // Normale App-Navigation starten
                                                       for (var i = 0; i < GblStops.length; i++) {
@@ -899,8 +1248,9 @@ print(filtered.length);
                                                           GblStops[i]['canceled'] = false;
                                                         }
                                                       }
-                                                      GblStops = tour['stops'];
-                                                      TourNameGbl = tour['tour'];
+                                                      GblStops = tourToUse['stops'];
+                                                      TourNameGbl = tourToUse['tour'];
+                                                      CurrentTourData = tourToUse;
                                                       ArrivalTimesReal = [];
                                                       currentStoppIndex = 1;
                                                       Navigator.push(
@@ -908,8 +1258,8 @@ print(filtered.length);
                                                         MaterialPageRoute(
                                                           builder: (context) =>
                                                               InitNavigationMap(
-                                                                lat: tour['lat'],
-                                                                long: tour['long'],
+                                                                lat: tourToUse['lat'],
+                                                                long: tourToUse['long'],
                                                                 isFreeDrive: false,
                                                               ),
                                                         ),
@@ -922,21 +1272,80 @@ print(filtered.length);
                                                 width: double.infinity, // Setzt die Breite auf die volle verfügbare Breite
                                                 child: ElevatedButton(style: ElevatedButton.styleFrom(backgroundColor: HexColor.fromHex(getColor('primary')),),
                                                   child: Text("Abfahrkontrolle", style: TextStyle(color: Colors.white)),
-                                                  onPressed: () {
-                                                    sendLogs("log_tour_beforecheck_started", tour['tour']);
-                                                    CurrentTourData = tour;
-                                                    GblStops = tour['stops'];
-                                                    Navigator.push(
-                                                      context,
-                                                      MaterialPageRoute(
-                                                        builder: (context) =>
-                                                            BeforeDriveView(
-                                                                lat: tour['lat'],
-                                                                long: tour['long'],
-                                                                stops: tour['stops']
+                                                  onPressed: () async {
+                                                    // Prüfen ob heute bereits eine Abfahrtskontrolle für dieses Fahrzeug durchgeführt wurde
+                                                    final vehicleLicensePlate = tour['general']?['vehicle']?.toString();
+                                                    final alreadyCheckedToday = hasCompletedBeforeDriveCheckToday(vehicleLicensePlate);
+                                                    
+                                                    // Dialog schließen
+                                                    Navigator.pop(context);
+                                                    
+                                                    if (alreadyCheckedToday) {
+                                                      // Dialog anzeigen: Kontrolle machen oder direkt starten
+                                                      showDialog(
+                                                        context: context,
+                                                        builder: (dialogContext) => AlertDialog(
+                                                          title: const Text('Abfahrtskontrolle bereits durchgeführt'),
+                                                          content: Text(
+                                                            'Für das Fahrzeug $vehicleLicensePlate wurde heute bereits eine Abfahrtskontrolle durchgeführt.\n\nMöchten Sie die Kontrolle erneut durchführen oder direkt die Tour starten?',
+                                                          ),
+                                                          actions: [
+                                                            TextButton(
+                                                              onPressed: () {
+                                                                Navigator.pop(dialogContext);
+                                                              },
+                                                              child: const Text('Abbrechen'),
                                                             ),
-                                                      ),
-                                                    );
+                                                            ElevatedButton(
+                                                              onPressed: () {
+                                                                Navigator.pop(dialogContext);
+                                                                sendLogs("log_tour_started_skip_beforecheck", tour['tour']);
+                                                                
+                                                                // Direkt Tour starten
+                                                                for (var i = 0; i < GblStops.length; i++) {
+                                                                  if (GblStops[i]['canceled'] != null && GblStops[i]['canceled'] == true) {
+                                                                    GblStops[i]['canceled'] = false;
+                                                                  }
+                                                                }
+                                                                GblStops = tour['stops'];
+                                                                TourNameGbl = tour['tour'];
+                                                                CurrentTourData = tour;
+                                                                ArrivalTimesReal = [];
+                                                                currentStoppIndex = 1;
+                                                                Navigator.push(
+                                                                  context,
+                                                                  MaterialPageRoute(
+                                                                    builder: (context) => InitNavigationMap(
+                                                                      lat: tour['lat'],
+                                                                      long: tour['long'],
+                                                                      isFreeDrive: false,
+                                                                    ),
+                                                                  ),
+                                                                );
+                                                              },
+                                                              style: ElevatedButton.styleFrom(
+                                                                backgroundColor: Colors.green,
+                                                              ),
+                                                              child: const Text('Tour direkt starten', style: TextStyle(color: Colors.white)),
+                                                            ),
+                                                            ElevatedButton(
+                                                              onPressed: () async {
+                                                                Navigator.pop(dialogContext);
+                                                                // Mit Schadensprüfung starten
+                                                                await _startBeforeDriveCheck(context, tour);
+                                                              },
+                                                              style: ElevatedButton.styleFrom(
+                                                                backgroundColor: HexColor.fromHex(getColor('primary')),
+                                                              ),
+                                                              child: const Text('Kontrolle erneut durchführen', style: TextStyle(color: Colors.white)),
+                                                            ),
+                                                          ],
+                                                        ),
+                                                      );
+                                                    } else {
+                                                      // Normale Abfahrtskontrolle mit Schadensprüfung starten
+                                                      await _startBeforeDriveCheck(context, tour);
+                                                    }
                                                   }
                                               )),
                                             StatefulBuilder(
