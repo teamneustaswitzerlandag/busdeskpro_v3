@@ -45,5 +45,38 @@
 	<true/>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
+	
+	<!-- Standort -->
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>Die App benötigt Zugriff auf Ihren Standort für die Navigation.</string>
+	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+	<string>Die App benötigt Zugriff auf Ihren Standort für die Navigation auch im Hintergrund.</string>
+	<key>NSLocationAlwaysUsageDescription</key>
+	<string>Die App benötigt Zugriff auf Ihren Standort für die Navigation auch im Hintergrund.</string>
+	
+	<!-- Kamera -->
+	<key>NSCameraUsageDescription</key>
+	<string>Die App benötigt Zugriff auf die Kamera für Fotos und Dokumente.</string>
+	
+	<!-- Fotos -->
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Die App benötigt Zugriff auf Ihre Fotos.</string>
+	<key>NSPhotoLibraryAddUsageDescription</key>
+	<string>Die App möchte Fotos in Ihrer Galerie speichern.</string>
+	
+	<!-- Mikrofon -->
+	<key>NSMicrophoneUsageDescription</key>
+	<string>Die App benötigt Zugriff auf das Mikrofon für Sprachfunktionen.</string>
+	
+	<!-- Kontakte -->
+	<key>NSContactsUsageDescription</key>
+	<string>Die App benötigt Zugriff auf Ihre Kontakte.</string>
+	
+	<!-- Hintergrund-Modus für Navigation -->
+	<key>UIBackgroundModes</key>
+	<array>
+		<string>location</string>
+		<string>fetch</string>
+	</array>
 </dict>
 </plist>

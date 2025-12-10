@@ -19,7 +19,7 @@ import 'menu/messages.dart';
 import 'menu/documents.dart';
 import 'menu/profile.dart';
 import 'menu/more.dart';
-import 'package:bus_desk_pro/config/globals.dart' as globals;
+import 'package:bus_desk_pro/config/globals.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:here_sdk/core.dart';
 import 'package:here_sdk/core.engine.dart';
@@ -102,10 +102,6 @@ class BusDeskPro extends State<_BusDeskPro> {
         ),
       );
       print('SDKNativeEngine created successfully!');
-      
-      // Lade gespeicherte Abfahrtskontrollen aus dem persistenten Speicher
-      await globals.loadBeforeDriveChecksFromStorage();
-      
       setState(() {
         _isSdkInitialized = true;
       });
